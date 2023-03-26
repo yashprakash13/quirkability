@@ -3,16 +3,17 @@ module.exports = {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     colors: {
-      "primary-default": "#1fb6ff",
-      "primary-focus": "#7e5bef",
-      "secondary-default": "#ff49db",
-      "secondary-focus": "#ff7849",
-      "alert-dark": "#13ce66",
-      "alert-light": "#ffc82c",
-      "warning-dark": "#273444",
-      "warning-light": "#8492a6",
-      "success-dark": "#d3dce6",
-      "success-light": "#d3dce6",
+      "primary-default": "#EFEDE4",
+      "primary-focus": "#E0DDCD",
+      "secondary-default": "#252827",
+      "secondary-focus": "#434746",
+      "alert-dark": "#E11D48",
+      "alert-light": "#FB7185",
+      "warning-dark": "#D97706",
+      "warning-light": "#F59E0B",
+      "success-dark": "#0D9488",
+      "success-light": "#2DD4BF",
+      white: "#ffffff",
     },
     fontFamily: {
       sans: ["Alegreya Sans", "sans-serif"],
@@ -36,6 +37,7 @@ module.exports = {
     boxShadow: {
       sm: "2px 2px 0px #434746",
       lg: "5px 5px 0px #434746",
+      none: "0px 0px",
     },
     extend: {
       maxWidth: {
