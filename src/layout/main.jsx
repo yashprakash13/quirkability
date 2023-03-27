@@ -1,6 +1,6 @@
 import React, { useEffect } from "react"
 import { Outlet, useNavigate } from "react-router-dom"
-// import Navbar from "../components/Navbar"
+import Navbar from "../components/Navbar"
 // import { useAuth } from "../contexts/auth"
 
 const Main = () => {
@@ -15,8 +15,8 @@ const Main = () => {
 
   return (
     <div>
-      {/* <Navbar /> */}
-      <div className="flex justify-center items-center h-screen">
+      <Navbar />
+      <div>
         <Outlet />
       </div>
     </div>

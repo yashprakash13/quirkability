@@ -33,9 +33,9 @@ const LandingPage = () => {
   //   }
 
   return (
-    <div className="flex flex-col gap-4 justify-center items-center">
+    <div className="flex flex-col gap-4 ">
       <div className="tex-lg px-2 py-4">I am the LandingPage.</div>
-      <div className="flex gap-3 items-center">
+      <div className="flex flex-col md:flex-row gap-3">
         <input
           type="text"
           className="text-lg px-2 py-2 w-96 border-2 border-gray-600 focus:outline-success-dark focus:rounded-none"

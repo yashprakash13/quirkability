@@ -39,11 +39,23 @@ module.exports = {
       lg: "5px 5px 0px #434746",
       none: "0px 0px",
     },
+    screens: {
+      sm: "404px",
+      md: "768px",
+      lg: "1024px",
+      xl: "1280px",
+      "2xl": "1536px",
+    },
+    borderWidth: {
+      lg: "4px",
+      md: "3px",
+      sm: "2px",
+    },
     extend: {
       maxWidth: {
         "screenwidth-lg": "1120px",
         "screenwidth-md": "704px",
-        "screenwidth-sm": "608px",
+        "screenwidth-sm": "408px",
       },
     },
   },

@@ -40,7 +40,7 @@ function App() {
     },
   ])
   return (
-    <div>
+    <div className="container lg:max-w-screenwidth-lg md:max-w-screenwidth-md sm:max-w-screenwidth-sm mx-auto p-4 h-screen">
       {/* <AuthProvider> */}
       <RouterProvider router={router} />
       {/* </AuthProvider> */}
