@@ -47,15 +47,20 @@ module.exports = {
       "2xl": "1536px",
     },
     borderWidth: {
-      lg: "4px",
-      md: "3px",
+      lg: "3px",
+      md: "2.5px",
       sm: "2px",
+    },
+    lineHeight: {
+      sm: "1",
+      md: "1.3",
+      lg: "1.5",
     },
     extend: {
       maxWidth: {
         "screenwidth-lg": "1120px",
         "screenwidth-md": "704px",
-        "screenwidth-sm": "408px",
+        // "screenwidth-sm": "608px",
       },
     },
   },
