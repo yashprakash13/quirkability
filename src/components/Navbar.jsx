@@ -1,5 +1,6 @@
 import React from "react"
 import Logo from "./Logo"
+import { Link } from "react-router-dom"
 import { Bars3Icon } from "@heroicons/react/24/outline"
 
 const Navbar = () => {
@@ -14,10 +15,13 @@ const Navbar = () => {
           PRICING
         </div>
       </div>
-      <div className="hidden md:block bg-primary-default text-secondary-default font-bold text-lg border-sm border-secondary-focus py-1 px-6 cursor-pointer rounded-br-xl hover:bg-primary-focus transition-all duration-300">
+      <Link
+        to="/login"
+        className="hidden md:block bg-primary-default text-secondary-default font-bold text-lg border-sm border-secondary-focus py-1 px-6 cursor-pointer rounded-br-xl hover:bg-primary-focus transition-all duration-300"
+      >
         Login
-      </div>
-      <Bars3Icon className="h-7 w-7 md:hidden" />
+      </Link>
+      <Bars3Icon className="h-7 w-7 md:hidden cursor-pointer" />
     </div>
   )
 }
