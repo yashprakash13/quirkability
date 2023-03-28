@@ -35,7 +35,7 @@ const LandingPage = () => {
 
   return (
     <div className="container mx-auto flex flex-col gap-4 mt-5 md:mt-20 p-3">
-      <div className="font-serif text-4xl md:text-5xl lg:text-7xl py-4 leading-md w-full">
+      <div className="font-serif text-4xl md:text-5xl lg:text-7xl py-4 leading-normal w-full">
         Sell your digital products at <br />
         <span className="font-serif italic text-warning-dark"> very</span> low
         fees
