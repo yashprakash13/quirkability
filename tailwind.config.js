@@ -34,6 +34,17 @@ module.exports = {
       "8xl": ["6rem"],
       "9xl": ["8rem"],
     },
+    fontWeight: {
+      thin: "100",
+      extralight: "200",
+      light: "300",
+      normal: "400",
+      medium: "500",
+      semibold: "600",
+      bold: "700",
+      extrabold: "800",
+      black: "900",
+    },
     boxShadow: {
       sm: "2px 2px 0px #434746",
       lg: "5px 5px 0px #434746",

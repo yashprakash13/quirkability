@@ -1,37 +1,44 @@
 import React, { useEffect, useRef, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { ArrowRightIcon } from "@heroicons/react/24/outline"
-// import { useAuth } from "../contexts/auth"
-// import { checkUsernameAvailability } from "../services/supabaseHelpers"
+import { useAuth } from "../context/auth"
+import { checkUsernameAvailability } from "../services/supabaseHelpers"
 
 const LandingPage = () => {
-  //   const { user } = useAuth()
+  const { user } = useAuth()
   const navigate = useNavigate()
 
   const usernameRef = useRef()
 
   const [error, setError] = useState(null)
 
-  //   useEffect(() => {
-  //     if (user) {
-  //       navigate("/dashboard")
-  //     }
-  //   }, [user])
+  useEffect(() => {
+    if (user) {
+      navigate("/dashboard")
+    }
+  }, [user])
 
-  //   async function handleUsername() {
-  //     let username = usernameRef.current.value
-  //     let result = await checkUsernameAvailability(username)
-  //     if (result) {
-  //       setError("That username is taken, sorry!")
-  //     } else {
-  //       navigate("/signup", {
-  //         state: {
-  //           username: username,
-  //         },
-  //       })
-  //       setError(null)
-  //     }
-  //   }
+  async function handleUsername() {
+    let username = usernameRef.current.value
+    if (username === "") {
+      setError("Please select a username of 3 letters or more for yourself.")
+      return
+    } else if (username.length <= 3) {
+      setError("Your username needs to be 3 letters or more.")
+      return
+    }
+    let result = await checkUsernameAvailability(username)
+    if (result) {
+      setError("That username is taken, sorry!")
+    } else {
+      navigate("/signup", {
+        state: {
+          username: username,
+        },
+      })
+      setError(null)
+    }
+  }
 
   return (
     <div className="container mx-auto flex flex-col gap-4 mt-5 md:mt-20 p-3">
@@ -62,7 +69,7 @@ const LandingPage = () => {
         </div>
         <div
           className="inline-flex basis-1/5 gap-2 items-center text-lg font-bold px-6 py-2 cursor-pointer bg-secondary-default text-white  border-secondary-focus rounded-br-2xl hover:text-secondary-default hover:bg-primary-default hover:border-md hover:border-secondary-focus transition-all duration-300 sm:mt-4 lg:mt-0"
-          //   onClick={handleUsername}
+          onClick={handleUsername}
         >
           Make your store
           <ArrowRightIcon className="h-5 w-5 font-bold" />

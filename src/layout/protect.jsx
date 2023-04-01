@@ -3,22 +3,19 @@ import Navbar from "../components/Navbar"
 import { useAuth } from "../context/auth"
 import { useEffect } from "react"
 
-const Main = () => {
+const Protect = () => {
   const { user } = useAuth()
   const navigate = useNavigate()
 
-  useEffect(() => {
-    if (user) {
-      navigate("/dashboard")
-    }
-  }, [])
-
+  function goToLandingPage() {
+    navigate("/")
+  }
   return (
     <div>
       <Navbar />
-      <div>{!user && <Outlet />}</div>
+      <div>{user ? <Outlet /> : goToLandingPage()}</div>
     </div>
   )
 }
 
-export default Main
+export default Protect
