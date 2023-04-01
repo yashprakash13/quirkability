@@ -9,7 +9,7 @@ export function useAuth() {
 
 export function AuthProvider({ children }) {
   const [session, setSession] = useState()
-  const [user, setUser] = useState(null)
+  const [user, setUser] = useState()
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -17,10 +17,9 @@ export function AuthProvider({ children }) {
     if (gotSession) {
       console.log("Retrieved: ", gotSession)
       setSession(JSON.parse(gotSession))
-      setUser(JSON.parse(gotSession))
+      setUser(JSON.parse(gotSession).user)
     }
     async function getSession() {
-      setLoading(false)
       const { subscription } = supabase.auth.onAuthStateChange(
         async (event, session) => {
           if (session) {
@@ -32,8 +31,8 @@ export function AuthProvider({ children }) {
             localStorage.removeItem("authSession")
             setSession(null)
             setUser(null)
+            setLoading(false)
           }
-          setLoading(false)
         }
       )
       return () => {
@@ -42,6 +41,11 @@ export function AuthProvider({ children }) {
     }
     getSession()
   }, [])
+  useEffect(() => {
+    if (user) {
+      setLoading(false)
+    }
+  }, [user])
 
   const value = {
     signUp: (data) => supabase.auth.signUp(data),

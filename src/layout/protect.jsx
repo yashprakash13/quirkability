@@ -1,7 +1,6 @@
 import { Outlet, useNavigate } from "react-router-dom"
 import Navbar from "../components/Navbar"
 import { useAuth } from "../context/auth"
-import { useEffect } from "react"
 
 const Protect = () => {
   const { user } = useAuth()

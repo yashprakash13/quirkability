@@ -9,6 +9,9 @@ import LandingPage from "./pages/landingpage"
 import Login from "./pages/login"
 import Signup from "./pages/signUp"
 import Dashboard from "./pages/dashboard"
+import Products from "./pages/dashboardpages/products"
+import Audience from "./pages/dashboardpages/audience"
+import Settings from "./pages/dashboardpages/settings"
 
 //services
 import { AuthProvider } from "./context/auth"
@@ -43,6 +46,18 @@ function App() {
         {
           index: true,
           element: <Dashboard />,
+        },
+        {
+          path: "products",
+          element: <Products />,
+        },
+        {
+          path: "audience",
+          element: <Audience />,
+        },
+        {
+          path: "settings",
+          element: <Settings />,
         },
       ],
     },

@@ -1,22 +1,22 @@
 import { useEffect } from "react"
 import { useAuth } from "../context/auth"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, Link } from "react-router-dom"
 
 const Dashboard = () => {
-  const { user } = useAuth()
+  let { user } = useAuth()
   const navigate = useNavigate()
 
   useEffect(() => {
-    if (!user) {
-      navigate("/")
+    if (user) {
+      document.title = `Dashboard | ${user.user_metadata.username}`
     }
-    document.title = `Dashboard | ${user.user_metadata.username}`
-  }, [])
+  }, [user])
 
   return (
     user && (
       <div className="container flex mx-auto p-3">
-        Hello, {user.user_metadata.username}, I am the Dashboard
+        Hello, {user?.user_metadata?.username}, I am the Dashboard
+        <Link to="/dashboard/products">Products</Link> okay
       </div>
     )
   )

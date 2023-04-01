@@ -18,6 +18,10 @@ const LandingPage = () => {
     }
   }, [user])
 
+  useEffect(() => {
+    document.title = "Quirkability"
+  }, [])
+
   async function handleUsername() {
     let username = usernameRef.current.value
     if (username === "") {
