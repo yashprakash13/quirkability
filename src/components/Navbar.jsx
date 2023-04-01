@@ -39,14 +39,17 @@ const Navbar = () => {
           </Link>
         </>
       ) : (
-        <>
+        <div className="hidden md:flex justify-around items-center space-x-12">
+          <div className="text-lg font-bold text-secondary-default font-sans cursor-pointer hover:underline transition-all duration-300">
+            HELP
+          </div>
           <div
             className="text-lg font-bold text-secondary-default font-sans cursor-pointer hover:underline transition-all duration-300"
             onClick={handleSignOut}
           >
-            Signout
+            SIGNOUT
           </div>
-        </>
+        </div>
       )}
       <Bars3Icon className="h-7 w-7 md:hidden cursor-pointer" />
     </div>
