@@ -9,9 +9,10 @@ import LandingPage from "./pages/landingpage"
 import Login from "./pages/login"
 import Signup from "./pages/signUp"
 import Dashboard from "./pages/dashboard"
-import Products from "./pages/dashboardpages/products"
+import Products from "./pages/dashboardpages/products/products"
 import Audience from "./pages/dashboardpages/audience"
 import Settings from "./pages/dashboardpages/settings"
+import AddProduct from "./pages/dashboardpages/products/addProduct"
 
 //services
 import { AuthProvider } from "./context/auth"
@@ -49,7 +50,16 @@ function App() {
         },
         {
           path: "products",
-          element: <Products />,
+          children: [
+            {
+              index: true,
+              element: <Products />,
+            },
+            {
+              path: "add",
+              element: <AddProduct />,
+            },
+          ],
         },
         {
           path: "audience",
