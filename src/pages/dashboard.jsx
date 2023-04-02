@@ -1,6 +1,6 @@
 import { useEffect } from "react"
 import { useAuth } from "../context/auth"
-import { useNavigate, Link } from "react-router-dom"
+import { useNavigate, Link, Outlet } from "react-router-dom"
 import DashboardNav from "../components/dashboardNav"
 
 const Dashboard = () => {
@@ -15,11 +15,11 @@ const Dashboard = () => {
 
   return (
     user && (
-      <div className="container flex flex-col gap-5 mx-auto p-3">
-        <div className="flex justify-center">
-          <DashboardNav />
+      <div className="container flex flex-col mx-auto p-3">
+        <div className="text-4xl font-bold font-serif mt-12">
+          Hello, {user?.user_metadata?.username}
         </div>
-        Hello, {user?.user_metadata?.username}, I am the Dashboard
+        <div className="text-2xl my-5">Your notifications:</div>
       </div>
     )
   )

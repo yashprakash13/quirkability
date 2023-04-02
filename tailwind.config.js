@@ -49,6 +49,7 @@ module.exports = {
     boxShadow: {
       sm: "2px 2px 0px #434746",
       lg: "5px 5px 0px #434746",
+      xl: "7px 7px 0px #434746",
       none: "0px 0px",
     },
     screens: {

@@ -1,6 +1,7 @@
 import { Outlet, useNavigate } from "react-router-dom"
 import Navbar from "../components/Navbar"
 import { useAuth } from "../context/auth"
+import DashboardNav from "../components/dashboardNav"
 
 const Protect = () => {
   const { user } = useAuth()
@@ -12,7 +13,18 @@ const Protect = () => {
   return (
     <div>
       <Navbar />
-      <div>{user ? <Outlet /> : goToLandingPage()}</div>
+      <div>
+        {user ? (
+          <>
+            <div className="flex justify-center mt-4">
+              <DashboardNav />
+            </div>{" "}
+            <Outlet />
+          </>
+        ) : (
+          goToLandingPage()
+        )}
+      </div>
     </div>
   )
 }
