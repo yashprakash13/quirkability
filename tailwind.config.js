@@ -13,6 +13,7 @@ module.exports = {
       "warning-light": "#F59E0B",
       "success-dark": "#0D9488",
       "success-light": "#2DD4BF",
+      "slate-bars": "#475569",
       white: "#ffffff",
     },
     fontFamily: {
