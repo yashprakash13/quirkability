@@ -2,6 +2,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom"
 
 // layout
 import Main from "./layout/main"
+import Protect from "./layout/protect"
 
 // pages
 import Error from "./pages/error"
@@ -18,7 +19,6 @@ import PublicProduct from "./pages/publicpages/publicProduct"
 
 //services
 import { AuthProvider } from "./context/auth"
-import Protect from "./layout/protect"
 
 function App() {
   const router = createBrowserRouter([
