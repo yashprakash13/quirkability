@@ -13,6 +13,8 @@ import Products from "./pages/dashboardpages/products/products"
 import Audience from "./pages/dashboardpages/audience"
 import Settings from "./pages/dashboardpages/settings"
 import AddProduct from "./pages/dashboardpages/products/addProduct"
+import PublicUser from "./pages/publicpages/publicUser"
+import PublicProduct from "./pages/publicpages/publicProduct"
 
 //services
 import { AuthProvider } from "./context/auth"
@@ -68,6 +70,19 @@ function App() {
         {
           path: "settings",
           element: <Settings />,
+        },
+      ],
+    },
+    {
+      path: ":username",
+      children: [
+        {
+          index: true,
+          element: <PublicUser />,
+        },
+        {
+          path: ":productId",
+          element: <PublicProduct />,
         },
       ],
     },
