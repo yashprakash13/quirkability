@@ -1,4 +1,13 @@
+import { useEffect, useState } from "react"
+import Editor from "../../../components/inputs/Editor"
+
 const AddProduct = () => {
+  let [description, setDescription] = useState("")
+
+  useEffect(() => {
+    console.log(description)
+  }, [description])
+
   return (
     <div className="container flex flex-col mx-auto p-3">
       <div className="text-3xl font-medium mt-10">New Product</div>
@@ -34,12 +43,15 @@ const AddProduct = () => {
         </div>
         <div className="flex flex-col gap-6">
           <div className="text-2xl">Description</div>
-          <textarea
+          {/* <textarea
             className="shadow-sm rounded-br-2xl border-sm border-secondary-focus bg-primary-default w-full md:w-[636px] h-48 px-3 py-3 focus:outline-none"
             placeholder="Description of the product - max. 2000 characters"
             maxLength="2000"
             name="desc"
-          />
+          /> */}
+          <div className="w-full md:w-[636px] max-h-64 mb-11">
+            <Editor desc={description} setDesc={setDescription} />
+          </div>
         </div>
         {/* <div className="text-2xl">
         <div className="text-2xl">Images</div>
