@@ -1,7 +1,6 @@
 import { useEffect } from "react"
 import { useAuth } from "../context/auth"
-import { useNavigate, Link, Outlet } from "react-router-dom"
-import DashboardNav from "../components/dashboardNav"
+import { useNavigate } from "react-router-dom"
 
 const Dashboard = () => {
   let { user } = useAuth()
