@@ -18,6 +18,10 @@ const Navbar = () => {
     }
   }
 
+  function redirectToDashboard() {
+    navigate("/dashboard")
+  }
+
   return (
     <div className="container mx-auto flex justify-between items-center space-x-3 mb-6 p-3">
       {user ? (
@@ -70,7 +74,10 @@ const Navbar = () => {
         </div>
       )}
       {user && (
-        <UserCircleIcon className="w-9 h-9 text-secondary-focus cursor-pointer" />
+        <UserCircleIcon
+          className="w-9 h-9 text-secondary-focus cursor-pointer"
+          onClick={redirectToDashboard}
+        />
       )}
     </div>
   )
