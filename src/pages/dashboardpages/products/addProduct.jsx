@@ -33,6 +33,7 @@ const AddProduct = () => {
     "application/epub+zip",
     "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     "text/csv",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
   ]
 
   useEffect(() => {
