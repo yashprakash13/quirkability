@@ -4,36 +4,91 @@ import FileDropper from "../../../components/inputs/FileDropper"
 import Toggle from "../../../components/inputs/Toggle"
 
 const AddProduct = () => {
-  let [description, setDescription] = useState("")
+  const [name, setName] = useState("")
+  const [description, setDescription] = useState("")
+  const [price, setPrice] = useState(0)
+  const [productImages, setProductImages] = useState([])
+  const [productArtifact, setProductArtifact] = useState([])
+  const [allowCopies, setAllowCopies] = useState(false)
+  const [displaySales, setDisplaySales] = useState(false)
+
+  const [errorName, setErrorName] = useState("")
+  const [errorDescription, setErrorDescription] = useState("")
+  const [errorprice, setErrorPrice] = useState("")
+  const [errorProductImages, setErrorProductImages] = useState("")
+  const [errorProductArtifact, setErrorProductArtifact] = useState("")
+  const [errorAllowCopies, setErrorAllowCopies] = useState("")
+  const [errorDisplaySales, setErrorDisplaySales] = useState("")
+
+  const fileTypesProductImages = ["image/png", "image/jpeg"]
+  const fileTypesProductArtifact = [
+    "application/zip",
+    "application/x-7z-compressed",
+    "text/plain",
+    "application/vnd.rar",
+    "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+    "application/pdf",
+    "video/mp4",
+    "audio/mpeg",
+    "application/epub+zip",
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "text/csv",
+  ]
 
   useEffect(() => {
     console.log(description)
   }, [description])
 
+  function handleSubmit(e) {
+    console.log(
+      name,
+      description,
+      price,
+      productImages,
+      productArtifact,
+      allowCopies,
+      displaySales
+    )
+  }
+
   return (
     <div className="container flex flex-col mx-auto p-3">
       <div className="text-3xl font-medium mt-10">New Product</div>
-      <form className="flex flex-col gap-12 my-4 md:my-12 overflow-y-visible">
+      <form
+        className="flex flex-col gap-12 my-4 md:my-12 overflow-y-visible"
+        onSubmit={(e) => {
+          e.preventDefault()
+          handleSubmit()
+        }}
+      >
+        {/* name */}
         <div className="flex flex-col gap-6">
           <div className="text-2xl">Name</div>
           <input
             className="border-sm shadow-sm rounded-br-2xl border-secondary-focus bg-primary-default w-full md:w-[636px] h-10 md:h-12 px-3 focus:outline-none"
             placeholder="Name of the product"
             type="text"
-            maxLength="200"
-            name="name"
+            maxLength="256"
+            value={name}
+            onChange={(e) => {
+              setName(e.target.value)
+            }}
           />
         </div>
+        {/* price */}
         <div className="flex flex-col gap-6 ">
           <div className="text-2xl">Price</div>
           <div className="flex gap-4 w-full">
             <select
-              name="price_currency"
+              value={price}
+              onChange={(e) => {
+                setPrice(e.target.value)
+              }}
               className="shadow-sm rounded-br-2xl border-sm border-secondary-focus bg-primary-default w-20 h-12 py-2 px-4 focus:outline-none"
             >
               <option value="0">$</option>
-              <option value="1">&euro;</option>
-              <option value="2">&pound;</option>
+              <option value="1">&pound;</option>
+              <option value="2">&euro;</option>
             </select>
             <input
               className="shadow-sm border-sm rounded-br-2xl border-secondary-focus bg-primary-default w-80 md:w-[540px] h-12 px-3 focus:outline-none cursor-pointer"
@@ -43,37 +98,36 @@ const AddProduct = () => {
             />
           </div>
         </div>
+        {/* description */}
         <div className="flex flex-col gap-6">
           <div className="text-2xl">Description</div>
           <div className="w-full md:w-[636px] max-h-64 mb-11">
             <Editor desc={description} setDesc={setDescription} />
           </div>
         </div>
+        {/* product images */}
         <div className="flex flex-col gap-6">
           <div className="text-2xl">Images</div>
           <FileDropper
-            kind="product_images"
             text="Upload up to 3 product images here"
             extratext="Images can be either JPG or PNG and need to be square and at least 500 x 500 pixels in dimension. "
-            // onFileChange={(files) => onFileChange(files)}
+            value={productImages}
+            onFileChange={setProductImages}
             maxFiles={3}
-            typeFiles={"image"}
-            name="product_images"
-            // onChange={formik.handleChange}
-            value="product_images"
+            typeOfFiles={fileTypesProductImages}
           />
         </div>
+        {/* product artifact */}
         <div className="flex flex-col gap-6 w-[420px] md:w-[636px]">
           <div className="text-2xl">Upload Product</div>
           <FileDropper
             kind="artifact"
             text="Upload your product here"
-            extratext="Product can be a .pdf, .docx, .txt., .xlsx, .pptx, .zip, .mp3, .mp4"
-            // onFileChange={(files) => onFileChange(files)}
-            maxFiles={3}
-            name="artifact"
-            // onChange={formik.handleChange}
-            value="artifact"
+            extratext="Product can be: a .zip, .7z, .pdf, .docx, .txt., .xlsx, .pptx, .mp3, .mp4, .epub, .rar, .csv"
+            value={productArtifact}
+            onFileChange={setProductArtifact}
+            maxFiles={1}
+            typeOfFiles={fileTypesProductArtifact}
           />
           <div className="text-xl flex justify-center">
             OR redirect to a URL
@@ -85,6 +139,7 @@ const AddProduct = () => {
             maxLength="200"
           />
         </div>
+        {/* some extra info for the product */}
         <div className="flex flex-col gap-6 w-[420px] md:w-[636px]">
           <div className="text-2xl">Extra Information</div>
           <div className="flex flex-col gap-2">

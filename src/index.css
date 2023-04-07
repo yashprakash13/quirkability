@@ -25,7 +25,8 @@
   border-color: #434746;
   border-bottom-right-radius: 1rem;
 }
-.ql-container {
+.quill {
   border-color: #434746;
   border-bottom-right-radius: 1rem;
+  background-color: #efede4;
 }
