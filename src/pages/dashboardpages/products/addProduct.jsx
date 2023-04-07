@@ -7,8 +7,10 @@ const AddProduct = () => {
   const [name, setName] = useState("")
   const [description, setDescription] = useState("")
   const [price, setPrice] = useState(0)
+  const [priceType, setPriceType] = useState(0)
   const [productImages, setProductImages] = useState([])
   const [productArtifact, setProductArtifact] = useState([])
+  const [productArtifactURL, setProductArtifactURL] = useState("")
   const [allowCopies, setAllowCopies] = useState(false)
   const [displaySales, setDisplaySales] = useState(false)
 
@@ -19,6 +21,9 @@ const AddProduct = () => {
   const [errorProductArtifact, setErrorProductArtifact] = useState("")
   const [errorAllowCopies, setErrorAllowCopies] = useState("")
   const [errorDisplaySales, setErrorDisplaySales] = useState("")
+
+  const [showProductArtifactOverURL, setShowProductArtifactOverURL] =
+    useState(true)
 
   const fileTypesProductImages = ["image/png", "image/jpeg"]
   const fileTypesProductArtifact = [
@@ -37,16 +42,24 @@ const AddProduct = () => {
   ]
 
   useEffect(() => {
-    console.log(description)
-  }, [description])
+    if (showProductArtifactOverURL) {
+      //erase the url
+      setProductArtifactURL("")
+    } else {
+      //erase the artifact
+      setProductArtifact([])
+    }
+  }, [showProductArtifactOverURL])
 
-  function handleSubmit(e) {
+  function handleSubmit() {
     console.log(
       name,
       description,
+      priceType,
       price,
       productImages,
       productArtifact,
+      productArtifactURL,
       allowCopies,
       displaySales
     )
@@ -81,7 +94,7 @@ const AddProduct = () => {
           <div className="text-2xl">Price</div>
           <div className="flex gap-4 w-full">
             <select
-              value={price}
+              value={priceType}
               onChange={(e) => {
                 setPrice(e.target.value)
               }}
@@ -95,7 +108,10 @@ const AddProduct = () => {
               className="shadow-sm border-sm rounded-br-2xl border-secondary-focus bg-primary-default w-80 md:w-[540px] h-12 px-3 focus:outline-none cursor-pointer"
               type="number"
               placeholder="Price of the product"
-              name="price"
+              value={price}
+              onChange={(e) => {
+                setPrice(e.target.value)
+              }}
             />
           </div>
         </div>
@@ -120,25 +136,42 @@ const AddProduct = () => {
         </div>
         {/* product artifact */}
         <div className="flex flex-col gap-6 w-[420px] md:w-[636px]">
-          <div className="text-2xl">Upload Product</div>
-          <FileDropper
-            kind="artifact"
-            text="Upload your product here"
-            extratext="Product can be: a .zip, .7z, .pdf, .docx, .txt., .xlsx, .pptx, .mp3, .mp4, .epub, .rar, .csv"
-            value={productArtifact}
-            onFileChange={setProductArtifact}
-            maxFiles={1}
-            typeOfFiles={fileTypesProductArtifact}
-          />
-          <div className="text-xl flex justify-center">
-            OR redirect to a URL
+          <div className="text-2xl">Product</div>
+          {showProductArtifactOverURL ? (
+            <FileDropper
+              kind="artifact"
+              text="Upload your product here"
+              extratext="Product can be: a .zip, .7z, .pdf, .docx, .txt., .xlsx, .pptx, .mp3, .mp4, .epub, .rar, .csv"
+              value={productArtifact}
+              onFileChange={setProductArtifact}
+              maxFiles={1}
+              typeOfFiles={fileTypesProductArtifact}
+            />
+          ) : (
+            <input
+              className={`border-sm shadow-sm rounded-br-2xl border-secondary-focus bg-primary-default w-[420px] md:w-[636px] h-12 px-3 focus:outline-none ${
+                showProductArtifactOverURL ? "hidden" : "block"
+              }`}
+              placeholder="Redirect URL"
+              type="text"
+              maxLength="500"
+              value={productArtifactURL}
+              onChange={(e) => {
+                setProductArtifactURL(e.target.value)
+              }}
+            />
+          )}
+          <div
+            className="text-xl flex justify-center
+              showProductArtifactOverURL underline cursor-pointer"
+            onClick={() => {
+              setShowProductArtifactOverURL(!showProductArtifactOverURL)
+            }}
+          >
+            {showProductArtifactOverURL
+              ? "OR redirect to a URL"
+              : "OR upload a Product"}
           </div>
-          <input
-            className="border-sm shadow-sm rounded-br-2xl border-secondary-focus bg-primary-default w-[420px] md:w-[636px] h-12 px-3 focus:outline-none"
-            placeholder="Redirect URL"
-            type="text"
-            maxLength="200"
-          />
         </div>
         {/* some extra info for the product */}
         <div className="flex flex-col gap-6 w-[420px] md:w-[636px]">
@@ -148,13 +181,13 @@ const AddProduct = () => {
               <div className="text-lg">
                 Allow customers to choose number of copies to purchase
               </div>
-              <Toggle />
+              <Toggle enabled={allowCopies} setEnabled={setAllowCopies} />
             </div>
             <div className="flex justify-between">
               <div className="text-lg">
                 Display number of sales of this product publicly
               </div>
-              <Toggle />
+              <Toggle enabled={displaySales} setEnabled={setDisplaySales} />
             </div>
           </div>
         </div>

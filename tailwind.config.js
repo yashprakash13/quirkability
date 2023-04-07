@@ -63,6 +63,7 @@ module.exports = {
       lg: "3px",
       md: "2.5px",
       sm: "2px",
+      xs: "1px",
     },
     lineHeight: {
       snug: "1.375",

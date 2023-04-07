@@ -19,7 +19,7 @@ const Navbar = () => {
   }
 
   function redirectToDashboard() {
-    navigate("/dashboard")
+    navigate("/")
   }
 
   return (

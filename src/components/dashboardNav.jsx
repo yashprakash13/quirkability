@@ -1,10 +1,13 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 
 const DashboardNav = () => {
   // 0, 1, and 2 for Products, Audience, and Settings routes respectively.
   let [activeRoute, setActiveRoute] = useState(4) // this can just be a random number which makes sure that as soon as we go away from this component, to, for eg. the Dashboard, it resets to 4 and none of the links looks active anymore.
 
+  useEffect(() => {
+    setActiveRoute(4)
+  }, [])
   return (
     <div className="flex justify-center items-center border-md rounded-br-xl p-3 border-secondary-focus space-x-5 w-[300px] md:w-[350px]">
       <Link
