@@ -65,8 +65,8 @@ const AddProduct = () => {
       name: yup
         .string()
         .trim()
-        .min(3, "Minimum 3 characters required for the name.")
-        .max(200, "Maximum 200 characters for the name.")
+        .min(3, "Name of the product should be between 3 and 200 characters.")
+        .max(200, "Name of the product should be between 3 and 200 characters.")
         .required("Name of the product is required."),
       description: yup
         .string()
