@@ -70,6 +70,8 @@ const AddProduct = () => {
         .required("Name of the product is required."),
       description: yup
         .string()
+        .trim()
+        .min(100, "Please provide at least a 100 character description. ")
         .required("Description of the product is required."),
       price: yup.number().min(0).required("Price of the product is required."),
     })
@@ -134,20 +136,18 @@ const AddProduct = () => {
           setErrorProductArtifact("")
         }
       }
-      console.log("errorProductImages: ", errorProductImages)
-      console.log("errorProductArtifact: ", errorProductArtifact)
       await schema.validate(schemaVal, {
         abortEarly: false,
       })
+      setInputErrors(null)
       // check if all validation is successful
-      if (
-        !inputErrors &&
-        errorProductImages === "" &&
-        errorProductArtifact === ""
-      ) {
-        console.log("Validation successful, congrats!")
-        setInputErrors(null)
-      }
+      console.log("At the final check.")
+      console.log(
+        "The errors: ",
+        inputErrors,
+        errorProductImages,
+        errorProductArtifact
+      )
     } catch (err) {
       let errors = {}
       err.inner.forEach((e) => {
@@ -157,6 +157,14 @@ const AddProduct = () => {
       setInputErrors(errors)
     }
   }
+
+  useEffect(() => {
+    if (!errorProductArtifact && !errorProductImages && !inputErrors) {
+      // validation is successful is this happens
+      console.log("Validation successful, congrats!")
+      // TODO insert into db
+    }
+  }, [errorProductArtifact, errorProductImages, inputErrors])
 
   return (
     <div className="container flex flex-col mx-auto p-3">
@@ -192,7 +200,7 @@ const AddProduct = () => {
             <select
               value={priceType}
               onChange={(e) => {
-                setPrice(e.target.value)
+                setPriceType(e.target.value)
               }}
               className="shadow-sm rounded-br-2xl border-sm border-secondary-focus bg-primary-default w-20 h-12 py-2 px-4 focus:outline-none"
             >
