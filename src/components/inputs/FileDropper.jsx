@@ -1,7 +1,7 @@
 import { useRef, useState } from "react"
 import {
   ArrowUpOnSquareIcon,
-  PhotoIcon,
+  DocumentIcon,
   TrashIcon,
 } from "@heroicons/react/24/outline"
 
@@ -87,7 +87,7 @@ const FileDropper = ({
               key={index}
               className="relative flex mb-2 p-4 rounded w-[420px] md:w-[636px] bg-primary-default justify-start items-center border-sm border-secondary-focus rounded-br-2xl"
             >
-              <PhotoIcon className="w-12 mr-5" />
+              <DocumentIcon className="w-12 mr-5" />
               <div className="flex flex-col justify-between">
                 <p className="text-md">{item.name}</p>
                 <p>{(item.size / 1000000).toFixed(2)} MB</p>

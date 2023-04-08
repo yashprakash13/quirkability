@@ -2,6 +2,8 @@ import { useEffect, useState } from "react"
 import Editor from "../../../components/inputs/Editor"
 import FileDropper from "../../../components/inputs/FileDropper"
 import Toggle from "../../../components/inputs/Toggle"
+import * as yup from "yup"
+import { checkFileSize, isValidHttpsUrl } from "../../../utils"
 
 const AddProduct = () => {
   const [name, setName] = useState("")
@@ -14,13 +16,9 @@ const AddProduct = () => {
   const [allowCopies, setAllowCopies] = useState(false)
   const [displaySales, setDisplaySales] = useState(false)
 
-  const [errorName, setErrorName] = useState("")
-  const [errorDescription, setErrorDescription] = useState("")
-  const [errorprice, setErrorPrice] = useState("")
+  const [inputErrors, setInputErrors] = useState(null)
   const [errorProductImages, setErrorProductImages] = useState("")
   const [errorProductArtifact, setErrorProductArtifact] = useState("")
-  const [errorAllowCopies, setErrorAllowCopies] = useState("")
-  const [errorDisplaySales, setErrorDisplaySales] = useState("")
 
   const [showProductArtifactOverURL, setShowProductArtifactOverURL] =
     useState(true)
@@ -51,18 +49,113 @@ const AddProduct = () => {
     }
   }, [showProductArtifactOverURL])
 
-  function handleSubmit() {
-    console.log(
-      name,
-      description,
-      priceType,
-      price,
-      productImages,
-      productArtifact,
-      productArtifactURL,
-      allowCopies,
-      displaySales
-    )
+  async function handleSubmit() {
+    let schemaVal = {
+      name: name,
+      description: description,
+      priceType: priceType,
+      price: price,
+      productImages: productImages,
+      productArtifact: productArtifact,
+      productArtifactURL: productArtifactURL,
+      allowCopies: allowCopies,
+      displaySales: displaySales,
+    }
+    let schema = yup.object({
+      name: yup
+        .string()
+        .trim()
+        .min(3, "Minimum 3 characters required for the name.")
+        .max(200, "Maximum 200 characters for the name.")
+        .required("Name of the product is required."),
+      description: yup
+        .string()
+        .required("Description of the product is required."),
+      price: yup.number().min(0).required("Price of the product is required."),
+    })
+    console.log("Onsubmit: ", schemaVal)
+    try {
+      // validate the productImages
+      if (!productImages || productImages.length === 0) {
+        setErrorProductImages("At least one product image is required.")
+      } else {
+        for (let i = 0; i < productImages.length; i++) {
+          if (!checkFileSize(productImages[i], 10)) {
+            setErrorProductImages("Images need to be <= 10MB in size.")
+          } else if (!fileTypesProductImages.includes(productImages[i].type)) {
+            setErrorProductImages(
+              "Images need to be of type .png or .jpeg only."
+            )
+          } else {
+            setErrorProductImages("")
+          }
+        }
+      }
+      // validate the product Artifact or URL
+      if (
+        productArtifactURL.trim() === "" &&
+        (!productArtifact || productArtifact.length === 0)
+      ) {
+        // if both are null -> show an error
+        console.log("if both are null -> show an error")
+        setErrorProductArtifact(
+          "Please upload a product or provide a redirect URL."
+        )
+      } else if (showProductArtifactOverURL) {
+        // URL is none but artifact should have something
+        console.log("URL is none but artifact should have something")
+        if (!productArtifact || productArtifact.length === 0) {
+          // if no product uploaded
+          console.log("if no product uploaded")
+          setErrorProductArtifact(
+            "Please upload a product or provide a redirect URL."
+          )
+        } else if (fileTypesProductArtifact.includes(productArtifact[0])) {
+          // product artifact is present but if an invalid file type uploaded
+          console.log(
+            "product artifact is present but if an invalid file type uploaded"
+          )
+          setErrorProductArtifact("This product file type is not supported.")
+        } else {
+          console.log("No error.")
+          setErrorProductArtifact("")
+        }
+      } else {
+        // artifact can be null but gotta have a URL
+        console.log("artifact can be null but gotta have a URL")
+        if (
+          productArtifactURL.trim() === "" ||
+          !isValidHttpsUrl(productArtifactURL.trim())
+        ) {
+          console.log("checking for valid URL")
+          setErrorProductArtifact("Please enter a valid redirect URL")
+        } else {
+          console.log("No error.")
+          setErrorProductArtifact("")
+        }
+      }
+      console.log("errorProductImages: ", errorProductImages)
+      console.log("errorProductArtifact: ", errorProductArtifact)
+      await schema.validate(schemaVal, {
+        abortEarly: false,
+      })
+      // check if all validation is successful
+      if (
+        !inputErrors &&
+        errorProductImages === "" &&
+        errorProductArtifact === ""
+      ) {
+        console.log("Validation successful, congrats!")
+        setInputErrors(null)
+      }
+    } catch (err) {
+      let errors = {}
+      err.inner.forEach((e) => {
+        errors[e.path] = e.message
+      })
+      console.log(errors)
+      setInputErrors(errors)
+    }
   }
 
   return (
@@ -78,6 +171,9 @@ const AddProduct = () => {
         {/* name */}
         <div className="flex flex-col gap-6">
           <div className="text-2xl">Name</div>
+          {inputErrors && inputErrors.name && (
+            <div className="text-alert-dark text-lg">{inputErrors.name}</div>
+          )}
           <input
             className="border-sm shadow-sm rounded-br-2xl border-secondary-focus bg-primary-default w-full md:w-[636px] h-10 md:h-12 px-3 focus:outline-none"
             placeholder="Name of the product"
@@ -118,6 +214,11 @@ const AddProduct = () => {
         {/* description */}
         <div className="flex flex-col gap-6">
           <div className="text-2xl">Description</div>
+          {inputErrors && inputErrors.description && (
+            <div className="text-alert-dark text-lg">
+              {inputErrors.description}
+            </div>
+          )}
           <div className="w-full md:w-[636px] max-h-64 mb-11">
             <Editor desc={description} setDesc={setDescription} />
           </div>
@@ -125,6 +226,9 @@ const AddProduct = () => {
         {/* product images */}
         <div className="flex flex-col gap-6">
           <div className="text-2xl">Images</div>
+          {errorProductImages && (
+            <div className="text-alert-dark text-lg">{errorProductImages}</div>
+          )}
           <FileDropper
             text="Upload up to 3 product images here"
             extratext="Images can be either JPG or PNG and need to be square and at least 500 x 500 pixels in dimension. "
@@ -137,6 +241,11 @@ const AddProduct = () => {
         {/* product artifact */}
         <div className="flex flex-col gap-6 w-[420px] md:w-[636px]">
           <div className="text-2xl">Product</div>
+          {errorProductArtifact && (
+            <div className="text-alert-dark text-lg">
+              {errorProductArtifact}
+            </div>
+          )}
           {showProductArtifactOverURL ? (
             <FileDropper
               kind="artifact"
