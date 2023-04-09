@@ -4,6 +4,7 @@ import FileDropper from "../../../components/inputs/FileDropper"
 import Toggle from "../../../components/inputs/Toggle"
 import * as yup from "yup"
 import { checkFileSize, isValidHttpsUrl } from "../../../utils"
+import { priceCurrency } from "../../../utils/constants"
 
 const AddProduct = () => {
   const [name, setName] = useState("")
@@ -204,9 +205,11 @@ const AddProduct = () => {
               }}
               className="shadow-sm rounded-br-2xl border-sm border-secondary-focus bg-primary-default w-20 h-12 py-2 px-4 focus:outline-none"
             >
-              <option value="0">$</option>
-              <option value="1">&pound;</option>
-              <option value="2">&euro;</option>
+              {priceCurrency.map((currency) => {
+                const keyC = Object.keys(currency)[0]
+                const valC = currency[keyC]
+                return <option value={keyC}>{valC}</option>
+              })}
             </select>
             <input
               className="shadow-sm border-sm rounded-br-2xl border-secondary-focus bg-primary-default w-80 md:w-[540px] h-12 px-3 focus:outline-none cursor-pointer"
