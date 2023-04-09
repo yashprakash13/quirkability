@@ -250,7 +250,7 @@ const AddProduct = () => {
           />
         </div>
         {/* product artifact */}
-        <div className="flex flex-col gap-6 w-[420px] md:w-[636px]">
+        <div className="flex flex-col gap-6 ">
           <div className="text-2xl">Product</div>
           {errorProductArtifact && (
             <div className="text-alert-dark text-lg">
@@ -269,7 +269,7 @@ const AddProduct = () => {
             />
           ) : (
             <input
-              className={`border-sm shadow-sm rounded-br-2xl border-secondary-focus bg-primary-default w-[420px] md:w-[636px] h-12 px-3 focus:outline-none ${
+              className={`border-sm shadow-sm rounded-br-2xl border-secondary-focus bg-primary-default w-full md:w-[636px] h-12 px-3 focus:outline-none ${
                 showProductArtifactOverURL ? "hidden" : "block"
               }`}
               placeholder="Redirect URL"
@@ -294,16 +294,16 @@ const AddProduct = () => {
           </div>
         </div>
         {/* some extra info for the product */}
-        <div className="flex flex-col gap-6 w-[420px] md:w-[636px]">
+        <div className="flex flex-col gap-6 w-full md:w-[636px]">
           <div className="text-2xl">Extra Information</div>
-          <div className="flex flex-col gap-2">
-            <div className="flex justify-between items-center">
+          <div className="flex flex-col gap-10 md:gap-3">
+            <div className="flex flex-col md:flex-row justify-start md:justify-between items-start md:items-center gap-3">
               <div className="text-lg">
                 Allow customers to choose number of copies to purchase
               </div>
               <Toggle enabled={allowCopies} setEnabled={setAllowCopies} />
             </div>
-            <div className="flex justify-between">
+            <div className="flex flex-col md:flex-row justify-start md:justify-between items-start md:items-center gap-3 w-full">
               <div className="text-lg">
                 Display number of sales of this product publicly
               </div>

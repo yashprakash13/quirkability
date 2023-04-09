@@ -59,7 +59,7 @@ const FileDropper = ({
   return (
     <>
       <div
-        className={`w-[420px] md:w-[636px] h-[200px] shadow-sm border-sm rounded-br-2xl border-secondary-focus bg-primary-default px-3 py-3 flex justify-center items-center hover:opacity-60 focus:opacity-60 ${
+        className={`w-full md:w-[636px] h-[200px] shadow-sm border-sm rounded-br-2xl border-secondary-focus bg-primary-default px-3 py-3 flex justify-center items-center hover:opacity-60 focus:opacity-60 ${
           disable ? "hidden" : "relative"
         }`}
         ref={wrapperRef}
@@ -85,7 +85,7 @@ const FileDropper = ({
           {fileList.map((item, index) => (
             <div
               key={index}
-              className="relative flex mb-2 p-4 rounded w-[420px] md:w-[636px] bg-primary-default justify-start items-center border-sm border-secondary-focus rounded-br-2xl"
+              className="relative flex mb-2 p-4 rounded w-full md:w-[636px] bg-primary-default justify-start items-center border-sm border-secondary-focus rounded-br-2xl gap-3"
             >
               <DocumentIcon className="w-12 mr-5" />
               <div className="flex flex-col justify-between">
@@ -100,9 +100,7 @@ const FileDropper = ({
           ))}
         </div>
       ) : null}
-      <div className="font-thin text-lg w-[420px] md:w-[636px]">
-        {extratext}
-      </div>
+      <div className="font-thin text-lg w-full md:w-[636px]">{extratext}</div>
     </>
   )
 }
