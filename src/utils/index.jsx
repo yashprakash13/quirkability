@@ -21,3 +21,16 @@ function checkFileSize(file, size) {
   return true // File size is less than or equal to 10MB
 }
 export { checkFileSize }
+
+function getTimestampedName(name) {
+  // return a new name with the current timestamp
+  const lastDotIndex = name.lastIndexOf(".")
+  if (lastDotIndex === -1) {
+    console.log("Couldn't read the file extension for: ", name)
+    return
+  }
+  const extension = name.substring(lastDotIndex + 1)
+  const newFilename = `${Date.now()}.${extension}`
+  return newFilename
+}
+export { getTimestampedName }
