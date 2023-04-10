@@ -1,3 +1,4 @@
+import { getTimestampedName } from "../utils"
 import { supabase } from "./supabase"
 
 async function checkUsernameAvailability(username) {
@@ -74,8 +75,7 @@ async function insertIntoProductImagesStorage(id, data) {
   // create the folder if there isn't one
   for (let i = 0; i < data.length; i++) {
     const image = data[i]
-    const extension = image.name.split(".").pop()
-    const newFilename = `${Date.now()}.${extension}`
+    const newFilename = getTimestampedName(image.name)
     const { data, error } = await supabase.storage
       .from("product-images")
       .upload(`${id}/${newFilename}`, image)
@@ -97,8 +97,7 @@ export { insertIntoProductImagesStorage }
 async function insertIntoProductArtifactStorage(id, data) {
   // insert new product's artifact into the user's folder inside the `product-artifact` storage bucket
   // create the folder if there isn't one
-  const extension = data[0].name.split(".").pop()
-  const newFilename = `${Date.now()}.${extension}`
+  const newFilename = getTimestampedName(data[0].name)
   const { data, error } = await supabase.storage
     .from("product-artifact")
     .upload(`${id}/${newFilename}`, data[0])
