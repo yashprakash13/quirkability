@@ -5,6 +5,8 @@ import Toggle from "../../../components/inputs/Toggle"
 import * as yup from "yup"
 import { checkFileSize, isValidHttpsUrl } from "../../../utils"
 import { priceCurrency } from "../../../utils/constants"
+import { ClimbingBoxLoader } from "react-spinners"
+import { useNavigate } from "react-router-dom"
 
 const AddProduct = () => {
   const [name, setName] = useState("")
@@ -23,6 +25,11 @@ const AddProduct = () => {
 
   const [showProductArtifactOverURL, setShowProductArtifactOverURL] =
     useState(true)
+
+  const [loading, setLoading] = useState(false)
+  const [mounted, setMounted] = useState(true) // this is needed so that we know when we initially load the form, the loading spinner is not shown. Instead, it is only shown when we submit the form and set `mounted` to false.
+
+  const navigate = useNavigate()
 
   const fileTypesProductImages = ["image/png", "image/jpeg"]
   const fileTypesProductArtifact = [
@@ -74,7 +81,10 @@ const AddProduct = () => {
         .trim()
         .min(100, "Please provide at least a 100 character description. ")
         .required("Description of the product is required."),
-      price: yup.number().min(0).required("Price of the product is required."),
+      price: yup
+        .number()
+        .min(0, "Price of the product must be greater than or equal to 0.")
+        .required("Price of the product is required."),
     })
     console.log("Onsubmit: ", schemaVal)
     try {
@@ -149,6 +159,7 @@ const AddProduct = () => {
         errorProductImages,
         errorProductArtifact
       )
+      setMounted(false)
     } catch (err) {
       let errors = {}
       err.inner.forEach((e) => {
@@ -160,14 +171,28 @@ const AddProduct = () => {
   }
 
   useEffect(() => {
-    if (!errorProductArtifact && !errorProductImages && !inputErrors) {
+    if (
+      !mounted &&
+      !errorProductArtifact &&
+      !errorProductImages &&
+      !inputErrors
+    ) {
       // validation is successful is this happens
       console.log("Validation successful, congrats!")
       // TODO insert into db
+      setLoading(true)
+      setTimeout(() => {
+        navigate("/dashboard/products")
+      }, 5000)
     }
   }, [errorProductArtifact, errorProductImages, inputErrors])
 
-  return (
+  return loading ? (
+    <div className="container bg-primary-focus z-50 flex flex-col gap-5 h-screen justify-center items-center mx-auto p-3 ">
+      <div className="text-xl">Publishing...</div>
+      <ClimbingBoxLoader color="#434746" />
+    </div>
+  ) : (
     <div className="container flex flex-col mx-auto p-3">
       <div className="text-3xl font-medium mt-10">New Product</div>
       <form
@@ -197,6 +222,9 @@ const AddProduct = () => {
         {/* price */}
         <div className="flex flex-col gap-6 ">
           <div className="text-2xl">Price</div>
+          {inputErrors && inputErrors.price && (
+            <div className="text-alert-dark text-lg">{inputErrors.price}</div>
+          )}
           <div className="flex gap-4 w-full">
             <select
               value={priceType}
