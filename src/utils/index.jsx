@@ -1,3 +1,5 @@
+import imageCompression from "browser-image-compression"
+
 function isValidHttpsUrl(string) {
   // check if a given url is valid
   let url
@@ -34,3 +36,15 @@ function getTimestampedName(name) {
   return newFilename
 }
 export { getTimestampedName }
+
+async function compressImage(image) {
+  // return an image compressed to <= 1.5 MB in size
+  const options = {
+    maxSizeMB: 1.5,
+    maxWidthOrHeight: 1000,
+    useWebWorker: true,
+  }
+  const compressedFile = await imageCompression(image, options)
+  return compressedFile
+}
+export { compressImage }

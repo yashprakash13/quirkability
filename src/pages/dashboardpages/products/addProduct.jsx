@@ -309,7 +309,7 @@ const AddProduct = () => {
           )}
           <FileDropper
             text="Upload up to 3 product images here"
-            extratext="Images can be either JPG or PNG and need to be square and at least 500 x 500 pixels in dimension. "
+            extratext="Images can be either JPG or PNG and need to be square and at least 500 x 500 pixels in dimension and <=10 MB in size."
             value={productImages}
             onFileChange={setProductImages}
             maxFiles={3}

@@ -1,4 +1,4 @@
-import { getTimestampedName } from "../utils"
+import { compressImage, getTimestampedName } from "../utils"
 import { supabase } from "./supabase"
 
 async function checkUsernameAvailability(username) {
@@ -93,7 +93,7 @@ async function insertIntoProductImagesStorage(id, images, product_id) {
   // create the folder if there isn't one
   let image_paths = []
   for (let i = 0; i < images.length; i++) {
-    const image = images[i]
+    const image = await compressImage(images[i])
     const newFilename = getTimestampedName(image.name)
     const { data, error } = await supabase.storage
       .from("product-images")
