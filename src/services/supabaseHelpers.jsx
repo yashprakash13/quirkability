@@ -49,32 +49,51 @@ export { insertIntoUserprofileTable }
 Functions for making a new product 
 
 */
-async function insertIntoProductTable(id, data) {
+async function insertIntoProductTable(id, product, productArtifactURL) {
   // insert a new product into the `product` table
-  const { error } = await supabase.from("product").insert({
-    id: id,
-    name: data.name,
-    description: data.description,
-    price: data.price,
-    price_type: data.priceType,
-    allow_copies: data.allow_copies,
-    display_sales: data.display_sales,
-    user_id: data.user_id,
-  })
+  const { data, error } = await supabase
+    .from("product")
+    .insert({
+      name: product.name,
+      description: product.description,
+      price: product.price,
+      price_type: product.priceType,
+      allow_copies: product.allowCopies,
+      display_sales: product.displaySales,
+      user_id: id,
+    })
+    .select()
   if (error) {
     console.log("Error in inserting row into the product table: => ", error)
+    return null
   } else {
-    console.log("Awesome, the product was inserted!")
+    console.log("Awesome, the product was inserted! => ", data)
+    // Insert the product into the `product_url` table for future image + artifact uploads
+    const { error2 } = await supabase.from("product_urls").insert({
+      redirect_url: productArtifactURL,
+      product_id: data[0].id,
+    })
+    if (error2) {
+      console.log(
+        "Error in inserting row into the product_url table: => ",
+        error
+      )
+    } else {
+      console.log("Awesome, the product url row was inserted!")
+    }
+    console.log("Returning id: ", data[0].id)
+    return data[0].id
   }
 }
 
 export { insertIntoProductTable }
 
-async function insertIntoProductImagesStorage(id, data) {
+async function insertIntoProductImagesStorage(id, images, product_id) {
   // insert new product's images into the the user's folder inside the `product-images` storage bucket,
   // create the folder if there isn't one
-  for (let i = 0; i < data.length; i++) {
-    const image = data[i]
+  let image_paths = []
+  for (let i = 0; i < images.length; i++) {
+    const image = images[i]
     const newFilename = getTimestampedName(image.name)
     const { data, error } = await supabase.storage
       .from("product-images")
@@ -87,29 +106,55 @@ async function insertIntoProductImagesStorage(id, data) {
         error
       )
     } else {
-      console.log("Awesome, the image: ", image.name, " was inserted.")
+      console.log("Awesome, the image: ", image.name, " was inserted => ", data)
+      image_paths.push(data.path)
     }
+  }
+  // insert image paths(s) into the specific product id row into the `product_urls` table
+  const { error } = await supabase
+    .from("product_urls")
+    .update({ images: image_paths })
+    .eq("product_id", product_id)
+  if (error) {
+    console.log("Error in updating row with images: ", error)
+  } else {
+    console.log("Great! Product url row was updated with images. ")
   }
 }
 
 export { insertIntoProductImagesStorage }
 
-async function insertIntoProductArtifactStorage(id, data) {
+async function insertIntoProductArtifactStorage(id, product, product_id) {
   // insert new product's artifact into the user's folder inside the `product-artifact` storage bucket
   // create the folder if there isn't one
-  const newFilename = getTimestampedName(data[0].name)
+  const newFilename = getTimestampedName(product[0].name)
   const { data, error } = await supabase.storage
     .from("product-artifact")
-    .upload(`${id}/${newFilename}`, data[0])
+    .upload(`${id}/${newFilename}`, product[0])
   if (error) {
     console.log(
       "Error in inserting product artifact: ",
-      data[0].name,
+      product[0].name,
       " into the product-artifact storage bucket: ",
       error
     )
   } else {
-    console.log("Awesome, the artifact: ", data[0].name, " was inserted.")
+    console.log(
+      "Awesome, the artifact: ",
+      product[0].name,
+      " was inserted => ",
+      data
+    )
+    // insert the artifact into the specific product id row into the `product_urls` table
+    const { error } = await supabase
+      .from("product_urls")
+      .update({ product_artifact_path: data.path })
+      .eq("product_id", product_id)
+    if (error) {
+      console.log("Error in updating row with artifact: ", error)
+    } else {
+      console.log("Great! Product url row was updated with the artifact path. ")
+    }
   }
 }
 

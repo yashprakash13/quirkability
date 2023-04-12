@@ -7,6 +7,12 @@ import { checkFileSize, isValidHttpsUrl } from "../../../utils"
 import { priceCurrency } from "../../../utils/constants"
 import { ClimbingBoxLoader } from "react-spinners"
 import { useNavigate } from "react-router-dom"
+import {
+  insertIntoProductArtifactStorage,
+  insertIntoProductImagesStorage,
+  insertIntoProductTable,
+} from "../../../services/supabaseHelpers"
+import { useAuth } from "../../../context/auth"
 
 const AddProduct = () => {
   const [name, setName] = useState("")
@@ -30,6 +36,8 @@ const AddProduct = () => {
   const [mounted, setMounted] = useState(true) // this is needed so that we know when we initially load the form, the loading spinner is not shown. Instead, it is only shown when we submit the form and set `mounted` to false.
 
   const navigate = useNavigate()
+
+  const { user } = useAuth()
 
   const fileTypesProductImages = ["image/png", "image/jpeg"]
   const fileTypesProductArtifact = [
@@ -159,6 +167,7 @@ const AddProduct = () => {
         errorProductImages,
         errorProductArtifact
       )
+      //insert into DB
       setMounted(false)
     } catch (err) {
       let errors = {}
@@ -171,21 +180,47 @@ const AddProduct = () => {
   }
 
   useEffect(() => {
+    async function insertIntoDB() {
+      // validation is successful is this happens
+      console.log("Validation successful, congrats!")
+      // TODO insert into db
+      setLoading(true)
+      const productToCreate = {
+        name: name,
+        description: description,
+        price: price,
+        priceType: priceType,
+        allowCopies: allowCopies,
+        displaySales: displaySales,
+      }
+      const product_id = await insertIntoProductTable(
+        user.id,
+        productToCreate,
+        ""
+      )
+      if (product_id) {
+        await insertIntoProductImagesStorage(user.id, productImages, product_id)
+        await insertIntoProductArtifactStorage(
+          user.id,
+          productArtifact,
+          product_id
+        )
+        navigate("/dashboard/products")
+      } else {
+        console.log("Something went wrong. ")
+        setMounted(true)
+      }
+    }
     if (
       !mounted &&
       !errorProductArtifact &&
       !errorProductImages &&
       !inputErrors
     ) {
-      // validation is successful is this happens
-      console.log("Validation successful, congrats!")
-      // TODO insert into db
-      setLoading(true)
-      setTimeout(() => {
-        navigate("/dashboard/products")
-      }, 5000)
+      console.log("Here in the useeffect.")
+      insertIntoDB()
     }
-  }, [errorProductArtifact, errorProductImages, inputErrors])
+  }, [mounted])
 
   return loading ? (
     <div className="container bg-primary-focus z-50 flex flex-col gap-5 h-screen justify-center items-center mx-auto p-3 ">
