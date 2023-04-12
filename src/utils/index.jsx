@@ -40,7 +40,7 @@ export { getTimestampedName }
 async function compressImage(image) {
   // return an image compressed to <= 1.5 MB in size
   const options = {
-    maxSizeMB: 1.5,
+    maxSizeMB: 1,
     maxWidthOrHeight: 1000,
     useWebWorker: true,
   }
