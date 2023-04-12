@@ -184,7 +184,6 @@ const AddProduct = () => {
       // validation is successful is this happens
       console.log("Validation successful, congrats!")
       // TODO insert into db
-      setLoading(true)
       const productToCreate = {
         name: name,
         description: description,
@@ -196,15 +195,19 @@ const AddProduct = () => {
       const product_id = await insertIntoProductTable(
         user.id,
         productToCreate,
-        ""
+        productArtifactURL
       )
       if (product_id) {
         await insertIntoProductImagesStorage(user.id, productImages, product_id)
-        await insertIntoProductArtifactStorage(
-          user.id,
-          productArtifact,
-          product_id
-        )
+        // try to upload an artifact only if an artifact is provided
+        if (productArtifact.length > 0) {
+          await insertIntoProductArtifactStorage(
+            user.id,
+            productArtifact,
+            product_id
+          )
+        }
+        // work done, product created -> navigate to products page
         navigate("/dashboard/products")
       } else {
         console.log("Something went wrong. ")
@@ -218,9 +221,10 @@ const AddProduct = () => {
       !inputErrors
     ) {
       console.log("Here in the useeffect.")
+      setLoading(true)
       insertIntoDB()
     }
-  }, [mounted])
+  }, [mounted, inputErrors, errorProductImages, errorProductArtifact])
 
   return loading ? (
     <div className="container bg-primary-focus z-50 flex flex-col gap-5 h-screen justify-center items-center mx-auto p-3 ">
