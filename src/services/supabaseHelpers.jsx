@@ -159,3 +159,44 @@ async function insertIntoProductArtifactStorage(id, product, product_id) {
 }
 
 export { insertIntoProductArtifactStorage }
+
+/* 
+
+Functions for getting a list of products
+
+*/
+
+async function getAllProducts(id) {
+  // function to get all products for userid `id` from `products` table and product url row from the `product_urls` table
+  let { data: products, error } = await supabase
+    .from("product")
+    .select("*")
+    .eq("user_id", id)
+
+  if (products) {
+    let product_url_dict = {}
+    for (let i = 0; i < products.length; i++) {
+      const product = products[i]
+      let { data: product_url, error2 } = await supabase
+        .from("product_urls")
+        .select("*")
+        .eq("product_id", product.id)
+
+      if (product_url) {
+        product_url_dict[product.id] = product_url
+      } else {
+        console.log(
+          "Error in fetching product url row for product id => ",
+          product.id,
+          " with error=> ",
+          error2
+        )
+      }
+    }
+    return { products, product_url_dict }
+  } else {
+    console.log("Error in fetching products=> ", error)
+  }
+}
+
+export { getAllProducts }

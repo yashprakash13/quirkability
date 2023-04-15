@@ -1,7 +1,20 @@
 import { Link } from "react-router-dom"
 import { FolderPlusIcon } from "@heroicons/react/24/outline"
+import { useEffect } from "react"
+import { getAllProducts } from "../../../services/supabaseHelpers"
+import { useAuth } from "../../../context/auth"
 
 const Products = () => {
+  const { user } = useAuth()
+
+  useEffect(() => {
+    async function fetchProducts() {
+      const { products, product_url_dict } = await getAllProducts(user.id)
+      console.log(products, product_url_dict)
+    }
+    // fetchProducts()
+  }, [])
+
   return (
     <div className="container flex flex-col mx-auto p-3">
       <div className="text-3xl font-medium mt-10">Published Products</div>
