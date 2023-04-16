@@ -48,3 +48,18 @@ async function compressImage(image) {
   return compressedFile
 }
 export { compressImage }
+
+function getCurrency(index) {
+  // return the currency from index value // referenced in the order defined in ./constants.jsx
+  switch (index) {
+    case 0:
+      return "$"
+    case 1:
+      return "\u00A3"
+    case 2:
+      return "\u20AC"
+    default:
+      return "$"
+  }
+}
+export { getCurrency }

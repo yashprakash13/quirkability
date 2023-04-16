@@ -166,14 +166,14 @@ Functions for getting a list of products
 
 */
 
-async function getAllProducts(id) {
+async function getAllProducts(id, return_urls = true) {
   // function to get all products for userid `id` from `products` table and product url row from the `product_urls` table
   let { data: products, error } = await supabase
     .from("product")
     .select("*")
     .eq("user_id", id)
 
-  if (products) {
+  if (return_urls && products) {
     let product_url_dict = {}
     for (let i = 0; i < products.length; i++) {
       const product = products[i]
@@ -194,6 +194,8 @@ async function getAllProducts(id) {
       }
     }
     return { products, product_url_dict }
+  } else if (!return_urls && products) {
+    return { products }
   } else {
     console.log("Error in fetching products=> ", error)
   }

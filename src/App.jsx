@@ -16,6 +16,7 @@ import Settings from "./pages/dashboardpages/settings"
 import AddProduct from "./pages/dashboardpages/products/addProduct"
 import PublicUser from "./pages/publicpages/publicUser"
 import PublicProduct from "./pages/publicpages/publicProduct"
+import EditProduct from "./pages/dashboardpages/products/editProduct"
 
 //services
 import { AuthProvider } from "./context/auth"
@@ -60,6 +61,10 @@ function App() {
             {
               path: "add",
               element: <AddProduct />,
+            },
+            {
+              path: ":productId",
+              element: <EditProduct />,
             },
           ],
         },
