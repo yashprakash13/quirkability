@@ -14,15 +14,16 @@ const Products = () => {
       </div>
       <div className="flex flex-col mt-10">
         <div className="text-3xl font-medium ">Drafts</div>
-        <div className="flex space-x-7 mt-8">
+        <div className="flex flex-col md:flex-row flex-wrap gap-7 mt-8">
           {/* new product button */}
           <Link
-            className="w-72 h-64 border-md border-secondary-focus rounded-br-2xl shadow-xl flex flex-col gap-3 justify-center items-center cursor-pointer hover:shadow-none transition-all duration-300"
+            className="w-full h-28 md:w-64 md:h-52 border-md border-secondary-focus rounded-br-2xl shadow-xl flex flex-col gap-3 justify-center items-center cursor-pointer hover:shadow-none transition-all duration-300"
             to="/dashboard/products/add"
           >
-            <FolderPlusIcon className="w-10 h-10" />
-            <div className="text-2xl">New Product</div>
+            <FolderPlusIcon className="w-8 h-8 md:w-10 md:h-10" />
+            <div className="text-lg md:text-2xl">New Product</div>
           </Link>
+
           {/* all draft products go here */}
         </div>
       </div>

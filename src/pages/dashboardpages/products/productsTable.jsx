@@ -25,7 +25,7 @@ const ProductsTable = () => {
       {
         Header: "Name",
         accessor: "name",
-        minWidth: 300,
+        width: 300,
       },
       {
         Header: "Price",
@@ -69,62 +69,64 @@ const ProductsTable = () => {
   const isEven = (idx) => idx % 2 === 0
 
   return (
-    <table
-      {...getTableBodyProps()}
-      className="table-fixed text-secondary-focus border-sm mt-8 text-lg"
-    >
-      <thead className="p-2">
-        {headerGroups.map((headerGroup) => (
-          <tr
-            {...headerGroup.getHeaderGroupProps()}
-            className="border-sm border-secondary-default"
-          >
-            {headerGroup.headers.map((column) => (
-              <th
-                {...column.getHeaderProps()}
-                className="border-sm border-secondary-default p-2 font-medium"
-              >
-                {column.render("Header")}
-              </th>
-            ))}
-          </tr>
-        ))}
-      </thead>
-      <tbody {...getTableBodyProps()}>
-        {rows.map((row, idx) => {
-          prepareRow(row)
-
-          return (
+    <div className="max-w-full block overflow-x-auto overflow-y-hidden">
+      <table
+        {...getTableBodyProps()}
+        className="table-fixed text-secondary-focus border-sm mt-8 text-lg min-w-full"
+      >
+        <thead className="p-2">
+          {headerGroups.map((headerGroup) => (
             <tr
-              {...row.getRowProps()}
-              className={
-                isEven(idx)
-                  ? "bg-primary-default bg-opacity-80 border-xs border-secondary-default"
-                  : "border-xs border-secondary-default"
-              }
+              {...headerGroup.getHeaderGroupProps()}
+              className="border-sm border-secondary-default"
             >
-              {row.cells.map((cell) => (
-                <td
-                  {...cell.getCellProps()}
-                  className={`border-sm p-5 border-secondary-default ${
-                    cell.column.Header === "Name"
-                      ? "text-left cursor-pointer hover:underline"
-                      : "text-center"
-                  }`}
-                  onClick={() => {
-                    if (cell.column.Header === "Name") {
-                      navigate(`/dashboard/products/${cell.row.original.id}`)
-                    }
-                  }}
+              {headerGroup.headers.map((column) => (
+                <th
+                  {...column.getHeaderProps()}
+                  className="border-sm border-secondary-default p-2 font-medium"
                 >
-                  {cell.render("Cell")}
-                </td>
+                  {column.render("Header")}
+                </th>
               ))}
             </tr>
-          )
-        })}
-      </tbody>
-    </table>
+          ))}
+        </thead>
+        <tbody {...getTableBodyProps()}>
+          {rows.map((row, idx) => {
+            prepareRow(row)
+
+            return (
+              <tr
+                {...row.getRowProps()}
+                className={
+                  isEven(idx)
+                    ? "bg-primary-default bg-opacity-80 border-xs border-secondary-default"
+                    : "border-xs border-secondary-default"
+                }
+              >
+                {row.cells.map((cell) => (
+                  <td
+                    {...cell.getCellProps()}
+                    className={`border-sm p-5 border-secondary-default whitespace-nowrap overflow-hidden ${
+                      cell.column.Header === "Name"
+                        ? "text-left cursor-pointer hover:underline"
+                        : "text-center"
+                    }`}
+                    onClick={() => {
+                      if (cell.column.Header === "Name") {
+                        navigate(`/dashboard/products/${cell.row.original.id}`)
+                      }
+                    }}
+                  >
+                    {cell.render("Cell")}
+                  </td>
+                ))}
+              </tr>
+            )
+          })}
+        </tbody>
+      </table>
+    </div>
   )
 }
 
