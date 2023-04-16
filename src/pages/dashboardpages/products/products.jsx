@@ -1,7 +1,5 @@
 import { Link } from "react-router-dom"
 import { FolderPlusIcon } from "@heroicons/react/24/outline"
-import { useEffect } from "react"
-import { getAllProducts } from "../../../services/supabaseHelpers"
 import { useAuth } from "../../../context/auth"
 import ProductsTable from "./productsTable"
 

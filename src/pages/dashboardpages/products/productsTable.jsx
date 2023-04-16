@@ -11,12 +11,12 @@ const ProductsTable = () => {
   const navigate = useNavigate()
 
   async function fetchProducts() {
-    const { products } = await getAllProducts(user.id, false)
-    console.log("Products => ", products)
-    if (products) {
-      setProducts(products)
+    const { products: allProducts } = await getAllProducts(user.id, false)
+    console.log("Products => ", allProducts)
+    if (allProducts) {
+      setProducts(allProducts)
     } else {
-      console.log("Can't load products.")
+      console.log("Can't load products, and products is: ", products)
     }
   }
 
@@ -61,7 +61,9 @@ const ProductsTable = () => {
   const { getTableBodyProps, headerGroups, rows, prepareRow } = tableInstance
 
   useEffect(() => {
-    fetchProducts()
+    if (products.length === 0) {
+      fetchProducts()
+    }
   }, [])
 
   const isEven = (idx) => idx % 2 === 0
