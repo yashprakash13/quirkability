@@ -2,7 +2,7 @@ import React from "react"
 
 const UserHeader = ({ name, bio, pic_url }) => {
   return (
-    <div className="border-sm border-secondary-focus shadow-sm flex flex-col md:flex-row justify-center items-center px-7 py-3 gap-7">
+    <div className="border-sm border-secondary-focus shadow-sm flex rounded-br-lg flex-col md:flex-row justify-center items-center px-7 py-3 gap-7">
       <img
         src="https://source.unsplash.com/00ByEXKcSkA/2000x2000"
         className="rounded-full w-32 h-32 md:w-32 md:h-32"
