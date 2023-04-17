@@ -210,6 +210,7 @@ const AddProduct = () => {
         // work done, product created -> navigate to products page
         navigate("/dashboard/products")
       } else {
+        // work not done, something is wrong...
         console.log("Something went wrong. ")
         setMounted(true)
       }
@@ -223,6 +224,9 @@ const AddProduct = () => {
       console.log("Here in the useeffect.")
       setLoading(true)
       insertIntoDB()
+    } else if (mounted) {
+      // if form submission has errored out, show something went wrong message
+      setLoading(false)
     }
   }, [mounted, inputErrors, errorProductImages, errorProductArtifact])
 
