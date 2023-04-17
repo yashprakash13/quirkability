@@ -6,7 +6,7 @@ const PublicProduct = () => {
   const { productId } = useParams()
 
   return (
-    <div className="container flex flex-col mx-auto p-3 md:p-14 gap-14 md:border-sm border-secondary-focus rounded-br-xl">
+    <div className="container flex flex-col mx-auto p-3 md:p-14 gap-14 border-sm border-secondary-focus rounded-br-xl bg-primary-default">
       <div className="flex flex-col-reverse lg:flex-row w-full gap-11 justify-center items-start">
         <div className="w-full lg:w-1/2 flex flex-col md:flex-col gap-7 md:gap-11 justify-center items-center">
           <img
@@ -71,7 +71,7 @@ const PublicProduct = () => {
         </div>
       </div>
       <div className="flex flex-col gap-7">
-        <div className="text-2xl font-semibold text-secondary-focus">
+        <div className="text-2xl font-semibold text-secondary-focus font-serif">
           About the Creator
         </div>
         <UserHeader
