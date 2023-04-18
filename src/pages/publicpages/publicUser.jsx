@@ -1,9 +1,38 @@
-import { useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import UserHeader from "../../components/UserHeader"
 import UserProductSingle from "../../components/UserProductSingle"
+import { useEffect } from "react"
+import { checkUsernameAvailability } from "../../services/supabaseHelpers"
+import { toast } from "react-toastify"
 
 const PublicUser = () => {
   const { username } = useParams()
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    console.log("Got username => ", username)
+    async function checkUsername() {
+      const result = await checkUsernameAvailability(username)
+      if (!result) {
+        console.log("Checked for username => ", username, ". Not present.")
+        // if username isn't present => user doesn't exist, go back to homepage
+        navigate("/")
+        toast.error("The user doesn't exist!", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        })
+      } else {
+        // get user's products + bio
+      }
+    }
+    checkUsername()
+  }, [])
 
   return (
     <div className="container flex flex-col mx-auto p-3 gap-14">
