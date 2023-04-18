@@ -1,38 +1,68 @@
 import { useParams } from "react-router-dom"
-import { StarIcon } from "@heroicons/react/24/solid"
+import {
+  BanknotesIcon,
+  CurrencyDollarIcon,
+  StarIcon,
+} from "@heroicons/react/24/solid"
 import UserHeader from "../../components/UserHeader"
 
 const PublicProduct = () => {
   const { productId } = useParams()
 
   return (
-    <div className="container mx-auto flex flex-col gap-16 mt-5 md:mt-20 p-3 border-sm border-secondary-focus rounded-br-xl bg-primary-default">
-      {/* main product details */}
-      <div className="flex flex-col-reverse lg:flex-row w-full gap-11 justify-center items-start">
-        {/* the left hand side */}
-        <div className="w-full lg:w-1/2 flex flex-col md:flex-col gap-7 md:gap-11 justify-center items-center">
+    <div className="container mx-auto flex flex-col gap-16 mt-5 md:mt-20 p-5 border-sm border-secondary-focus rounded-br-xl bg-primary-default">
+      {/* main product details (down) */}
+      <div className="flex flex-col-reverse lg:flex-row w-full gap-11 ">
+        {/* the left hand side (down) */}
+        <div className="w-full lg:w-1/2 flex flex-col md:flex-col gap-5 md:gap-11 justify-start items-center">
           <img
             src="https://source.unsplash.com/p0OlRAAYXLY/2000x2000"
-            className="hidden lg:block lg:w-[450px] lg:h-[450px] border-xs border-secondary-focus mt-3"
+            className="hidden lg:block lg:w-full lg:h-[450px] border-xs border-secondary-focus mt-3"
           />
-          <div className="flex flex-col justify-center items-center gap-11 mx-4 mt-7 md:mt-0">
-            <div className="flex gap-7 justify-center items-center w-[450px]">
-              <StarIcon className="h-10 text-secondary-focus" />
-              <div className=" text-xl text-secondary-focus font-serif">
-                4.6 from 186 ratings
+          <div className="flex flex-col justify-start gap-11 mx-4 w-full">
+            {/* everything that is below the image goes here in this flex box. That includes the metadata of the product, quantity selector and the Get button. */}
+            <div className="flex flex-col md:flex-row justify-between items-start gap-8 md:gap-11">
+              <div className="flex flex-col gap-2">
+                <div className="flex gap-2 items-center">
+                  <div className="text-lg text-light-highlight">Rating</div>
+                  <StarIcon className="text-light-highlight h-5 w-5" />
+                </div>
+                <div className="text-2xl text-secondary-focus font-serif">
+                  4.6 (186 ratings)
+                </div>
+              </div>
+              <div className="flex flex-col gap-2">
+                <div className="flex gap-2 items-center">
+                  <div className="text-lg text-light-highlight">Price</div>
+                  <BanknotesIcon className="text-light-highlight h-5 w-5" />
+                </div>
+                <div className="text-2xl text-secondary-focus font-serif">
+                  $450
+                </div>
               </div>
             </div>
-            <div className="flex gap-7 justify-between md:justify-center items-center w-3/4 md:w-[440px] mt-5">
-              <div className="text-2xl font-serif w-1/4 md:w-1/3 text-center text-secondary-focus">
-                $249
+            <div className="flex justify-between items-start">
+              <div className="flex flex-col gap-2">
+                <div className="flex gap-2 items-center">
+                  <div className="text-lg text-light-highlight">
+                    Number of sales
+                  </div>
+                  <CurrencyDollarIcon className="text-light-highlight h-5 w-5" />
+                </div>
+                <div className="text-2xl text-secondary-focus font-serif">
+                  71
+                </div>
               </div>
-              <select className="w-3/4 md:w-2/3 shadow-sm rounded-br-lg border-sm border-secondary-focus text-secondary-focus bg-primary-default h-12 py-2 px-4 focus:outline-none cursor-pointer">
+            </div>
+            <div className="flex justify-between items-start">
+              <select className="w-full md:w-2/3 shadow-sm rounded-br-lg border-sm border-secondary-focus text-secondary-focus bg-primary-default h-12 py-2 px-4 focus:outline-none cursor-pointer">
+                <option value="Choose">Choose quantity</option>
                 <option value="Something">1</option>
                 <option value="Something">2</option>
                 <option value="Something">3</option>
               </select>
             </div>
-            <div className="text-primary-default text-xl bg-secondary-focus px-7 py-3 w-3/4 md:w-[450px] text-center mt-5 border-sm rounded-br-xl hover:text-secondary-focus hover:bg-primary-default transition-all duration-300 hover:border-sm cursor-pointer">
+            <div className="text-primary-default text-xl bg-secondary-focus px-7 py-3 w-full text-center border-sm rounded-br-xl hover:text-secondary-focus hover:bg-primary-default transition-all duration-300 hover:border-sm cursor-pointer">
               Get!
             </div>
           </div>

@@ -14,6 +14,7 @@ module.exports = {
       "success-dark": "#0D9488",
       "success-light": "#2DD4BF",
       "slate-bars": "#475569",
+      "light-highlight": "#64748B",
       white: "#ffffff",
     },
     fontFamily: {
