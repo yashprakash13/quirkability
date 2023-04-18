@@ -63,3 +63,16 @@ function getCurrency(index) {
   }
 }
 export { getCurrency }
+
+/*
+ * read, write, and delete from, to, and from cache
+ */
+
+const writeToCache = (key, data) =>
+  localStorage.setItem(key, JSON.stringify(data))
+
+const readFromCache = (key) => JSON.parse(localStorage.getItem(key)) || null
+
+const deleteFromCache = (key) => localStorage.removeItem(key)
+
+export { readFromCache, writeToCache, deleteFromCache }

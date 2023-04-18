@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react"
 import { supabase } from "../services/supabase"
+import { deleteFromCache, readFromCache, writeToCache } from "../utils"
 
 const AuthContext = createContext()
 
@@ -13,11 +14,11 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    let gotSession = localStorage.getItem("authSession")
+    let gotSession = readFromCache("authSession")
     if (gotSession) {
       console.log("Retrieved: ", gotSession)
-      setSession(JSON.parse(gotSession))
-      setUser(JSON.parse(gotSession).user)
+      setSession(gotSession)
+      setUser(gotSession.user)
     }
     async function getSession() {
       const { subscription } = supabase.auth.onAuthStateChange(
@@ -25,10 +26,10 @@ export function AuthProvider({ children }) {
           if (session) {
             console.log("New session: ", session)
             setUser(session.user)
-            localStorage.setItem("authSession", JSON.stringify(session))
+            writeToCache("authSession", session)
             setSession(session)
           } else {
-            localStorage.removeItem("authSession")
+            deleteFromCache("authSession")
             setSession(null)
             setUser(null)
             setLoading(false)
