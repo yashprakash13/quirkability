@@ -3,7 +3,11 @@ import Editor from "../../../components/inputs/Editor"
 import FileDropper from "../../../components/inputs/FileDropper"
 import Toggle from "../../../components/inputs/Toggle"
 import * as yup from "yup"
-import { checkFileSize, isValidHttpsUrl } from "../../../utils"
+import {
+  checkFileSize,
+  getCurrencyAsStripeExpects,
+  isValidHttpsUrl,
+} from "../../../utils"
 import { priceCurrency } from "../../../utils/constants"
 import { ClimbingBoxLoader } from "react-spinners"
 import { useNavigate } from "react-router-dom"
@@ -13,6 +17,8 @@ import {
   insertIntoProductTable,
 } from "../../../services/supabaseHelpers"
 import { useAuth } from "../../../context/auth"
+import { createStripeProduct } from "../../../services/backendCalls"
+import usePayment from "../../../hooks/use-payment"
 
 const AddProduct = () => {
   const [name, setName] = useState("")
@@ -32,12 +38,14 @@ const AddProduct = () => {
   const [showProductArtifactOverURL, setShowProductArtifactOverURL] =
     useState(true)
 
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState([false, "Just a moment..."])
   const [mounted, setMounted] = useState(true) // this is needed so that we know when we initially load the form, the loading spinner is not shown. Instead, it is only shown when we submit the form and set `mounted` to false.
 
   const navigate = useNavigate()
 
   const { user } = useAuth()
+
+  const { stripeId } = usePayment(user)
 
   const fileTypesProductImages = ["image/png", "image/jpeg"]
   const fileTypesProductArtifact = [
@@ -198,6 +206,13 @@ const AddProduct = () => {
         productArtifactURL
       )
       if (product_id) {
+        await createStripeProduct(
+          product_id,
+          name,
+          price,
+          getCurrencyAsStripeExpects(priceType),
+          stripeId
+        )
         await insertIntoProductImagesStorage(user.id, productImages, product_id)
         // try to upload an artifact only if an artifact is provided
         if (productArtifact.length > 0) {
@@ -222,17 +237,25 @@ const AddProduct = () => {
       !inputErrors
     ) {
       console.log("Here in the useeffect.")
-      setLoading(true)
+      setLoading([true, "Publishing..."])
       insertIntoDB()
     } else if (mounted) {
       // if form submission has errored out, show something went wrong message
-      setLoading(false)
+      setLoading([false, "Just a moment..."])
     }
   }, [mounted, inputErrors, errorProductImages, errorProductArtifact])
 
-  return loading ? (
+  useEffect(() => {
+    if (stripeId) {
+      setLoading([false, "Just a moment..."])
+    } else {
+      setLoading([true, "Loading..."])
+    }
+  }, [stripeId])
+
+  return loading[0] ? (
     <div className="container bg-primary-focus z-50 flex flex-col gap-5 h-screen justify-center items-center mx-auto p-3 ">
-      <div className="text-xl">Publishing...</div>
+      <div className="text-xl">loading[1]...</div>
       <ClimbingBoxLoader color="#434746" />
     </div>
   ) : (

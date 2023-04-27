@@ -18,6 +18,7 @@ const PublicUser = () => {
         // if username isn't present => user doesn't exist, go back to homepage
         navigate("/")
         toast.error("The user doesn't exist!", {
+          toastId: "error1", // this id field is necessary because it helps make the toast show only once.
           position: "top-right",
           autoClose: 3000,
           hideProgressBar: false,

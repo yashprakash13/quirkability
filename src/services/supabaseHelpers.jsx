@@ -202,3 +202,25 @@ async function getAllProducts(id, return_urls = true) {
 }
 
 export { getAllProducts }
+
+/*
+payment things
+*/
+
+async function getStripeId(id) {
+  // function to get stripe account id from `userprofile` table
+  let { data: stripe_id, error } = await supabase
+    .from("userprofile")
+    .select("stripe_connect_id")
+    .eq("id", id)
+
+  if (error) {
+    console.log("Error fetching stripe id.")
+    return null
+  } else {
+    console.log("Fetched the stripe connect id again.")
+    const stripe_connect_id = stripe_id[0].stripe_connect_id
+    return stripe_connect_id
+  }
+}
+export { getStripeId }

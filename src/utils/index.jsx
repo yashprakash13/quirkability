@@ -64,6 +64,21 @@ function getCurrency(index) {
 }
 export { getCurrency }
 
+function getCurrencyAsStripeExpects(index) {
+  // return the currency from index value // referenced in the order defined in ./constants.jsx
+  switch (index) {
+    case 0:
+      return "USD"
+    case 1:
+      return "GBP"
+    case 2:
+      return "EUR"
+    default:
+      return "USD"
+  }
+}
+export { getCurrencyAsStripeExpects }
+
 /*
  * read, write, and delete from, to, and from cache
  */
