@@ -11,7 +11,11 @@ const ProductsTable = () => {
   const navigate = useNavigate()
 
   async function fetchProducts() {
-    const { products: allProducts } = await getAllProducts(user.id, false)
+    const { products: allProducts } = await getAllProducts(
+      user.id,
+      false,
+      "id, name, price, price_type, num_sales"
+    )
     console.log("Products => ", allProducts)
     if (allProducts) {
       setProducts(allProducts)
@@ -37,7 +41,7 @@ const ProductsTable = () => {
       },
       {
         Header: "Sales",
-        accessor: "sales",
+        accessor: "num_sales",
       },
       {
         Header: "Avg. rating",

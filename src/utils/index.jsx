@@ -91,3 +91,14 @@ const readFromCache = (key) => JSON.parse(localStorage.getItem(key)) || null
 const deleteFromCache = (key) => localStorage.removeItem(key)
 
 export { readFromCache, writeToCache, deleteFromCache }
+
+function getSupabaseImageStorageURL(image) {
+  // function to get a stored product image's complete URL from supabase storage
+  const URL = `${
+    import.meta.env.VITE_PROJECT_URL_SUPABASE
+  }/storage/v1/object/public/${
+    import.meta.env.VITE_SUPABASE_PRODUCT_IMAGES_STORAGE_BUCKET_NAME
+  }/${image}`
+  return URL
+}
+export { getSupabaseImageStorageURL }

@@ -1,13 +1,19 @@
 import { useNavigate, useParams } from "react-router-dom"
 import UserHeader from "../../components/UserHeader"
 import UserProductSingle from "../../components/UserProductSingle"
-import { useEffect } from "react"
-import { checkUsernameAvailability } from "../../services/supabaseHelpers"
+import { useEffect, useState } from "react"
+import {
+  checkUsernameAvailability,
+  populatePublicProducts,
+} from "../../services/supabaseHelpers"
 import { toast } from "react-toastify"
+import { getSupabaseImageStorageURL } from "../../utils"
 
 const PublicUser = () => {
   const { username } = useParams()
   const navigate = useNavigate()
+
+  const [products, setProducts] = useState([])
 
   useEffect(() => {
     console.log("Got username => ", username)
@@ -30,6 +36,7 @@ const PublicUser = () => {
         })
       } else {
         // get user's products + bio
+        setProducts(await populatePublicProducts(username, "id, name"))
       }
     }
     checkUsername()
@@ -44,7 +51,18 @@ const PublicUser = () => {
         }
       />
       <div className="flex flex-col md:flex-row  flex-wrap gap-7 items-center justify-center">
-        <UserProductSingle name={"Marketing Specialization Mini-Course"} />
+        {products &&
+          products.products &&
+          products.images &&
+          products.products.map((product, index) => (
+            <UserProductSingle
+              key={product.id}
+              name={product.name}
+              pic_url={getSupabaseImageStorageURL(
+                products.images[index].images[0]
+              )}
+            />
+          ))}
       </div>
     </div>
   )

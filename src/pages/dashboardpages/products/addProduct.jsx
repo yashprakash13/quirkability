@@ -255,7 +255,7 @@ const AddProduct = () => {
 
   return loading[0] ? (
     <div className="container bg-primary-focus z-50 flex flex-col gap-5 h-screen justify-center items-center mx-auto p-3 ">
-      <div className="text-xl">loading[1]...</div>
+      <div className="text-xl">{loading[1]}...</div>
       <ClimbingBoxLoader color="#434746" />
     </div>
   ) : (

@@ -17,7 +17,6 @@ async function checkUsernameAvailability(username) {
     console.log(error)
   }
 }
-
 export { checkUsernameAvailability }
 
 async function insertIntoUserprofileTable(id, email, username) {
@@ -41,7 +40,6 @@ async function insertIntoUserprofileTable(id, email, username) {
     }
   }
 }
-
 export { insertIntoUserprofileTable }
 
 /* 
@@ -85,7 +83,6 @@ async function insertIntoProductTable(id, product, productArtifactURL) {
     return data[0].id
   }
 }
-
 export { insertIntoProductTable }
 
 async function insertIntoProductImagesStorage(id, images, product_id) {
@@ -121,7 +118,6 @@ async function insertIntoProductImagesStorage(id, images, product_id) {
     console.log("Great! Product url row was updated with images. ")
   }
 }
-
 export { insertIntoProductImagesStorage }
 
 async function insertIntoProductArtifactStorage(id, product, product_id) {
@@ -157,7 +153,6 @@ async function insertIntoProductArtifactStorage(id, product, product_id) {
     }
   }
 }
-
 export { insertIntoProductArtifactStorage }
 
 /* 
@@ -166,11 +161,11 @@ Functions for getting a list of products
 
 */
 
-async function getAllProducts(id, return_urls = true) {
+async function getAllProducts(id, return_urls = true, columns = "*") {
   // function to get all products for userid `id` from `products` table and product url row from the `product_urls` table
   let { data: products, error } = await supabase
     .from("product")
-    .select("*")
+    .select(columns)
     .eq("user_id", id)
 
   if (return_urls && products) {
@@ -200,8 +195,46 @@ async function getAllProducts(id, return_urls = true) {
     console.log("Error in fetching products=> ", error)
   }
 }
-
 export { getAllProducts }
+
+async function populatePublicProducts(username, columns = "*") {
+  // function to return all products from a given username
+  // 1. get user's id from `userprofile` table
+  let { data: userId, error1 } = await supabase
+    .from("userprofile")
+    .select("id")
+    .eq("username", username)
+    .single()
+  if (userId) {
+    // gotten the id for the username, now select products for that user_id
+    let { data: products, error2 } = await supabase
+      .from("product")
+      .select(columns)
+      .eq("user_id", userId.id)
+    if (products) {
+      // for each product, get image from `product_urls` table and then form the URL to return in order to display from storage
+      const product_ids_array = products.map((product) => product.id)
+      let { data: product_images, error3 } = await supabase
+        .from("product_urls")
+        .select("images")
+        .in("product_id", product_ids_array)
+      if (error3) {
+        console.log(
+          "Error getting image urls from product_urls table => ",
+          error3
+        )
+      } else {
+        console.log("Product image urls gotten => ", product_images)
+        return { products: products, images: product_images }
+      }
+    } else {
+      console.log("Error in fetching products => ", error2)
+    }
+  } else {
+    console.log("Error in fetching user id from username => ", error1)
+  }
+}
+export { populatePublicProducts }
 
 /*
 payment things
