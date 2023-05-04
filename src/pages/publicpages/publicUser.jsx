@@ -42,6 +42,10 @@ const PublicUser = () => {
     checkUsername()
   }, [])
 
+  function navigateToPublicProductPage(productId) {
+    navigate(`/${username}/${productId}`)
+  }
+
   return (
     <div className="container flex flex-col mx-auto p-3 gap-14">
       <UserHeader
@@ -57,10 +61,12 @@ const PublicUser = () => {
           products.products.map((product, index) => (
             <UserProductSingle
               key={product.id}
+              id={product.id}
               name={product.name}
               pic_url={getSupabaseImageStorageURL(
                 products.images[index].images[0]
               )}
+              onClick={navigateToPublicProductPage}
             />
           ))}
       </div>

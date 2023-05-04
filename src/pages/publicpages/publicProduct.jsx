@@ -8,6 +8,7 @@ import UserHeader from "../../components/UserHeader"
 
 const PublicProduct = () => {
   const { productId } = useParams()
+  console.log("Received product id=> ", productId)
 
   return (
     <div className="container mx-auto flex flex-col gap-16 mt-5 md:mt-20 p-5 border-sm border-secondary-focus rounded-br-xl bg-primary-default">
