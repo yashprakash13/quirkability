@@ -57,15 +57,12 @@ const PublicUser = () => {
       <div className="flex flex-col md:flex-row  flex-wrap gap-7 items-center justify-center">
         {products &&
           products.products &&
-          products.images &&
-          products.products.map((product, index) => (
+          products.products.map((product) => (
             <UserProductSingle
               key={product.id}
               id={product.id}
               name={product.name}
-              pic_url={getSupabaseImageStorageURL(
-                products.images[index].images[0]
-              )}
+              pic_url={getSupabaseImageStorageURL(product.images[0])}
               onClick={navigateToPublicProductPage}
             />
           ))}

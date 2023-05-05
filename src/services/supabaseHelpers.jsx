@@ -198,7 +198,7 @@ async function getAllProducts(id, return_urls = true, columns = "*") {
 export { getAllProducts }
 
 async function populatePublicProducts(username, columns = "*") {
-  // function to return all products from a given username
+  // function to return all products from a given username in the public page
   // 1. get user's id from `userprofile` table
   let { data: userId, error1 } = await supabase
     .from("userprofile")
@@ -206,17 +206,17 @@ async function populatePublicProducts(username, columns = "*") {
     .eq("username", username)
     .single()
   if (userId) {
-    // gotten the id for the username, now select products for that user_id
+    // 2. gotten the id for the username, now select products for that user_id
     let { data: products, error2 } = await supabase
       .from("product")
       .select(columns)
       .eq("user_id", userId.id)
     if (products) {
-      // for each product, get image from `product_urls` table and then form the URL to return in order to display from storage
+      // 3. for each product, get image from `product_urls` table and then form the URL to return in order to display from storage
       const product_ids_array = products.map((product) => product.id)
       let { data: product_images, error3 } = await supabase
         .from("product_urls")
-        .select("images")
+        .select("product_id, images")
         .in("product_id", product_ids_array)
       if (error3) {
         console.log(
@@ -225,7 +225,14 @@ async function populatePublicProducts(username, columns = "*") {
         )
       } else {
         console.log("Product image urls gotten => ", product_images)
-        return { products: products, images: product_images }
+        const mergedArray = products.map((product) => {
+          const matchingImage = product_images.find(
+            (image) => image.product_id === product.id
+          )
+          return { ...product, ...matchingImage }
+        })
+        console.log("MergedArray=> ", mergedArray)
+        return { products: mergedArray }
       }
     } else {
       console.log("Error in fetching products => ", error2)
@@ -257,3 +264,41 @@ async function getStripeId(id) {
   }
 }
 export { getStripeId }
+
+/*
+Get specific product details
+*/
+async function getProductDetailsFromId(productId) {
+  // function to get product details for productId from products table
+  let { data: product, error1 } = await supabase
+    .from("product")
+    .select("*")
+    .eq("id", productId)
+    .single()
+  if (error1) {
+    console.log(
+      "Error getting product details for productId => ",
+      productId,
+      ", error=> ",
+      error1
+    )
+  } else {
+    let { data: product_url, error2 } = await supabase
+      .from("product_urls")
+      .select("redirect_url, images, product_artifact_path")
+      .eq("product_id", product.id)
+      .single()
+    if (error2) {
+      console.log(
+        "Error getting product urls from product_urls table for product id=> ",
+        product.id,
+        " error=> ",
+        error2
+      )
+    } else {
+      const merged_product_details = { ...product, ...product_url }
+      return merged_product_details
+    }
+  }
+}
+export { getProductDetailsFromId }
