@@ -8,6 +8,7 @@ import {
 } from "../../services/supabaseHelpers"
 import { toast } from "react-toastify"
 import { getSupabaseImageStorageURL } from "../../utils"
+import MadeByFooter from "../../components/MadeByFooter"
 
 const PublicUser = () => {
   const { username } = useParams()
@@ -67,6 +68,7 @@ const PublicUser = () => {
             />
           ))}
       </div>
+      <MadeByFooter />
     </div>
   )
 }
