@@ -4,6 +4,8 @@ import UserProductSingle from "../../components/UserProductSingle"
 import { useEffect, useState } from "react"
 import {
   checkUsernameAvailability,
+  getUserDetailsFromId,
+  getUserIdFromUsername,
   populatePublicProducts,
 } from "../../services/supabaseHelpers"
 import { toast } from "react-toastify"
@@ -15,6 +17,7 @@ const PublicUser = () => {
   const navigate = useNavigate()
 
   const [products, setProducts] = useState([])
+  const [userDetails, setUserDetails] = useState(null)
 
   useEffect(() => {
     console.log("Got username => ", username)
@@ -38,6 +41,8 @@ const PublicUser = () => {
       } else {
         // get user's products + bio
         setProducts(await populatePublicProducts(username, "id, name"))
+        const userId = await getUserIdFromUsername(username)
+        setUserDetails(await getUserDetailsFromId(userId.id, "username, bio"))
       }
     }
     checkUsername()
@@ -49,12 +54,9 @@ const PublicUser = () => {
 
   return (
     <div className="container flex flex-col mx-auto p-3 gap-14">
-      <UserHeader
-        name={"Danielle Murphy"}
-        bio={
-          "Forem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vulputate libero et velit interdum, ac aliquet odio mattis."
-        }
-      />
+      {userDetails && (
+        <UserHeader name={userDetails.username} bio={userDetails.bio} />
+      )}
       <div className="flex flex-col md:flex-row  flex-wrap gap-7 items-center justify-center">
         {products &&
           products.products &&

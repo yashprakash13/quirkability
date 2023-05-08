@@ -269,7 +269,7 @@ export { getStripeId }
 Get specific product details
 */
 async function getProductDetailsFromId(productId) {
-  // function to get product details for productId from products table
+  // function to get product details for productId for public product page
   let { data: product, error1 } = await supabase
     .from("product")
     .select("*")
@@ -296,9 +296,83 @@ async function getProductDetailsFromId(productId) {
         error2
       )
     } else {
-      const merged_product_details = { ...product, ...product_url }
-      return merged_product_details
+      let { data: sales, error3 } = await supabase
+        .from("sale")
+        .select("id, rating")
+        .eq("product_id", product.id)
+      if (error3) {
+        console.log(
+          "Error getting sale details for product: ",
+          product.id,
+          " =>",
+          error3
+        )
+      } else {
+        let sale_info = {}
+        console.log("Sales=> ", sales)
+        if (sales.length > 0) {
+          sale_info["num_sales"] = sales.length
+          const filteredList = sales.filter((item) => item.rating !== null)
+          const average_rating =
+            filteredList.reduce((total, item) => total + item.rating, 0) /
+            filteredList.length
+          sale_info["avg_rating"] = average_rating.toFixed(1)
+          sale_info["num_ratings"] = filteredList.length
+          console.log("Sale info=> ", sale_info)
+        }
+        const merged_product_details = {
+          ...product,
+          ...product_url,
+          ...sale_info,
+        }
+        // console.log("Merged product details=> ", merged_product_details)
+        return merged_product_details
+      }
     }
   }
 }
 export { getProductDetailsFromId }
+
+/*
+Get user details
+*/
+
+async function getUserDetailsFromId(userid, columns = "*") {
+  // function to give back user's details from given userid as required in `columns`
+  let { data: user_info, error } = await supabase
+    .from("userprofile")
+    .select(columns)
+    .eq("id", userid)
+    .single()
+  if (error) {
+    console.log(
+      "Error in fetching user details for id => ",
+      userid,
+      " => error => ",
+      error
+    )
+  } else {
+    return user_info
+  }
+}
+export { getUserDetailsFromId }
+
+async function getUserIdFromUsername(username) {
+  // function to return userId from a given username
+  let { data: userId, error } = await supabase
+    .from("userprofile")
+    .select("id")
+    .eq("username", username)
+    .single()
+  if (error) {
+    console.log(
+      "Error fetching username id for=> ",
+      username,
+      " => error => ",
+      error
+    )
+  } else {
+    return userId
+  }
+}
+export { getUserIdFromUsername }
