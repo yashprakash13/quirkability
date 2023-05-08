@@ -42,6 +42,21 @@ async function insertIntoUserprofileTable(id, email, username) {
 }
 export { insertIntoUserprofileTable }
 
+async function updateUserprofileTable(id, data_to_update) {
+  // function to update user with id `id` with data. Data is in the form of key-value pair where key = column name and value = column value
+  const { data, error } = await supabase
+    .from("userprofile")
+    .update(data_to_update)
+    .eq("id", id)
+  if (error) {
+    console.log("Error updating user for => ", error)
+    return false
+  } else {
+    return true
+  }
+}
+export { updateUserprofileTable }
+
 /* 
 
 Functions for making a new product 
