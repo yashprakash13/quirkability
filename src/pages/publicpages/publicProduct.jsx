@@ -97,7 +97,7 @@ const PublicProduct = () => {
                   </div>
                 </div>
               )}
-              {productDetails.call_to_action && (
+              {productDetails.short_desc && (
                 <div className="flex flex-col gap-2 mt-5 p-2">
                   <div className="flex gap-2 items-center">
                     <div className="text-xl text-light-highlight">
@@ -106,7 +106,7 @@ const PublicProduct = () => {
                     <DeviceTabletIcon className="text-light-highlight h-5 w-5" />
                   </div>
                   <div className="text-2xl text-secondary-focus font-serif">
-                    {productDetails.call_to_action}
+                    {productDetails.short_desc}
                   </div>
                 </div>
               )}
@@ -129,7 +129,9 @@ const PublicProduct = () => {
               )}
               <div className="flex flex-col gap-2 mt-5 p-2">
                 <div className="mt-5 mb-14 p-2 text-primary-default text-xl bg-secondary-focus w-full text-center border-sm rounded-br-xl hover:text-secondary-focus hover:bg-primary-default transition-all duration-300 hover:border-sm cursor-pointer">
-                  Get!
+                  {productDetails.call_to_action
+                    ? `${productDetails.call_to_action}`
+                    : "Get"}
                 </div>
               </div>
             </div>
