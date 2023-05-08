@@ -97,6 +97,19 @@ const PublicProduct = () => {
                   </div>
                 </div>
               )}
+              {productDetails.call_to_action && (
+                <div className="flex flex-col gap-2 mt-5 p-2">
+                  <div className="flex gap-2 items-center">
+                    <div className="text-xl text-light-highlight">
+                      You'll get
+                    </div>
+                    <DeviceTabletIcon className="text-light-highlight h-5 w-5" />
+                  </div>
+                  <div className="text-2xl text-secondary-focus font-serif">
+                    {productDetails.call_to_action}
+                  </div>
+                </div>
+              )}
               {productDetails.allow_copies && (
                 <div className="flex justify-between items-start p-2 mt-5">
                   <select className="w-full shadow-sm rounded-br-lg border-sm border-secondary-focus text-secondary-focus bg-primary-default h-12 py-2 px-2 focus:outline-none cursor-pointer">
