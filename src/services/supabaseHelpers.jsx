@@ -74,6 +74,8 @@ async function insertIntoProductTable(id, product, productArtifactURL) {
       allow_copies: product.allowCopies,
       display_sales: product.displaySales,
       user_id: id,
+      short_desc: product.shortDesc,
+      call_to_action: product.callToAction,
     })
     .select()
   if (error) {

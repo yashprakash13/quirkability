@@ -30,6 +30,8 @@ const AddProduct = () => {
   const [productArtifactURL, setProductArtifactURL] = useState("")
   const [allowCopies, setAllowCopies] = useState(false)
   const [displaySales, setDisplaySales] = useState(false)
+  const [shortDesc, setShortDesc] = useState("")
+  const [callToAction, setCallToAction] = useState("")
 
   const [inputErrors, setInputErrors] = useState(null)
   const [errorProductImages, setErrorProductImages] = useState("")
@@ -84,6 +86,8 @@ const AddProduct = () => {
       productArtifactURL: productArtifactURL,
       allowCopies: allowCopies,
       displaySales: displaySales,
+      shortDesc: shortDesc,
+      callToAction: callToAction,
     }
     let schema = yup.object({
       name: yup
@@ -101,6 +105,22 @@ const AddProduct = () => {
         .number()
         .min(0, "Price of the product must be greater than or equal to 0.")
         .required("Price of the product is required."),
+      shortDesc: yup
+        .string()
+        .trim()
+        .max(200, "This short description can be a maximum of 200 characters.")
+        .matches(
+          /^[a-zA-Z0-9_ ]*$/,
+          "This short description should only contain alphabets, numbers, and spaces."
+        ),
+      callToAction: yup
+        .string()
+        .trim()
+        .max(30, "Call to action can be a maximum of 30 characters.")
+        .matches(
+          /^[a-zA-Z0-9_ ]*$/,
+          "The call to action should only contain alphabets, numbers, and spaces."
+        ),
     })
     console.log("Onsubmit: ", schemaVal)
     try {
@@ -182,7 +202,7 @@ const AddProduct = () => {
       err.inner.forEach((e) => {
         errors[e.path] = e.message
       })
-      console.log(errors)
+      console.log("Errors in form=>", errors)
       setInputErrors(errors)
     }
   }
@@ -199,6 +219,8 @@ const AddProduct = () => {
         priceType: priceType,
         allowCopies: allowCopies,
         displaySales: displaySales,
+        shortDesc: shortDesc,
+        callToAction: callToAction,
       }
       const product_id = await insertIntoProductTable(
         user.id,
@@ -386,6 +408,44 @@ const AddProduct = () => {
               ? "OR redirect to a URL"
               : "OR upload a Product"}
           </div>
+        </div>
+        {/* Short desc */}
+        <div className="flex flex-col gap-6">
+          <div className="text-2xl">What the customer gets on purchase</div>
+          {inputErrors && inputErrors.shortDesc && (
+            <div className="text-alert-dark text-lg">
+              {inputErrors.shortDesc}
+            </div>
+          )}
+          <input
+            className="border-sm shadow-sm rounded-br-2xl border-secondary-focus bg-primary-default w-full md:w-[636px] h-10 md:h-12 px-3 focus:outline-none"
+            type="text"
+            maxLength="200"
+            placeholder="Optional"
+            value={shortDesc}
+            onChange={(e) => {
+              setShortDesc(e.target.value)
+            }}
+          />
+        </div>
+        {/* call to action */}
+        <div className="flex flex-col gap-6">
+          <div className="text-2xl">Call to action</div>
+          {inputErrors && inputErrors.callToAction && (
+            <div className="text-alert-dark text-lg">
+              {inputErrors.callToAction}
+            </div>
+          )}
+          <input
+            className="border-sm shadow-sm rounded-br-2xl border-secondary-focus bg-primary-default w-full md:w-[636px] h-10 md:h-12 px-3 focus:outline-none"
+            placeholder="Get"
+            type="text"
+            maxLength="30"
+            value={callToAction}
+            onChange={(e) => {
+              setCallToAction(e.target.value)
+            }}
+          />
         </div>
         {/* some extra info for the product */}
         <div className="flex flex-col gap-6 w-full md:w-[636px]">
