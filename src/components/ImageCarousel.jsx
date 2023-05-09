@@ -17,14 +17,14 @@ const ImageCarousel = ({ images }) => {
     setCurrentIndex(newIndex)
   }
   return (
-    <div className="w-full md:w-[450px] h-[450px] m-auto py-16 px-4 relative group ">
+    <div className="w-full h-[500px] md:w-[500px] m-auto relative group ">
       <div
         style={{
           backgroundImage: `url(${getSupabaseImageStorageURL(
             images[currentIndex]
           )})`,
         }}
-        className="w-full h-full bg-center bg-cover duration-500 border-sm border-secondary-focus"
+        className="w-full h-full bg-center bg-cover duration-500 md:border-x-sm  md:border-secondary-focus"
       ></div>
       {/* Left Arrow */}
       <div className="hidden group-hover:block absolute top-[50%] -translate-x-0 translate-y-[-50%] left-5 text-2xl rounded-full p-2 bg-black/20 text-white cursor-pointer">
