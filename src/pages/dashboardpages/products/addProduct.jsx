@@ -376,7 +376,7 @@ const AddProduct = () => {
             />
           )}
           <div
-            className="text-xl flex justify-center
+            className="text-xl flex justify-center w-full md:w-[636px]
               showProductArtifactOverURL underline cursor-pointer"
             onClick={() => {
               setShowProductArtifactOverURL(!showProductArtifactOverURL)
