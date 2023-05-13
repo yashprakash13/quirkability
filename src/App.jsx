@@ -17,6 +17,7 @@ import AddProduct from "./pages/dashboardpages/products/addProduct"
 import PublicUser from "./pages/publicpages/publicUser"
 import PublicProduct from "./pages/publicpages/publicProduct"
 import EditProduct from "./pages/dashboardpages/products/editProduct"
+import PaymentAfter from "./pages/publicpages/paymentAfter"
 
 //services
 import { AuthProvider } from "./context/auth"
@@ -90,6 +91,10 @@ function App() {
           element: <PublicProduct />,
         },
       ],
+    },
+    {
+      path: "paymentAfter",
+      element: <PaymentAfter />,
     },
   ])
   return (

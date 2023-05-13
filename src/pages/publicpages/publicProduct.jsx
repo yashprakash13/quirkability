@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import {
   BanknotesIcon,
   CurrencyDollarIcon,
@@ -24,6 +24,8 @@ const PublicProduct = () => {
   const [productDetails, setProductDetails] = useState(null)
   const [userDetails, setUserDetails] = useState(null)
 
+  const navigate = useNavigate()
+
   useEffect(() => {
     async function getProductDetails(productId) {
       const product = await getProductDetailsFromId(productId)
@@ -37,6 +39,10 @@ const PublicProduct = () => {
       getProductDetails(productId)
     }
   }, [])
+
+  async function startPaymentProcess() {
+    navigate("/paymentAfter")
+  }
 
   return (
     productDetails && (
@@ -128,7 +134,10 @@ const PublicProduct = () => {
                 </div>
               )}
               <div className="flex flex-col gap-2 mt-5 p-2">
-                <div className="mt-5 mb-14 p-2 text-primary-default text-xl bg-secondary-focus w-full text-center border-sm rounded-br-xl hover:text-secondary-focus hover:bg-primary-default transition-all duration-300 hover:border-sm cursor-pointer">
+                <div
+                  className="mt-5 mb-14 p-2 text-primary-default text-xl bg-secondary-focus w-full text-center border-sm rounded-br-xl hover:text-secondary-focus hover:bg-primary-default transition-all duration-300 hover:border-sm cursor-pointer"
+                  onClick={startPaymentProcess}
+                >
                   {productDetails.call_to_action
                     ? `${productDetails.call_to_action}`
                     : "Get"}
