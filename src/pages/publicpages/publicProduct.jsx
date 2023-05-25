@@ -26,6 +26,8 @@ const PublicProduct = () => {
 
   const navigate = useNavigate()
 
+  const [quantity, setQuantity] = useState(null)
+
   useEffect(() => {
     async function getProductDetails(productId) {
       const product = await getProductDetailsFromId(productId)
@@ -41,7 +43,7 @@ const PublicProduct = () => {
   }, [])
 
   async function startPaymentProcess() {
-    navigate("/paymentAfter")
+    //
   }
 
   return (

@@ -45,23 +45,34 @@ async function createStripeProduct(id, name, price, price_currency, account) {
 }
 export { createStripeProduct }
 
-/*
-async function makePayment() {
-    const response = await fetch("http://localhost:8000/make-payment", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        id: "price_1N07dWCF1VSDRzQsc4SIau4Q",
-        account_id: "acct_1N06QnCF1VSDRzQs",
-        customer_email: "john@eternal.com",
-        platform_id: "acct_1MyMQWCFLO91y4zk",
-      }),
-    })
-    if (!response.ok) {
-      console.log("Error occured. ")
-    }
-    const data = await response.json()
-    console.log("Got data=", data)
-    window.open(data.url, "_blank")
+async function makePayment(
+  product_id,
+  stripe_price_id,
+  account_id,
+  customer_email,
+  price,
+  quantity
+) {
+  const response = await fetch("http://localhost:8000/make-payment", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      product_id: product_id,
+      stripe_price_id: stripe_price_id,
+      customer_email: customer_email,
+      account_id: account_id,
+      price: price,
+      quantity: quantity,
+    }),
+  })
+  if (!response.ok) {
+    console.log(
+      "Error occured in making payment for:  ",
+      product_id,
+      account_id
+    )
   }
-*/
+  const data = await response.json()
+  console.log("Got from payment call= ", data)
+}
+export { makePayment }
