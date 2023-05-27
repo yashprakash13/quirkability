@@ -62,6 +62,7 @@ const PublicProduct = () => {
         .required("Please choose a quantity."),
       customerEmail: yup
         .string()
+        .trim()
         .email("Please enter a valid email.")
         .required("Please enter a valid email."),
     })
@@ -77,7 +78,7 @@ const PublicProduct = () => {
         productDetails.id,
         productDetails.stripe_price_id,
         userDetails.stripe_connect_id,
-        customerEmail,
+        customerEmail.trim(),
         productDetails.price,
         quantity
       )
