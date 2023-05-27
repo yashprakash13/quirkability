@@ -16,6 +16,8 @@ import parse from "html-react-parser"
 import { getCurrency } from "../../utils"
 import ImageCarousel from "../../components/ImageCarousel"
 import MadeByFooter from "../../components/MadeByFooter"
+import * as yup from "yup"
+import { makePayment } from "../../services/backendCalls"
 
 const PublicProduct = () => {
   const { productId } = useParams()
@@ -26,7 +28,9 @@ const PublicProduct = () => {
 
   const navigate = useNavigate()
 
-  const [quantity, setQuantity] = useState(null)
+  const [quantity, setQuantity] = useState(0)
+  const [customerEmail, setCustomerEmail] = useState(null)
+  const [inputErrors, setInputErrors] = useState(null)
 
   useEffect(() => {
     async function getProductDetails(productId) {
@@ -34,7 +38,10 @@ const PublicProduct = () => {
       setProductDetails(product)
       console.log("Set product details now => ", product)
       setUserDetails(
-        await getUserDetailsFromId(product.user_id, "username, bio")
+        await getUserDetailsFromId(
+          product.user_id,
+          "username, bio, stripe_connect_id"
+        )
       )
     }
     if (productId) {
@@ -43,7 +50,48 @@ const PublicProduct = () => {
   }, [])
 
   async function startPaymentProcess() {
-    //
+    // validate the quantity of the order and the email here and proceed to payment
+    let schemaVal = {
+      quantity: quantity,
+      customerEmail: customerEmail,
+    }
+    let schema = yup.object({
+      quantity: yup
+        .number("Please choose a quantity.")
+        .min(1, "Please choose a quantity.")
+        .required("Please choose a quantity."),
+      customerEmail: yup
+        .string()
+        .email("Please enter a valid email.")
+        .required("Please enter a valid email."),
+    })
+    try {
+      await schema.validate(schemaVal, {
+        abortEarly: false,
+      })
+      setInputErrors(null)
+      // check if all validation is successful
+      console.log("No errors yet.")
+      // call the backend payment function
+      let redirectUrl = await makePayment(
+        productDetails.id,
+        productDetails.stripe_price_id,
+        userDetails.stripe_connect_id,
+        customerEmail,
+        productDetails.price,
+        quantity
+      )
+      if (redirectUrl) {
+        window.open(redirectUrl, "_blank")
+      }
+    } catch (err) {
+      let errors = {}
+      err.inner.forEach((e) => {
+        errors[e.path] = e.message
+      })
+      console.log("Errors upon validation =>", errors)
+      setInputErrors(errors)
+    }
   }
 
   return (
@@ -119,8 +167,14 @@ const PublicProduct = () => {
                 </div>
               )}
               {productDetails.allow_copies && (
-                <div className="flex justify-between items-start p-2 mt-5">
-                  <select className="w-full shadow-sm rounded-br-lg border-sm border-secondary-focus text-secondary-focus bg-primary-default h-12 py-2 px-2 focus:outline-none cursor-pointer">
+                <div className="flex flex-col gap-2 justify-between items-start p-2 mt-5">
+                  <select
+                    className="w-full shadow-sm rounded-br-lg border-sm border-secondary-focus text-secondary-focus bg-primary-default h-12 py-2 px-2 focus:outline-none cursor-pointer"
+                    value={quantity}
+                    onChange={(e) => {
+                      setQuantity(e.target.value)
+                    }}
+                  >
                     <option value="0">Choose quantity</option>
                     <option value="1">1</option>
                     <option value="2">2</option>
@@ -133,11 +187,32 @@ const PublicProduct = () => {
                     <option value="9">9</option>
                     <option value="10">10</option>
                   </select>
+                  {inputErrors && inputErrors.quantity && (
+                    <div className="text-alert-dark text-lg">
+                      {inputErrors.quantity}
+                    </div>
+                  )}
                 </div>
               )}
               <div className="flex flex-col gap-2 mt-5 p-2">
+                <input
+                  type="text"
+                  className="w-full shadow-sm rounded-br-lg border-sm border-secondary-focus bg-primary-default h-12 py-2 px-2 focus:outline-none"
+                  placeholder="Your email please"
+                  value={customerEmail}
+                  onChange={(e) => {
+                    setCustomerEmail(e.target.value)
+                  }}
+                />
+                {inputErrors && inputErrors.customerEmail && (
+                  <div className="text-alert-dark text-lg">
+                    {inputErrors.customerEmail}
+                  </div>
+                )}
+              </div>
+              <div className="flex flex-col gap-2 mt-5 p-2">
                 <div
-                  className="mt-5 mb-14 p-2 text-primary-default text-xl bg-secondary-focus w-full text-center border-sm rounded-br-xl hover:text-secondary-focus hover:bg-primary-default transition-all duration-300 hover:border-sm cursor-pointer"
+                  className="mb-14 p-2 text-primary-default text-xl bg-secondary-focus w-full text-center border-sm rounded-br-xl hover:text-secondary-focus hover:bg-primary-default transition-all duration-300 hover:border-sm cursor-pointer"
                   onClick={startPaymentProcess}
                 >
                   {productDetails.call_to_action

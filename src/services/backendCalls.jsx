@@ -20,11 +20,6 @@ export { createStripeConnectAccount }
 async function createStripeProduct(id, name, price, price_currency, account) {
   // function to ask backend to create stripe product for connected account
   console.log("createStripeProduct func: --")
-  console.log(typeof id)
-  console.log(typeof name)
-  console.log(typeof price)
-  console.log(typeof price_currency)
-  console.log(account, typeof account)
 
   const response = await fetch("http://localhost:8000/create-product", {
     method: "POST",
@@ -74,5 +69,6 @@ async function makePayment(
   }
   const data = await response.json()
   console.log("Got from payment call= ", data)
+  return data.url
 }
 export { makePayment }
