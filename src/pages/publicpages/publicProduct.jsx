@@ -83,7 +83,7 @@ const PublicProduct = () => {
         quantity
       )
       if (redirectUrl) {
-        window.open(redirectUrl, "_blank")
+        window.open(redirectUrl)
       }
     } catch (err) {
       let errors = {}

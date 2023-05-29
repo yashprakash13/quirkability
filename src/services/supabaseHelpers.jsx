@@ -336,6 +336,8 @@ async function getProductDetailsFromId(productId) {
           sale_info["avg_rating"] = average_rating.toFixed(1)
           sale_info["num_ratings"] = filteredList.length
           console.log("Sale info=> ", sale_info)
+        } else {
+          sale_info["num_sales"] = 0
         }
         const merged_product_details = {
           ...product,
