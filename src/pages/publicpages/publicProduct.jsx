@@ -130,7 +130,7 @@ const PublicProduct = () => {
                   <StarIcon className="text-light-highlight h-5 w-5" />
                 </div>
                 <div className="text-2xl text-secondary-focus font-serif">
-                  {productDetails.avg_rating
+                  {productDetails.num_ratings
                     ? `${productDetails.avg_rating}${" "}(${
                         productDetails.num_ratings
                       } ${

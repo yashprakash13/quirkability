@@ -14,7 +14,7 @@ const ProductsTable = () => {
     const { products: allProducts } = await getAllProducts(
       user.id,
       false,
-      "id, name, price, price_type, num_sales"
+      "id, name, price, price_type"
     )
     console.log("Products => ", allProducts)
     if (allProducts) {

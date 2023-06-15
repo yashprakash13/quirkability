@@ -72,3 +72,19 @@ async function makePayment(
   return data.url
 }
 export { makePayment }
+
+async function getSession(session_id) {
+  const response = await fetch(
+    `http://localhost:8000/get-session/${session_id}`
+  )
+  const result = await response.json()
+  console.log(result)
+  if (result.success) {
+    console.log("Payment done.")
+    return true
+  } else {
+    console.log("Still pending...")
+    return false
+  }
+}
+export { getSession }

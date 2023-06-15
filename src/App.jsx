@@ -18,6 +18,7 @@ import PublicUser from "./pages/publicpages/publicUser"
 import PublicProduct from "./pages/publicpages/publicProduct"
 import EditProduct from "./pages/dashboardpages/products/editProduct"
 import PaymentAfter from "./pages/publicpages/paymentAfter"
+import PaymentAfterProductInfo from "./pages/publicpages/paymentAfterProductInfo"
 
 //services
 import { AuthProvider } from "./context/auth"
@@ -93,8 +94,18 @@ function App() {
       ],
     },
     {
-      path: "paymentAfter",
+      path: "order",
       element: <PaymentAfter />,
+      children: [
+        {
+          path: "success",
+          element: <PaymentAfterProductInfo />,
+        },
+        // {
+        //   path: "cancel",
+        //   element: <PaymentCancel />,
+        // },
+      ],
     },
   ])
   return (

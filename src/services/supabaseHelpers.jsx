@@ -282,6 +282,25 @@ async function getStripeId(id) {
 }
 export { getStripeId }
 
+async function getProductIdFromSale(session_id) {
+  // function to return product id of the sale made
+  let { data, error } = await supabase
+    .from("sale")
+    .select("product_id")
+    .eq("session_id", session_id)
+    .single()
+
+  if (error) {
+    console.log("Error fetching product id from sale.")
+    return null
+  } else {
+    console.log("Fetched the product id.")
+    const product_id = data.product_id
+    return product_id
+  }
+}
+export { getProductIdFromSale }
+
 /*
 Get specific product details
 */
@@ -352,6 +371,46 @@ async function getProductDetailsFromId(productId) {
 }
 export { getProductDetailsFromId }
 
+async function getSpecificProductDetailsFromId(id, columns = "*") {
+  // get the columns from product table
+  let { data: product, error } = await supabase
+    .from("product")
+    .select(columns)
+    .eq("id", id)
+    .single()
+  if (error) {
+    console.log(
+      "Error getting product details for productId => ",
+      id,
+      ", error=> ",
+      error
+    )
+  } else {
+    return product
+  }
+}
+export { getSpecificProductDetailsFromId }
+
+async function getSpecificProductURLOrArtifactDetailsFromId(id, columns = "*") {
+  // get the columns from producturls table
+  let { data: product, error } = await supabase
+    .from("product_urls")
+    .select(columns)
+    .eq("product_id", id)
+    .single()
+  if (error) {
+    console.log(
+      "Error getting product url details for productId => ",
+      id,
+      ", error=> ",
+      error
+    )
+  } else {
+    return product
+  }
+}
+export { getSpecificProductURLOrArtifactDetailsFromId }
+
 /*
 Get user details
 */
@@ -395,3 +454,19 @@ async function getUserIdFromUsername(username) {
   }
 }
 export { getUserIdFromUsername }
+
+/*
+
+Downloading Files 
+
+*/
+
+function getDownloadURLForArtifact(artifact_path) {
+  // return full downloadable url to artifact
+  const URL =
+    import.meta.env.VITE_PROJECT_URL_SUPABASE +
+    "/storage/v1/object/public/product-artifact/" +
+    artifact_path
+  return URL
+}
+export { getDownloadURLForArtifact }
