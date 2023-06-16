@@ -1,4 +1,5 @@
 import React from "react"
+import { Link } from "react-router-dom"
 
 const UserHeader = ({ name, bio, pic_url }) => {
   return (
@@ -8,7 +9,13 @@ const UserHeader = ({ name, bio, pic_url }) => {
         className="rounded-full w-32 h-32 md:w-32 md:h-32"
       />
       <div className="flex flex-col justify-center items-center md:items-start gap-4">
-        <div className="text-2xl font-medium font-serif">{name}</div>
+        <Link
+          className="text-2xl font-medium font-serif cursor-pointer hover:underline"
+          to={`/${name}`}
+          target="_blank"
+        >
+          {name}
+        </Link>
         <div className="text-lg text-center md:text-left">{bio}</div>
       </div>
     </div>
