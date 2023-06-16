@@ -411,6 +411,49 @@ async function getSpecificProductURLOrArtifactDetailsFromId(id, columns = "*") {
 }
 export { getSpecificProductURLOrArtifactDetailsFromId }
 
+async function getSaleDetailsFromProducts(products) {
+  // given a list of products(with their ids ofc), get the sales for all of them and return
+  let all_products_sales_info = []
+  for (let i = 0; i < products.length; i++) {
+    let { data: sales, error } = await supabase
+      .from("sale")
+      .select("id, rating")
+      .eq("product_id", products[i].id)
+      .not("payment_intent_id", "is", null)
+    if (error) {
+      console.log(
+        "Error getting sale details for product: ",
+        products[i].id,
+        " => ",
+        error
+      )
+    } else {
+      let sale_info = {}
+      console.log("Sales=> ", sales)
+      if (sales.length > 0) {
+        sale_info["num_sales"] = sales.length
+        const filteredList = sales.filter((item) => item.rating !== null)
+        const average_rating =
+          filteredList.reduce((total, item) => total + item.rating, 0) /
+          filteredList.length
+        if (average_rating) {
+          sale_info["avg_rating"] = average_rating.toFixed(1)
+        } else {
+          sale_info["avg_rating"] = "-"
+        }
+        // sale_info["num_ratings"] = filteredList.length // don't need this currently me thinks
+        console.log("Sale info=> ", sale_info)
+      } else {
+        sale_info["num_sales"] = 0
+      }
+      sale_info["id"] = products[i].id
+      all_products_sales_info.push(sale_info)
+    }
+    console.log("Length=> ", all_products_sales_info.length)
+  }
+  return all_products_sales_info
+}
+export { getSaleDetailsFromProducts }
 /*
 Get user details
 */

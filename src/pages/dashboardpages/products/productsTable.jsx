@@ -1,5 +1,8 @@
 import { useState, useMemo, useEffect } from "react"
-import { getAllProducts } from "../../../services/supabaseHelpers"
+import {
+  getAllProducts,
+  getSaleDetailsFromProducts,
+} from "../../../services/supabaseHelpers"
 import { useTable } from "react-table"
 import { useAuth } from "../../../context/auth"
 import { getCurrency } from "../../../utils"
@@ -7,6 +10,7 @@ import { useNavigate } from "react-router-dom"
 
 const ProductsTable = () => {
   const [products, setProducts] = useState([])
+  const [sales, setSales] = useState([])
   const { user } = useAuth()
   const navigate = useNavigate()
 
@@ -16,9 +20,16 @@ const ProductsTable = () => {
       false,
       "id, name, price, price_type"
     )
-    console.log("Products => ", allProducts)
     if (allProducts) {
-      setProducts(allProducts)
+      const allsales = await getSaleDetailsFromProducts(allProducts)
+      const all_product_details = allProducts.map((item, i) =>
+        Object.assign({}, item, allsales[i])
+      )
+      all_product_details.forEach((item) => {
+        item.revenue = item.num_sales * item.price
+      })
+      console.log("All product details=> ", all_product_details)
+      setProducts(all_product_details)
     } else {
       console.log("Can't load products, and products is: ", products)
     }
@@ -45,11 +56,13 @@ const ProductsTable = () => {
       },
       {
         Header: "Avg. rating",
-        accessor: "rating",
+        accessor: "avg_rating",
       },
       {
         Header: "Revenue",
         accessor: "revenue",
+        Cell: ({ row }) =>
+          `${getCurrency(row.original.price_type)} ${row.values.revenue}`,
       },
     ],
     []
