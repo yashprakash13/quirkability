@@ -161,7 +161,10 @@ async function insertIntoProductArtifactStorage(id, product, product_id) {
     // insert the artifact into the specific product id row into the `product_urls` table
     const { error } = await supabase
       .from("product_urls")
-      .update({ product_artifact_path: data.path })
+      .update({
+        product_artifact_path: data.path,
+        orig_artifact_name: product[0].name,
+      })
       .eq("product_id", product_id)
     if (error) {
       console.log("Error in updating row with artifact: ", error)
