@@ -448,6 +448,7 @@ async function getSaleDetailsFromProducts(products) {
         console.log("Sale info=> ", sale_info)
       } else {
         sale_info["num_sales"] = 0
+        sale_info["avg_rating"] = "-"
       }
       sale_info["id"] = products[i].id
       all_products_sales_info.push(sale_info)
@@ -516,3 +517,13 @@ function getDownloadURLForArtifact(artifact_path) {
   return URL
 }
 export { getDownloadURLForArtifact }
+
+function getDownloadURLForImages(image_path) {
+  // return full downloadable url to image
+  const URL =
+    import.meta.env.VITE_PROJECT_URL_SUPABASE +
+    "/storage/v1/object/public/product-images/" +
+    image_path
+  return URL
+}
+export { getDownloadURLForImages }

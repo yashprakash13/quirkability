@@ -12,7 +12,9 @@ import { priceCurrency } from "../../../utils/constants"
 import { ClimbingBoxLoader } from "react-spinners"
 import { useNavigate, useParams } from "react-router-dom"
 import {
+  getDownloadURLForImages,
   getSpecificProductDetailsFromId,
+  getSpecificProductURLOrArtifactDetailsFromId,
   insertIntoProductArtifactStorage,
   insertIntoProductImagesStorage,
   insertIntoProductTable,
@@ -20,8 +22,9 @@ import {
 import { useAuth } from "../../../context/auth"
 import { createStripeProduct } from "../../../services/backendCalls"
 import usePayment from "../../../hooks/use-payment"
+import { DocumentIcon, TrashIcon } from "@heroicons/react/24/outline"
 
-const AddProduct = () => {
+const EditProduct = () => {
   // get the product id to fetch details for
   const { productId } = useParams()
 
@@ -36,6 +39,10 @@ const AddProduct = () => {
   const [displaySales, setDisplaySales] = useState(false)
   const [shortDesc, setShortDesc] = useState("")
   const [callToAction, setCallToAction] = useState("")
+
+  // these two only neededwhen editing a product is this state
+  const [initialProductArtifact, setInitialProductArtifact] = useState(null)
+  const [initialProductImages, setInitialProductImages] = useState([])
 
   const [inputErrors, setInputErrors] = useState(null)
   const [errorProductImages, setErrorProductImages] = useState("")
@@ -285,6 +292,19 @@ const AddProduct = () => {
       setShortDesc(productDetails.short_desc)
       setDisplaySales(productDetails.display_sales)
       setAllowCopies(productDetails.allow_copies)
+
+      const productURLDetails =
+        await getSpecificProductURLOrArtifactDetailsFromId(
+          productId,
+          "redirect_url, images, product_artifact_path, orig_artifact_name"
+        )
+      if (productURLDetails.redirect_url) {
+        setShowProductArtifactOverURL(false)
+        setProductArtifactURL(productURLDetails.redirect_url)
+      } else {
+        setInitialProductArtifact(productURLDetails.orig_artifact_name)
+      }
+      setInitialProductImages(productURLDetails.images)
     }
     if (stripeId) {
       setLoading([false, "Just a moment..."])
@@ -293,6 +313,29 @@ const AddProduct = () => {
       setLoading([true, "Loading..."])
     }
   }, [stripeId])
+
+  function imageRemove(index, event) {
+    // remove an image upon clicking of the delete /trash icon button
+    console.log("Removed index=> ", index)
+    event.preventDefault()
+    if (index != -1) {
+      const newListOfImages = [...initialProductImages]
+      newListOfImages.splice(index, 1)
+      setInitialProductImages(newListOfImages)
+    }
+  }
+
+  function checkTotalListOfImagesSelectedIsInRange() {
+    let size = 0
+    if (initialProductImages) {
+      size += initialProductImages.length
+    }
+    if (productImages) {
+      size += productImages.length
+    }
+    if (size < 3) return true
+    else return false
+  }
 
   return loading[0] ? (
     <div className="container bg-primary-focus z-50 flex flex-col gap-5 h-screen justify-center items-center mx-auto p-3 ">
@@ -375,14 +418,55 @@ const AddProduct = () => {
           {errorProductImages && (
             <div className="text-alert-dark text-lg">{errorProductImages}</div>
           )}
-          <FileDropper
-            text="Upload up to 3 product images here"
-            extratext="Images can be either JPG or PNG and need to be square and at least 500 x 500 pixels in dimension and <=10 MB in size."
-            value={productImages}
-            onFileChange={setProductImages}
-            maxFiles={3}
-            typeOfFiles={fileTypesProductImages}
-          />
+          {initialProductImages.length >= 3 ? (
+            <div className="flex flex-col md:flex-row gap-16">
+              {initialProductImages.map((src, index) => (
+                <div
+                  className="relative flex w-52 h-52 bg-primary-default justify-start items-end "
+                  key={index}
+                >
+                  <img
+                    src={getDownloadURLForImages(src)}
+                    className="absolute w-52 h-52 border-sm border-secondary-focus"
+                  />
+                  <TrashIcon
+                    className="w-11 h-11 m-2 p-2 rounded-[50%] absolute  cursor-pointer bg-primary-focus text-secondary-focus hover:text-alert-dark"
+                    onClick={(event) => imageRemove(index, event)}
+                  />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <>
+              <FileDropper
+                text="Upload up to 3 product images here"
+                extratext="Images can be either JPG or PNG and need to be square and at least 500 x 500 pixels in dimension and <=10 MB in size."
+                value={productImages}
+                onFileChange={setProductImages}
+                maxFiles={3}
+                typeOfFiles={fileTypesProductImages}
+                numInitFiles={initialProductImages.length}
+              />
+
+              <div className="flex flex-col md:flex-row gap-16 mt-6">
+                {initialProductImages.map((src, index) => (
+                  <div
+                    className="relative flex w-52 h-52 bg-primary-default justify-start items-end "
+                    key={index}
+                  >
+                    <img
+                      src={getDownloadURLForImages(src)}
+                      className="absolute w-52 h-52 border-sm border-secondary-focus"
+                    />
+                    <TrashIcon
+                      className="w-11 h-11 m-2 p-2 rounded-[50%] absolute  cursor-pointer bg-primary-focus text-secondary-focus hover:text-alert-dark"
+                      onClick={(event) => imageRemove(index, event)}
+                    />
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
         </div>
         {/* product artifact */}
         <div className="flex flex-col gap-6 ">
@@ -393,15 +477,28 @@ const AddProduct = () => {
             </div>
           )}
           {showProductArtifactOverURL ? (
-            <FileDropper
-              kind="artifact"
-              text="Upload your product here"
-              extratext="Product can be: a .zip, .7z, .pdf, .docx, .txt., .xlsx, .pptx, .mp3, .mp4, .epub, .rar, .csv"
-              value={productArtifact}
-              onFileChange={setProductArtifact}
-              maxFiles={1}
-              typeOfFiles={fileTypesProductArtifact}
-            />
+            initialProductArtifact ? (
+              <div className="relative flex mb-2 p-4 rounded w-full md:w-[636px] bg-primary-default justify-start items-center border-sm border-secondary-focus rounded-br-2xl gap-3">
+                <DocumentIcon className="w-12 mr-5" />
+                <div className="flex flex-col justify-between">
+                  <p className="text-md">{initialProductArtifact}</p>
+                </div>
+                <TrashIcon
+                  className="w-6 h-6 rounded-[50%] absolute items-center right-[10px] cursor-pointer text-secondary-focus hover:text-alert-dark"
+                  onClick={() => setInitialProductArtifact(null)}
+                />
+              </div>
+            ) : (
+              <FileDropper
+                kind="artifact"
+                text="Upload your product here"
+                extratext="Product can be: a .zip, .7z, .pdf, .docx, .txt., .xlsx, .pptx, .mp3, .mp4, .epub, .rar, .csv"
+                value={productArtifact}
+                onFileChange={setProductArtifact}
+                maxFiles={1}
+                typeOfFiles={fileTypesProductArtifact}
+              />
+            )
           ) : (
             <input
               className={`border-sm shadow-sm rounded-br-2xl border-secondary-focus bg-primary-default w-full md:w-[636px] h-12 px-3 focus:outline-none ${
@@ -489,7 +586,7 @@ const AddProduct = () => {
             type="submit"
             className="text-lg md:text-xl font-bold flex justify-center items-center border-sm rounded-br-2xl w-40 md:w-52 h-14 bg-primary-default shadow-sm cursor-pointer hover:bg-primary-focus hover:shadow-none transition-all duration-300"
           >
-            Publish Product
+            Update Product
           </button>
         </div>
       </form>
@@ -497,4 +594,4 @@ const AddProduct = () => {
   )
 }
 
-export default AddProduct
+export default EditProduct

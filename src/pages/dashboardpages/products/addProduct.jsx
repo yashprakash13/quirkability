@@ -363,6 +363,7 @@ const AddProduct = () => {
             onFileChange={setProductImages}
             maxFiles={3}
             typeOfFiles={fileTypesProductImages}
+            numInitFiles={0}
           />
         </div>
         {/* product artifact */}
@@ -382,6 +383,7 @@ const AddProduct = () => {
               onFileChange={setProductArtifact}
               maxFiles={1}
               typeOfFiles={fileTypesProductArtifact}
+              numInitFiles={0}
             />
           ) : (
             <input
