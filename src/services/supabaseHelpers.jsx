@@ -527,3 +527,178 @@ function getDownloadURLForImages(image_path) {
   return URL
 }
 export { getDownloadURLForImages }
+
+/**
+ * For Editing Products
+ */
+
+async function updateIntoProductTable(
+  userid,
+  productId,
+  product,
+  productArtifactURL,
+  old_product = null
+) {
+  // update an existing product into the `product` table
+  const { data, error } = await supabase
+    .from("product")
+    .update({
+      name: product.name,
+      description: product.description,
+      price: product.price,
+      price_type: product.priceType,
+      allow_copies: product.allowCopies,
+      display_sales: product.displaySales,
+      user_id: userid,
+      short_desc: product.shortDesc,
+      call_to_action: product.callToAction,
+    })
+    .eq("id", productId)
+    .select()
+
+  if (error) {
+    console.log("Error in updating row into the product table: => ", error)
+    return null
+  } else {
+    console.log("Awesome, the product was updated! => ", data)
+    // Insert the product into the `product_url` table for future image + artifact uploads
+    const { error2 } = await supabase
+      .from("product_urls")
+      .update({
+        redirect_url: productArtifactURL,
+        product_artifact_path: null,
+        orig_artifact_name: null,
+      })
+      .eq("product_id", productId)
+    if (error2) {
+      console.log(
+        "Error in updating row into the product_url table: => ",
+        error
+      )
+    } else {
+      console.log("Awesome, the product url row was updated!")
+    }
+    // finally, also delete an existing product artifact if one was there in the older version of the product
+    if (old_product) {
+      const { data: oldProduct, error3 } = await supabase.storage
+        .from("product-artifact")
+        .remove(old_product)
+      if (error3) {
+        console.log("Error in deleting old product artifact => ", error3)
+      } else {
+        console.log(
+          "Old Product artifact deleted successfully after inserting redirect url."
+        )
+      }
+    }
+    return true
+  }
+}
+export { updateIntoProductTable }
+
+async function updateIntoProductImagesStorage(
+  userid,
+  old_images_to_delete,
+  old_images_to_keep,
+  new_images,
+  product_id
+) {
+  // insert new product's new images into the the user's folder inside the `product-images` storage bucket,
+  // and delete the old images as well
+
+  if (old_images_to_delete.length !== 0) {
+    const { data2, error1 } = await supabase.storage
+      .from("product-images")
+      .remove(old_images_to_delete)
+    if (error1) {
+      console.log("Error in deleting old product images => ", error1)
+    } else {
+      console.log("Old Product images deleted successfully.")
+    }
+  }
+  let image_paths = []
+  for (let i = 0; i < new_images.length; i++) {
+    const image = await compressImage(new_images[i])
+    const newFilename = getTimestampedName(image.name)
+    const { data, error } = await supabase.storage
+      .from("product-images")
+      .upload(`${userid}/${newFilename}`, image)
+    if (error) {
+      console.log(
+        "Error in inserting product image: ",
+        image.name,
+        " into the product-images storage bucket: ",
+        error
+      )
+    } else {
+      console.log("Awesome, the image: ", image.name, " was inserted => ", data)
+      image_paths.push(data.path)
+    }
+  }
+  // replace old image paths with
+  // new image paths(s) into the specific product id row into the `product_urls` table
+  const images_to_update = old_images_to_keep.concat(image_paths)
+  const { error2 } = await supabase
+    .from("product_urls")
+    .update({ images: images_to_update })
+    .eq("product_id", product_id)
+  if (error2) {
+    console.log("Error in updating row with images: ", error2)
+  } else {
+    console.log("Great! Product url row was updated with images. ")
+  }
+}
+export { updateIntoProductImagesStorage }
+
+async function updateIntoProductArtifactStorage(
+  userid,
+  old_product,
+  new_product,
+  product_id
+) {
+  // insert new product's artifact into the user's folder inside the `product-artifact` storage bucket
+  // and delete the old one as well
+  const { data: oldProduct, error1 } = await supabase.storage
+    .from("product-artifact")
+    .remove(old_product)
+  if (error1) {
+    console.log("Error in deleting old product artifact => ", error1)
+  } else {
+    console.log("Old Product artifact deleted successfully.")
+  }
+
+  const newFilename = getTimestampedName(new_product[0].name)
+  const { data, error } = await supabase.storage
+    .from("product-artifact")
+    .upload(`${userid}/${newFilename}`, new_product[0])
+  if (error) {
+    console.log(
+      "Error in inserting product artifact: ",
+      new_product[0].name,
+      " into the product-artifact storage bucket: ",
+      error
+    )
+  } else {
+    console.log(
+      "Awesome, the artifact: ",
+      new_product[0].name,
+      " was inserted => ",
+      data
+    )
+    // insert the artifact into the specific product id row into the `product_urls` table,
+    // thus replacing the old ones
+    const { error2 } = await supabase
+      .from("product_urls")
+      .update({
+        product_artifact_path: data.path,
+        orig_artifact_name: new_product[0].name,
+      })
+      .eq("product_id", product_id)
+    if (error2) {
+      console.log("Error in updating row with artifact: ", error2)
+    } else {
+      console.log("Great! Product url row was updated with the artifact path. ")
+    }
+  }
+}
+export { updateIntoProductArtifactStorage }

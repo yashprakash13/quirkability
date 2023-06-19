@@ -18,6 +18,9 @@ import {
   insertIntoProductArtifactStorage,
   insertIntoProductImagesStorage,
   insertIntoProductTable,
+  updateIntoProductArtifactStorage,
+  updateIntoProductImagesStorage,
+  updateIntoProductTable,
 } from "../../../services/supabaseHelpers"
 import { useAuth } from "../../../context/auth"
 import { createStripeProduct } from "../../../services/backendCalls"
@@ -40,9 +43,11 @@ const EditProduct = () => {
   const [shortDesc, setShortDesc] = useState("")
   const [callToAction, setCallToAction] = useState("")
 
-  // these two only neededwhen editing a product is this state
+  // these three only needed when editing a product is this state
   const [initialProductArtifact, setInitialProductArtifact] = useState(null)
   const [initialProductImages, setInitialProductImages] = useState([])
+  const [allProductStuffTakenInitially, setAllProductStuffTakenInitially] =
+    useState(null)
 
   const [inputErrors, setInputErrors] = useState(null)
   const [errorProductImages, setErrorProductImages] = useState("")
@@ -136,7 +141,10 @@ const EditProduct = () => {
     console.log("Onsubmit: ", schemaVal)
     try {
       // validate the productImages
-      if (!productImages || productImages.length === 0) {
+      if (
+        (!productImages || productImages.length === 0) &&
+        initialProductImages.length === 0
+      ) {
         setErrorProductImages("At least one product image is required.")
       } else {
         for (let i = 0; i < productImages.length; i++) {
@@ -154,7 +162,9 @@ const EditProduct = () => {
       // validate the product Artifact or URL
       if (
         productArtifactURL.trim() === "" &&
-        (!productArtifact || productArtifact.length === 0)
+        (!productArtifact || productArtifact.length === 0) &&
+        !initialProductArtifact &&
+        allProductStuffTakenInitially.redirect_url.trim() === ""
       ) {
         // if both are null -> show an error
         console.log("if both are null -> show an error")
@@ -164,7 +174,10 @@ const EditProduct = () => {
       } else if (showProductArtifactOverURL) {
         // URL is none but artifact should have something
         console.log("URL is none but artifact should have something")
-        if (!productArtifact || productArtifact.length === 0) {
+        if (
+          (!productArtifact || productArtifact.length === 0) &&
+          !initialProductArtifact
+        ) {
           // if no product uploaded
           console.log("if no product uploaded")
           setErrorProductArtifact(
@@ -184,7 +197,8 @@ const EditProduct = () => {
         // artifact can be null but gotta have a URL
         console.log("artifact can be null but gotta have a URL")
         if (
-          productArtifactURL.trim() === "" ||
+          (productArtifactURL.trim() === "" &&
+            allProductStuffTakenInitially.redirect_url.trim() === "") ||
           !isValidHttpsUrl(productArtifactURL.trim())
         ) {
           console.log("checking for valid URL")
@@ -233,29 +247,33 @@ const EditProduct = () => {
         shortDesc: shortDesc,
         callToAction: callToAction,
       }
-      const product_id = await insertIntoProductTable(
+      const result = await updateIntoProductTable(
         user.id,
+        productId,
         productToCreate,
-        productArtifactURL
+        productArtifactURL,
+        allProductStuffTakenInitially.product_artifact_path
       )
-      if (product_id) {
-        await createStripeProduct(
-          product_id,
-          name,
-          price,
-          getCurrencyAsStripeExpects(priceType),
-          stripeId
+      if (result) {
+        await updateIntoProductImagesStorage(
+          user.id,
+          allProductStuffTakenInitially.images.filter(
+            (item) => !initialProductImages.includes(item)
+          ),
+          initialProductImages,
+          productImages,
+          productId
         )
-        await insertIntoProductImagesStorage(user.id, productImages, product_id)
         // try to upload an artifact only if an artifact is provided
         if (productArtifact.length > 0) {
-          await insertIntoProductArtifactStorage(
+          await updateIntoProductArtifactStorage(
             user.id,
+            allProductStuffTakenInitially.product_artifact_path,
             productArtifact,
-            product_id
+            productId
           )
         }
-        // work done, product created -> navigate to products page
+        // work done, product updated -> navigate to products page
         navigate("/dashboard/products")
       } else {
         // work not done, something is wrong...
@@ -298,6 +316,7 @@ const EditProduct = () => {
           productId,
           "redirect_url, images, product_artifact_path, orig_artifact_name"
         )
+      setAllProductStuffTakenInitially(productURLDetails) // to keep track of which images + artifacts were there initially
       if (productURLDetails.redirect_url) {
         setShowProductArtifactOverURL(false)
         setProductArtifactURL(productURLDetails.redirect_url)
