@@ -284,7 +284,7 @@ const EditProduct = () => {
     ) {
       console.log("Here in the useeffect.")
       setLoading([true, "Publishing..."])
-      insertIntoDB()
+      insertIntoDB(true)
     } else if (mounted) {
       // if form submission has errored out, show something went wrong message
       setLoading([false, "Just a moment..."])
