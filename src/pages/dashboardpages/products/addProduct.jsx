@@ -207,51 +207,53 @@ const AddProduct = () => {
     }
   }
 
-  useEffect(() => {
-    async function insertIntoDB() {
-      // validation is successful is this happens
-      console.log("Validation successful, congrats!")
-      // TODO insert into db
-      const productToCreate = {
-        name: name,
-        description: description,
-        price: price,
-        priceType: priceType,
-        allowCopies: allowCopies,
-        displaySales: displaySales,
-        shortDesc: shortDesc,
-        callToAction: callToAction,
-      }
-      const product_id = await insertIntoProductTable(
-        user.id,
-        productToCreate,
-        productArtifactURL
-      )
-      if (product_id) {
-        await createStripeProduct(
-          product_id,
-          name,
-          price,
-          getCurrencyAsStripeExpects(priceType),
-          stripeId
-        )
-        await insertIntoProductImagesStorage(user.id, productImages, product_id)
-        // try to upload an artifact only if an artifact is provided
-        if (productArtifact.length > 0) {
-          await insertIntoProductArtifactStorage(
-            user.id,
-            productArtifact,
-            product_id
-          )
-        }
-        // work done, product created -> navigate to products page
-        navigate("/dashboard/products")
-      } else {
-        // work not done, something is wrong...
-        console.log("Something went wrong. ")
-        setMounted(true)
-      }
+  async function insertIntoDB(isPublished = true) {
+    // validation is successful is this happens
+    console.log("Validation successful, congrats!")
+    // TODO insert into db
+    const productToCreate = {
+      name: name,
+      description: description,
+      price: price,
+      priceType: priceType,
+      allowCopies: allowCopies,
+      displaySales: displaySales,
+      shortDesc: shortDesc,
+      callToAction: callToAction,
     }
+    const product_id = await insertIntoProductTable(
+      user.id,
+      productToCreate,
+      productArtifactURL,
+      isPublished
+    )
+    if (product_id) {
+      await createStripeProduct(
+        product_id,
+        name,
+        price,
+        getCurrencyAsStripeExpects(priceType),
+        stripeId
+      )
+      await insertIntoProductImagesStorage(user.id, productImages, product_id)
+      // try to upload an artifact only if an artifact is provided
+      if (productArtifact.length > 0) {
+        await insertIntoProductArtifactStorage(
+          user.id,
+          productArtifact,
+          product_id
+        )
+      }
+      // work done, product created -> navigate to products page
+      navigate("/dashboard/products")
+    } else {
+      // work not done, something is wrong...
+      console.log("Something went wrong. ")
+      setMounted(true)
+    }
+  }
+
+  useEffect(() => {
     if (
       !mounted &&
       !errorProductArtifact &&
@@ -260,7 +262,7 @@ const AddProduct = () => {
     ) {
       console.log("Here in the useeffect.")
       setLoading([true, "Publishing..."])
-      insertIntoDB()
+      insertIntoDB(true)
     } else if (mounted) {
       // if form submission has errored out, show something went wrong message
       setLoading([false, "Just a moment..."])
@@ -274,6 +276,11 @@ const AddProduct = () => {
       setLoading([true, "Loading..."])
     }
   }, [stripeId])
+
+  async function saveProductToDrafts() {
+    setLoading([true, "Saving..."])
+    insertIntoDB(false)
+  }
 
   return loading[0] ? (
     <div className="container bg-primary-focus z-50 flex flex-col gap-5 h-screen justify-center items-center mx-auto p-3 ">
@@ -467,12 +474,18 @@ const AddProduct = () => {
             </div>
           </div>
         </div>
-        <div className="flex justify-center items-center w-full md:w-[636px] my-11">
+        <div className="flex justify-center items-center w-full md:w-[636px] my-11 gap-5 md:gap-8">
           <button
             type="submit"
             className="text-lg md:text-xl font-bold flex justify-center items-center border-sm rounded-br-2xl w-40 md:w-52 h-14 bg-primary-default shadow-sm cursor-pointer hover:bg-primary-focus hover:shadow-none transition-all duration-300"
           >
             Publish Product
+          </button>
+          <button
+            className="text-lg md:text-xl font-bold flex justify-center items-center border-sm rounded-br-2xl w-40 md:w-52 h-14 bg-secondary-default text-primary-focus cursor-pointer hover:bg-primary-default hover:text-secondary-focus hover:shadow-sm transition-all duration-300"
+            onClick={saveProductToDrafts}
+          >
+            Save as Draft
           </button>
         </div>
       </form>

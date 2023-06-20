@@ -62,7 +62,12 @@ export { updateUserprofileTable }
 Functions for making a new product 
 
 */
-async function insertIntoProductTable(id, product, productArtifactURL) {
+async function insertIntoProductTable(
+  id,
+  product,
+  productArtifactURL,
+  isPublished
+) {
   // insert a new product into the `product` table
   const { data, error } = await supabase
     .from("product")
@@ -76,6 +81,7 @@ async function insertIntoProductTable(id, product, productArtifactURL) {
       user_id: id,
       short_desc: product.shortDesc,
       call_to_action: product.callToAction,
+      is_published: isPublished,
     })
     .select()
   if (error) {
@@ -187,6 +193,7 @@ async function getAllProducts(id, return_urls = true, columns = "*") {
     .from("product")
     .select(columns)
     .eq("user_id", id)
+    .eq("is_published", true)
 
   if (return_urls && products) {
     let product_url_dict = {}
@@ -262,6 +269,24 @@ async function populatePublicProducts(username, columns = "*") {
   }
 }
 export { populatePublicProducts }
+
+/*
+Drafts
+*/
+async function getAllDraftProducts(userid) {
+  // function to fetch and return all drafts
+  let { data: products, error } = await supabase
+    .from("product")
+    .select("id, name")
+    .eq("user_id", userid)
+    .eq("is_published", false)
+  if (products) {
+    return products
+  } else {
+    console.log("Error in fetching drafts=> ", error)
+  }
+}
+export { getAllDraftProducts }
 
 /*
 payment things
@@ -537,7 +562,8 @@ async function updateIntoProductTable(
   productId,
   product,
   productArtifactURL,
-  old_product = null
+  old_product = null,
+  isPublished
 ) {
   // update an existing product into the `product` table
   const { data, error } = await supabase
@@ -552,6 +578,7 @@ async function updateIntoProductTable(
       user_id: userid,
       short_desc: product.shortDesc,
       call_to_action: product.callToAction,
+      is_published: isPublished,
     })
     .eq("id", productId)
     .select()

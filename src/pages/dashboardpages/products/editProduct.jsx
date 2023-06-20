@@ -3,11 +3,7 @@ import Editor from "../../../components/inputs/Editor"
 import FileDropper from "../../../components/inputs/FileDropper"
 import Toggle from "../../../components/inputs/Toggle"
 import * as yup from "yup"
-import {
-  checkFileSize,
-  getCurrencyAsStripeExpects,
-  isValidHttpsUrl,
-} from "../../../utils"
+import { checkFileSize, isValidHttpsUrl } from "../../../utils"
 import { priceCurrency } from "../../../utils/constants"
 import { ClimbingBoxLoader } from "react-spinners"
 import { useNavigate, useParams } from "react-router-dom"
@@ -15,15 +11,11 @@ import {
   getDownloadURLForImages,
   getSpecificProductDetailsFromId,
   getSpecificProductURLOrArtifactDetailsFromId,
-  insertIntoProductArtifactStorage,
-  insertIntoProductImagesStorage,
-  insertIntoProductTable,
   updateIntoProductArtifactStorage,
   updateIntoProductImagesStorage,
   updateIntoProductTable,
 } from "../../../services/supabaseHelpers"
 import { useAuth } from "../../../context/auth"
-import { createStripeProduct } from "../../../services/backendCalls"
 import usePayment from "../../../hooks/use-payment"
 import { DocumentIcon, TrashIcon } from "@heroicons/react/24/outline"
 
@@ -48,6 +40,7 @@ const EditProduct = () => {
   const [initialProductImages, setInitialProductImages] = useState([])
   const [allProductStuffTakenInitially, setAllProductStuffTakenInitially] =
     useState(null)
+  const [isPublishedProduct, setIsPublishedProduct] = useState(true)
 
   const [inputErrors, setInputErrors] = useState(null)
   const [errorProductImages, setErrorProductImages] = useState("")
@@ -232,55 +225,57 @@ const EditProduct = () => {
     }
   }
 
-  useEffect(() => {
-    async function insertIntoDB() {
-      // validation is successful is this happens
-      console.log("Validation successful, congrats!")
-      // TODO insert into db
-      const productToCreate = {
-        name: name,
-        description: description,
-        price: price,
-        priceType: priceType,
-        allowCopies: allowCopies,
-        displaySales: displaySales,
-        shortDesc: shortDesc,
-        callToAction: callToAction,
-      }
-      const result = await updateIntoProductTable(
+  async function insertIntoDB(isPublished = true) {
+    // validation is successful is this happens
+    console.log("Validation successful, congrats!")
+    // TODO insert into db
+    const productToCreate = {
+      name: name,
+      description: description,
+      price: price,
+      priceType: priceType,
+      allowCopies: allowCopies,
+      displaySales: displaySales,
+      shortDesc: shortDesc,
+      callToAction: callToAction,
+    }
+    const result = await updateIntoProductTable(
+      user.id,
+      productId,
+      productToCreate,
+      productArtifactURL,
+      allProductStuffTakenInitially.product_artifact_path,
+      isPublished
+    )
+    if (result) {
+      await updateIntoProductImagesStorage(
         user.id,
-        productId,
-        productToCreate,
-        productArtifactURL,
-        allProductStuffTakenInitially.product_artifact_path
+        allProductStuffTakenInitially.images.filter(
+          (item) => !initialProductImages.includes(item)
+        ),
+        initialProductImages,
+        productImages,
+        productId
       )
-      if (result) {
-        await updateIntoProductImagesStorage(
+      // try to upload an artifact only if an artifact is provided
+      if (productArtifact.length > 0) {
+        await updateIntoProductArtifactStorage(
           user.id,
-          allProductStuffTakenInitially.images.filter(
-            (item) => !initialProductImages.includes(item)
-          ),
-          initialProductImages,
-          productImages,
+          allProductStuffTakenInitially.product_artifact_path,
+          productArtifact,
           productId
         )
-        // try to upload an artifact only if an artifact is provided
-        if (productArtifact.length > 0) {
-          await updateIntoProductArtifactStorage(
-            user.id,
-            allProductStuffTakenInitially.product_artifact_path,
-            productArtifact,
-            productId
-          )
-        }
-        // work done, product updated -> navigate to products page
-        navigate("/dashboard/products")
-      } else {
-        // work not done, something is wrong...
-        console.log("Something went wrong. ")
-        setMounted(true)
       }
+      // work done, product updated -> navigate to products page
+      navigate("/dashboard/products")
+    } else {
+      // work not done, something is wrong...
+      console.log("Something went wrong. ")
+      setMounted(true)
     }
+  }
+
+  useEffect(() => {
     if (
       !mounted &&
       !errorProductArtifact &&
@@ -300,7 +295,7 @@ const EditProduct = () => {
     async function setInitialValuesInForm() {
       const productDetails = await getSpecificProductDetailsFromId(
         productId,
-        "id, name, description, price, price_type, call_to_action, short_desc, display_sales, allow_copies"
+        "id, name, description, price, price_type, call_to_action, short_desc, display_sales, allow_copies, is_published"
       )
       setName(productDetails.name)
       setDescription(productDetails.description)
@@ -310,6 +305,7 @@ const EditProduct = () => {
       setShortDesc(productDetails.short_desc)
       setDisplaySales(productDetails.display_sales)
       setAllowCopies(productDetails.allow_copies)
+      setIsPublishedProduct(productDetails.is_published)
 
       const productURLDetails =
         await getSpecificProductURLOrArtifactDetailsFromId(
@@ -344,16 +340,9 @@ const EditProduct = () => {
     }
   }
 
-  function checkTotalListOfImagesSelectedIsInRange() {
-    let size = 0
-    if (initialProductImages) {
-      size += initialProductImages.length
-    }
-    if (productImages) {
-      size += productImages.length
-    }
-    if (size < 3) return true
-    else return false
+  async function saveProductToDrafts() {
+    setLoading([true, "Saving..."])
+    insertIntoDB(false)
   }
 
   return loading[0] ? (
@@ -600,13 +589,30 @@ const EditProduct = () => {
             </div>
           </div>
         </div>
-        <div className="flex justify-center items-center w-full md:w-[636px] my-11">
-          <button
-            type="submit"
-            className="text-lg md:text-xl font-bold flex justify-center items-center border-sm rounded-br-2xl w-40 md:w-52 h-14 bg-primary-default shadow-sm cursor-pointer hover:bg-primary-focus hover:shadow-none transition-all duration-300"
-          >
-            Update Product
-          </button>
+        <div className="flex justify-center items-center w-full md:w-[636px] my-11 gap-5 md:gap-8">
+          {isPublishedProduct ? (
+            <button
+              type="submit"
+              className="text-lg md:text-xl font-bold flex justify-center items-center border-sm rounded-br-2xl w-40 md:w-52 h-14 bg-primary-default shadow-sm cursor-pointer hover:bg-primary-focus hover:shadow-none transition-all duration-300"
+            >
+              Update Product
+            </button>
+          ) : (
+            <>
+              <button
+                className="text-lg md:text-xl font-bold flex justify-center items-center border-sm rounded-br-2xl w-40 md:w-52 h-14 bg-primary-default shadow-sm cursor-pointer hover:bg-primary-focus hover:shadow-none transition-all duration-300"
+                onClick={saveProductToDrafts}
+              >
+                Save
+              </button>
+              <button
+                type="submit"
+                className="text-lg md:text-xl font-bold flex justify-center items-center border-sm rounded-br-2xl w-40 md:w-52 h-14 bg-secondary-default text-primary-focus cursor-pointer hover:bg-primary-default hover:text-secondary-focus hover:shadow-sm transition-all duration-300"
+              >
+                Publish Product
+              </button>
+            </>
+          )}
         </div>
       </form>
     </div>
