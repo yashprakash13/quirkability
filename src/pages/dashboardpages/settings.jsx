@@ -83,6 +83,19 @@ const Settings = () => {
 
   return (
     <div className="container mx-auto flex flex-col p-3 gap-11 mt-11">
+      <div className="flex flex-col justify-start gap-7 md:gap-11">
+        <div className="text-2xl font-medium">Profile Picture</div>
+        <div className="flex flex-col md:flex-row justify-start md:justify-between md:items-center gap-5">
+          <img
+            src="https://source.unsplash.com/Ud4bLEy4gC0"
+            className="rounded-[999px] w-36 h-36"
+          />
+          <div className="w-2/3 md:w-1/3 lg:w-1/6 text-lg md:text-xl font-bold flex justify-center items-center border-sm rounded-br-2xl px-7 py-2 text-primary-default bg-secondary-focus cursor-pointer hover:bg-primary-default hover:text-secondary-focus transition-all duration-300">
+            Change Photo
+          </div>
+        </div>
+      </div>
+      <div className="w-full border-t-sm border-light-highlight opacity-25"></div>
       <div className="flex flex-col gap-3">
         <div className="flex flex-row items-center justify-between">
           <div className="text-2xl font-medium">Bio</div>
@@ -134,7 +147,7 @@ const Settings = () => {
         <div className="flex flex-col md:flex-row md:justify-between md:items-center justify-start gap-5">
           <div className="text-xl">Connect your Stripe Account</div>
           <div
-            className="w-1/2 md:w-1/3 lg:w-1/6 text-lg md:text-xl font-bold flex justify-center items-center border-sm rounded-br-2xl px-7 py-2 text-primary-default bg-secondary-focus cursor-pointer hover:bg-primary-default hover:text-secondary-focus  transition-all duration-300"
+            className="w-2/3 md:w-1/3 lg:w-1/6 text-lg md:text-xl font-bold flex justify-center items-center border-sm rounded-br-2xl px-7 py-2 text-primary-default bg-secondary-focus cursor-pointer hover:bg-primary-default hover:text-secondary-focus  transition-all duration-300"
             onClick={handleStripeConnect}
           >
             {!stripeId ? "Connect" : "Connected"}
