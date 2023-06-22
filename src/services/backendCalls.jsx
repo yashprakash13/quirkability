@@ -88,3 +88,23 @@ async function getSession(session_id) {
   }
 }
 export { getSession }
+
+async function archiveStripeProduct(stripe_product_id, account_id) {
+  // function to call backend's archive endpoint
+  const response = await fetch("http://localhost:8000/archive-stripeproduct", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      stripe_product_id: stripe_product_id,
+      account_id: account_id,
+    }),
+  })
+  const result = await response.json()
+  if (result.status === "success") {
+    return true
+  } else {
+    console.log("Error occured in archiving stripe product.")
+    return false
+  }
+}
+export { archiveStripeProduct }

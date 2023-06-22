@@ -729,3 +729,47 @@ async function updateIntoProductArtifactStorage(
   }
 }
 export { updateIntoProductArtifactStorage }
+
+/*
+Delete a product completely
+*/
+async function deleteProduct(productId) {
+  // function to delete a product from everywhere in db
+  // 1. Get image + artifact URLs
+  const product_urls = await getSpecificProductURLOrArtifactDetailsFromId(
+    productId,
+    "product_artifact_path, images"
+  )
+  // 2. Delete them from storage
+  if (product_urls) {
+    const { data1, error1 } = await supabase.storage
+      .from("product-images")
+      .remove(product_urls.images)
+    if (error1) {
+      console.log("Error in deleting product images => ", error1)
+    } else {
+      console.log("Product images deleted successfully.")
+    }
+    const { data2, error2 } = await supabase.storage
+      .from("product-artifact")
+      .remove(product_urls.product_artifact_path)
+    if (error2) {
+      console.log("Error in deleting product artifact => ", error1)
+    } else {
+      console.log("Product artifact deleted successfully.")
+    }
+  }
+  // 3. Finally, delete the product row
+  const { data, error } = await supabase
+    .from("product")
+    .delete()
+    .eq("id", productId)
+  if (error) {
+    console.log("Error deleting product=> ", error)
+    return null
+  } else {
+    console.log("Product deleted from table(s): ", data)
+    return true
+  }
+}
+export { deleteProduct }

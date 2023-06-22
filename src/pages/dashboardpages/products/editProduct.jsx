@@ -8,6 +8,7 @@ import { priceCurrency } from "../../../utils/constants"
 import { ClimbingBoxLoader } from "react-spinners"
 import { useNavigate, useParams } from "react-router-dom"
 import {
+  deleteProduct,
   getDownloadURLForImages,
   getSpecificProductDetailsFromId,
   getSpecificProductURLOrArtifactDetailsFromId,
@@ -18,6 +19,8 @@ import {
 import { useAuth } from "../../../context/auth"
 import usePayment from "../../../hooks/use-payment"
 import { DocumentIcon, TrashIcon } from "@heroicons/react/24/outline"
+import DropdownMenu from "../../../components/DropdownMenu"
+import { archiveStripeProduct } from "../../../services/backendCalls"
 
 const EditProduct = () => {
   // get the product id to fetch details for
@@ -345,6 +348,24 @@ const EditProduct = () => {
     insertIntoDB(false)
   }
 
+  async function confirmDeleteProduct() {
+    setLoading([true, "Deleting product..."])
+    const product_stripeProductId = await getSpecificProductDetailsFromId(
+      productId,
+      "stripe_product_id"
+    )
+    console.log("Sending following data: ", product_stripeProductId, stripeId)
+    const responseFromBackend = await archiveStripeProduct(
+      product_stripeProductId.stripe_product_id,
+      stripeId
+    )
+    if (responseFromBackend) console.log("Archived product.")
+    const responseFromHelper = await deleteProduct(productId)
+    if (responseFromHelper) console.log("Deleted product.")
+    setLoading([false, "Done."])
+    navigate("/dashboard/products")
+  }
+
   return loading[0] ? (
     <div className="container bg-primary-focus z-50 flex flex-col gap-5 h-screen justify-center items-center mx-auto p-3 ">
       <div className="text-xl">{loading[1]}...</div>
@@ -352,7 +373,19 @@ const EditProduct = () => {
     </div>
   ) : (
     <div className="container flex flex-col mx-auto p-3">
-      <div className="text-3xl font-medium mt-10">New Product</div>
+      <div className="flex justify-between items-center">
+        <div className="text-3xl font-medium my-10">Edit Product</div>
+        <div className="flex flex-col justify-end">
+          <DropdownMenu
+            dropdownText={"Delete"}
+            icon={
+              <TrashIcon className="w-5 h-5 cursor-pointer text-secondary-focus group-hover:text-alert-dark" />
+            }
+            options={[{ text: "Confirm", onClick: confirmDeleteProduct }]}
+            groupHoverStateClass={"group-hover:text-alert-dark"}
+          />
+        </div>
+      </div>
       <form
         className="flex flex-col gap-12 my-4 md:my-12 overflow-y-visible"
         onSubmit={(e) => {
