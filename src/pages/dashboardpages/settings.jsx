@@ -86,12 +86,22 @@ const Settings = () => {
       <div className="flex flex-col justify-start gap-7 md:gap-11">
         <div className="text-2xl font-medium">Profile Picture</div>
         <div className="flex flex-col md:flex-row justify-start md:justify-between md:items-center gap-5">
-          <img
-            src="https://source.unsplash.com/Ud4bLEy4gC0"
-            className="rounded-[999px] w-36 h-36"
-          />
-          <div className="w-2/3 md:w-1/3 lg:w-1/6 text-lg md:text-xl font-bold flex justify-center items-center border-sm rounded-br-2xl px-7 py-2 text-primary-default bg-secondary-focus cursor-pointer hover:bg-primary-default hover:text-secondary-focus transition-all duration-300">
-            Change Photo
+          <div className="flex flex-col md:flex-row gap-7 md:items-center">
+            <img
+              src="https://source.unsplash.com/Ud4bLEy4gC0"
+              className="rounded-full w-36 h-36"
+            />
+            <div className="text-md md:text-lg font-serif w-full md:w-3/5">
+              Your photo will appear on your store and in all your products. It
+              should be at least 200px x 200px in size and can be in JPG or PNG
+              formats.
+            </div>
+          </div>
+          <div
+            className="w-2/3 md:w-1/3 lg:w-1/5 text-lg md:text-xl font-bold flex justify-center items-center border-sm rounded-br-2xl px-7 py-2 text-primary-default bg-secondary-focus cursor-pointer hover:bg-primary-default hover:text-secondary-focus transition-all duration-300"
+            //
+          >
+            Change
           </div>
         </div>
       </div>
@@ -129,7 +139,7 @@ const Settings = () => {
               onChange={(e) => setBioTextArea(e.target.value)}
             />
             <div
-              className="w-1/2 md:w-1/3 lg:w-1/6 text-secondary-focus bg-primary-default px-4 py-2 border-sm border-secondary-focus font-serif text-center rounded-br-2xl shadow-sm hover:shadow-none hover:text-primary-default hover:bg-secondary-focus transition-all duration-300 hover:cursor-pointer"
+              className="w-2/3 md:w-1/3 lg:w-1/4 text-secondary-focus bg-primary-default px-4 py-2 border-sm border-secondary-focus font-serif text-center rounded-br-2xl shadow-sm hover:shadow-none hover:text-primary-default hover:bg-secondary-focus transition-all duration-300 hover:cursor-pointer"
               onClick={handleBioChange}
             >
               {loading ? (
