@@ -31,7 +31,7 @@ const Settings = () => {
   const [initialProfilePicUrl, setInitialProfilePicUrl] = useState("")
   const [loadingProfilePic, setLoadingProfilePic] = useState(false)
 
-  const allowedInputRegex = /^[a-zA-Z0-9!,';\s]+$/
+  const allowedInputRegex = /^[a-zA-Z0-9!,.';\s]+$/
 
   async function handleStripeConnect() {
     if (!stripeId) {
@@ -67,38 +67,47 @@ const Settings = () => {
   const handleBioChange = async () => {
     // insert updated Bio
     setLoading(true)
-    const result = await updateUserprofileTable(user.id, {
-      bio: bioTextArea.trim(),
-    })
-    console.log(result)
-    if (result) {
-      toast.success("Bio was updated successfully!", {
-        toastId: "success1", // this id field is necessary because it helps make the toast show only once.
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
+    const value = bioTextArea.trim()
+    if (allowedInputRegex.test(value) && value !== "") {
+      setFormErrors((prevState) => ({ ...prevState, bioError: "" }))
+      setBioTextAreaActivated(false)
+      const result = await updateUserprofileTable(user.id, {
+        bio: value,
       })
+      console.log(result)
+      if (result) {
+        toast.success("Bio was updated successfully!", {
+          toastId: "success1", // this id field is necessary because it helps make the toast show only once.
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        })
+      } else {
+        toast.error("Something went wrong. Couldn't update your bio.", {
+          toastId: "error1", // this id field is necessary because it helps make the toast show only once.
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        })
+      }
+      getBio()
     } else {
-      toast.error("Something went wrong. Couldn't update your bio.", {
-        toastId: "error1", // this id field is necessary because it helps make the toast show only once.
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      })
+      setFormErrors((prevState) => ({
+        ...prevState,
+        bioError: "Bio can only contain alphabets, numbers, and punctuations.",
+      }))
     }
     setLoading(false)
-    setBioTextAreaActivated(false)
-    getBio()
   }
 
   function handleFileChange(e) {
@@ -302,6 +311,9 @@ const Settings = () => {
           </div>
         )}
       </div>
+      {formErrors.bioError && bioTextAreaActivated && (
+        <div className="text-xl text-alert-dark">{formErrors.bioError}</div>
+      )}
       <div className="w-full border-t-sm border-light-highlight opacity-25"></div>
       <div className="flex flex-col gap-3">
         <div className="text-2xl font-medium">Payment Methods</div>
