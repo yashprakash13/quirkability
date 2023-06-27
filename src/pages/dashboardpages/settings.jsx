@@ -5,11 +5,13 @@ import { useEffect, useRef, useState } from "react"
 import {
   getUserDetailsFromId,
   updateUserprofileTable,
+  uploadUserProfilePicToStorage,
 } from "../../services/supabaseHelpers"
 import { PencilIcon, XMarkIcon } from "@heroicons/react/24/solid"
 import { toast } from "react-toastify"
 import { ClipLoader } from "react-spinners"
 import DefaultProfilePic from "../../assets/defaultProfilePic"
+import { compressImage, getSupabaseProfilePicURL } from "../../utils"
 
 const Settings = () => {
   const { user } = useAuth()
@@ -26,6 +28,8 @@ const Settings = () => {
   const [imagePreviewUrl, setImagePreviewUrl] = useState("")
   const [isImageSelected, setImageSelected] = useState(false)
   const [formErrors, setFormErrors] = useState({})
+  const [initialProfilePicUrl, setInitialProfilePicUrl] = useState("")
+  const [loadingProfilePic, setLoadingProfilePic] = useState(false)
 
   const allowedInputRegex = /^[a-zA-Z0-9!,';\s]+$/
 
@@ -47,9 +51,16 @@ const Settings = () => {
     setBioTextArea(bioText.bio)
   }
 
+  async function getProfilePic() {
+    const response = await getUserDetailsFromId(user.id, "profile_pic_url")
+    if (response.profile_pic_url)
+      setInitialProfilePicUrl(response.profile_pic_url)
+  }
+
   useEffect(() => {
     if (user) {
       getBio()
+      getProfilePic()
     }
   }, [])
 
@@ -93,6 +104,7 @@ const Settings = () => {
   function handleFileChange(e) {
     const file = e.target.files[0]
     const reader = new FileReader()
+    console.log("Inside file change func.")
     reader.onloadend = () => {
       const img = new Image()
       img.src = reader.result
@@ -102,6 +114,7 @@ const Settings = () => {
           img.height > 200 &&
           (file.type === "image/jpeg" || file.type === "image/png")
         ) {
+          console.log("Setting states.")
           setFormErrors((prevState) => ({ ...prevState, fileError: "" }))
           setFile(file)
           setImagePreviewUrl(reader.result)
@@ -120,12 +133,49 @@ const Settings = () => {
     }
   }
 
-  function saveImage() {
-    // Placeholder function for saving the selected image
-    console.log("Image saved:", file)
-    setImageSelected(false)
+  async function saveImage() {
+    // function for saving the selected profile image
+    setLoadingProfilePic(true)
     setFormErrors({})
+    const compressedImageToUpload = await compressImage(file, 0.1)
+    const response = await uploadUserProfilePicToStorage(
+      user.id,
+      compressedImageToUpload,
+      initialProfilePicUrl
+    )
+    if (response) {
+      console.log("Profile image saved:", file)
+      getProfilePic()
+      toast.success("Profile picture was updated successfully!", {
+        toastId: "success1", // this id field is necessary because it helps make the toast show only once.
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      })
+    } else {
+      toast.error(
+        "Something went wrong. Couldn't update your profile picture.",
+        {
+          toastId: "error1", // this id field is necessary because it helps make the toast show only once.
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        }
+      )
+    }
+    setImageSelected(false)
     setFile(null)
+    setLoadingProfilePic(false)
   }
 
   function handleChangePhotoButtonClick() {
@@ -140,17 +190,25 @@ const Settings = () => {
     setImagePreviewUrl("")
   }
 
+  useEffect(() => {
+    console.log(isImageSelected)
+  }, [isImageSelected])
+
   return (
     <div className="container mx-auto flex flex-col p-3 gap-11 mt-11">
       <div className="flex flex-col justify-start gap-7 md:gap-11">
         <div className="text-2xl font-medium">Profile Picture</div>
         <div className="flex flex-col md:flex-row justify-start md:justify-between md:items-center gap-5">
           <div className="flex flex-col md:flex-row gap-7 md:items-center">
-            {imagePreviewUrl ? (
+            {imagePreviewUrl || initialProfilePicUrl ? (
               <img
-                src={imagePreviewUrl}
+                src={
+                  imagePreviewUrl === ""
+                    ? getSupabaseProfilePicURL(initialProfilePicUrl)
+                    : imagePreviewUrl
+                }
                 alt="Selected"
-                className="w-36 h-36 rounded-full"
+                className="w-36 h-36 rounded-full border-sm border-secondary-focus"
               />
             ) : (
               <DefaultProfilePic
@@ -166,22 +224,26 @@ const Settings = () => {
             </div>
           </div>
           <div
-            className="w-2/3 md:w-1/3 lg:w-1/5 text-lg md:text-xl font-bold flex justify-center items-center border-sm rounded-br-2xl px-7 py-2 text-primary-default bg-secondary-focus cursor-pointer hover:bg-primary-default hover:text-secondary-focus transition-all duration-300"
+            className={`w-2/3 md:w-1/3 lg:w-1/5 text-lg md:text-xl font-bold flex justify-center gap-3 items-center border-sm rounded-br-2xl px-7 py-2 text-primary-default bg-secondary-focus cursor-pointer hover:bg-primary-default hover:text-secondary-focus transition-all duration-300 ${
+              loadingProfilePic && "pointer-events-none opacity-50"
+            }`}
             onClick={isImageSelected ? saveImage : handleChangePhotoButtonClick}
           >
+            {loadingProfilePic && (
+              <ClipLoader color="#EFEDE4" loading={true} size={20} />
+            )}
             {isImageSelected ? "Save" : "Change Photo"}
           </div>
           <div
-            className={`w-2/3 md:w-1/3 lg:w-1/5 text-lg md:text-xl font-bold flex justify-center items-center border-sm rounded-br-2xl px-7 py-2 text-primary-default bg-secondary-focus cursor-pointer hover:bg-primary-default hover:text-secondary-focus transition-all duration-300 ${
+            className={`w-2/3 md:w-1/3 lg:w-1/5 text-lg md:text-xl font-bold flex justify-center items-center border-sm rounded-br-2xl px-7 py-2 text-primary-default bg-secondary-focus cursor-pointer hover:bg-primary-default hover:text-secondary-focus transition-all duration-300  ${
               !isImageSelected && "hidden"
-            }`}
+            } ${loadingProfilePic && "hidden"}`}
             onClick={handleProfilePhotoCancelButtonClick}
           >
             Remove
           </div>
           <input
             type="file"
-            id="fileInput"
             accept="image/jpeg, image/png"
             onChange={handleFileChange}
             className="hidden"
@@ -226,7 +288,9 @@ const Settings = () => {
               onChange={(e) => setBioTextArea(e.target.value)}
             />
             <div
-              className="w-2/3 md:w-1/3 lg:w-1/4 text-secondary-focus bg-primary-default px-4 py-2 border-sm border-secondary-focus font-serif text-center rounded-br-2xl shadow-sm hover:shadow-none hover:text-primary-default hover:bg-secondary-focus transition-all duration-300 hover:cursor-pointer"
+              className={`w-2/3 md:w-1/3 lg:w-1/4 text-secondary-focus bg-primary-default px-4 py-2 border-sm border-secondary-focus font-serif text-center rounded-br-2xl shadow-sm hover:shadow-none hover:text-primary-default hover:bg-secondary-focus transition-all duration-300 hover:cursor-pointer ${
+                loading && "pointer-events-none opacity-50"
+              }`}
               onClick={handleBioChange}
             >
               {loading ? (

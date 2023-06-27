@@ -57,6 +57,47 @@ async function updateUserprofileTable(id, data_to_update) {
 }
 export { updateUserprofileTable }
 
+async function uploadUserProfilePicToStorage(userid, new_image, old_image) {
+  // function to do as it says on the tin
+  if (old_image) {
+    // delete from storage
+    const { data1, error1 } = await supabase.storage
+      .from("profile-pics")
+      .remove(old_image)
+    if (error1) {
+      console.log("Error in deleting old image => ", error1)
+    } else {
+      console.log("Old Image deleted successfully.")
+    }
+  }
+  // upload new image to storage
+  const newFilename = getTimestampedName(new_image.name)
+  console.log("New image is>", new_image)
+  const { data: insertedImage, error2 } = await supabase.storage
+    .from("profile-pics")
+    .upload(`${userid}/${newFilename}`, new_image)
+  if (error2) {
+    console.log("Error in inserting profile pic: ", error2)
+  } else {
+    console.log(
+      "Awesome, the profile pic was inserted successfully=> ",
+      insertedImage.path
+    )
+  }
+  // update url in user profile table
+  const { data3, error: userprofileError } = await supabase
+    .from("userprofile")
+    .update({ profile_pic_url: insertedImage.path })
+    .eq("id", userid)
+  if (userprofileError) {
+    console.log("Error updating userprofilc pic in table => ", userprofileError)
+    return false
+  } else {
+    return true
+  }
+}
+export { uploadUserProfilePicToStorage }
+
 /* 
 
 Functions for making a new product 

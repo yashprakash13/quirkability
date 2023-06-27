@@ -37,10 +37,10 @@ function getTimestampedName(name) {
 }
 export { getTimestampedName }
 
-async function compressImage(image) {
-  // return an image compressed to <= 1.5 MB in size
+async function compressImage(image, size = 0.5) {
+  // return an image compressed to <= 500 KB in size
   const options = {
-    maxSizeMB: 1,
+    maxSizeMB: size,
     maxWidthOrHeight: 1000,
     useWebWorker: true,
   }
@@ -102,3 +102,14 @@ function getSupabaseImageStorageURL(image) {
   return URL
 }
 export { getSupabaseImageStorageURL }
+
+function getSupabaseProfilePicURL(image) {
+  // function to get image url and return complete display url from storage
+  const URL = `${
+    import.meta.env.VITE_PROJECT_URL_SUPABASE
+  }/storage/v1/object/public/${
+    import.meta.env.VITE_SUPABASE_USER_PROFILE_PIC_BUCKET_NAME
+  }/${image}`
+  return URL
+}
+export { getSupabaseProfilePicURL }
