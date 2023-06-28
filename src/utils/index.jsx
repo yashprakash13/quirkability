@@ -66,6 +66,7 @@ export { getCurrency }
 
 function getCurrencyAsStripeExpects(index) {
   // return the currency from index value // referenced in the order defined in ./constants.jsx
+  console.log("Price index=> ", index, typeof index)
   switch (index) {
     case 0:
       return "USD"
@@ -73,8 +74,6 @@ function getCurrencyAsStripeExpects(index) {
       return "GBP"
     case 2:
       return "EUR"
-    default:
-      return "USD"
   }
 }
 export { getCurrencyAsStripeExpects }

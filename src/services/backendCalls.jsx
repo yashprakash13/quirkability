@@ -40,6 +40,37 @@ async function createStripeProduct(id, name, price, price_currency, account) {
 }
 export { createStripeProduct }
 
+async function editStripePrice(
+  id,
+  price,
+  price_currency,
+  connected_account_id,
+  product_id,
+  price_id
+) {
+  const response = await fetch("http://localhost:8000/update-price", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      id: id,
+      price: parseFloat(price),
+      price_currency: price_currency,
+      account: connected_account_id,
+      stripe_price_id: price_id,
+      stripe_product_id: product_id,
+    }),
+  })
+  const result = await response.json()
+  if (result.status) {
+    console.log("Stripe price modified.")
+    return true
+  } else {
+    console.log("Error occured in modifying price.")
+    return false
+  }
+}
+export { editStripePrice }
+
 async function makePayment(
   product_id,
   stripe_price_id,

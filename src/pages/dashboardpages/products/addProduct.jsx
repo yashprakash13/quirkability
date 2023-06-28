@@ -232,7 +232,7 @@ const AddProduct = () => {
         product_id,
         name,
         price,
-        getCurrencyAsStripeExpects(priceType),
+        getCurrencyAsStripeExpects(parseInt(priceType)),
         stripeId
       )
       await insertIntoProductImagesStorage(user.id, productImages, product_id)

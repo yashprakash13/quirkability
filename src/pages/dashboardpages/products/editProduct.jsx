@@ -3,7 +3,11 @@ import Editor from "../../../components/inputs/Editor"
 import FileDropper from "../../../components/inputs/FileDropper"
 import Toggle from "../../../components/inputs/Toggle"
 import * as yup from "yup"
-import { checkFileSize, isValidHttpsUrl } from "../../../utils"
+import {
+  checkFileSize,
+  getCurrencyAsStripeExpects,
+  isValidHttpsUrl,
+} from "../../../utils"
 import { priceCurrency } from "../../../utils/constants"
 import { ClimbingBoxLoader } from "react-spinners"
 import { useNavigate, useParams } from "react-router-dom"
@@ -20,7 +24,10 @@ import { useAuth } from "../../../context/auth"
 import usePayment from "../../../hooks/use-payment"
 import { DocumentIcon, TrashIcon } from "@heroicons/react/24/outline"
 import DropdownMenu from "../../../components/DropdownMenu"
-import { archiveStripeProduct } from "../../../services/backendCalls"
+import {
+  archiveStripeProduct,
+  editStripePrice,
+} from "../../../services/backendCalls"
 
 const EditProduct = () => {
   // get the product id to fetch details for
@@ -38,12 +45,16 @@ const EditProduct = () => {
   const [shortDesc, setShortDesc] = useState("")
   const [callToAction, setCallToAction] = useState("")
 
-  // these three only needed when editing a product is this state
+  // these eight only needed when editing a product is this state
   const [initialProductArtifact, setInitialProductArtifact] = useState(null)
   const [initialProductImages, setInitialProductImages] = useState([])
   const [allProductStuffTakenInitially, setAllProductStuffTakenInitially] =
     useState(null)
   const [isPublishedProduct, setIsPublishedProduct] = useState(true)
+  const [stripePriceId, setStripePriceId] = useState()
+  const [stripeProductId, setStripeProductId] = useState()
+  const [initialPrice, setInitialPrice] = useState()
+  const [initialPriceType, setInitialPriceType] = useState()
 
   const [inputErrors, setInputErrors] = useState(null)
   const [errorProductImages, setErrorProductImages] = useState("")
@@ -269,7 +280,20 @@ const EditProduct = () => {
           productId
         )
       }
-      // work done, product updated -> navigate to products page
+      // update Stripe product's Price is price is edited
+      if (price !== initialPrice || initialPriceType !== priceType) {
+        const response = await editStripePrice(
+          productId,
+          price,
+          getCurrencyAsStripeExpects(parseInt(priceType)),
+          stripeId,
+          stripeProductId,
+          stripePriceId
+        )
+        if (response) console.log("Stripe price is updated with new price. ")
+        else console.log("Error in updating stripe price.")
+      }
+      // all work done, product updated -> navigate to products page
       navigate("/dashboard/products")
     } else {
       // work not done, something is wrong...
@@ -298,17 +322,21 @@ const EditProduct = () => {
     async function setInitialValuesInForm() {
       const productDetails = await getSpecificProductDetailsFromId(
         productId,
-        "id, name, description, price, price_type, call_to_action, short_desc, display_sales, allow_copies, is_published"
+        "id, name, description, price, price_type, call_to_action, short_desc, display_sales, allow_copies, is_published, stripe_price_id, stripe_product_id"
       )
       setName(productDetails.name)
       setDescription(productDetails.description)
       setPrice(productDetails.price)
+      setInitialPrice(productDetails.price) // need this to update Stripe Product as well when price is changed
       setPriceType(productDetails.price_type)
+      setInitialPriceType(productDetails.price_type) // need this to update Stripe Product as well when price is changed
       setCallToAction(productDetails.call_to_action)
       setShortDesc(productDetails.short_desc)
       setDisplaySales(productDetails.display_sales)
       setAllowCopies(productDetails.allow_copies)
       setIsPublishedProduct(productDetails.is_published)
+      setStripePriceId(productDetails.stripe_price_id) // need this to update Stripe Product as well when price is changed
+      setStripeProductId(productDetails.stripe_product_id) // need this to update Stripe Product as well when price is changed
 
       const productURLDetails =
         await getSpecificProductURLOrArtifactDetailsFromId(
