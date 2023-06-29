@@ -1,18 +1,7 @@
-import React, { useEffect, useMemo, useState } from "react"
-import { useAuth } from "../../../context/auth"
-import { getAllSalesEmails } from "../../../services/supabaseHelpers"
+import React, { useMemo } from "react"
 import { useTable } from "react-table"
 
-const AudienceTable = () => {
-  const { user } = useAuth()
-  const [emails, setEmails] = useState([])
-
-  async function fetchSalesEmails() {
-    const emails = await getAllSalesEmails(user.id)
-    console.log("Emails=> ", emails)
-    setEmails(emails)
-  }
-
+const AudienceTable = ({ emailData }) => {
   const columns = useMemo(
     () => [
       {
@@ -24,20 +13,12 @@ const AudienceTable = () => {
     []
   )
 
-  const emailData = useMemo(() => [...emails], [emails])
-
   const tableInstance = useTable({
     columns: columns,
     data: emailData,
   })
 
   const { getTableBodyProps, headerGroups, rows, prepareRow } = tableInstance
-
-  useEffect(() => {
-    if (emails.length === 0) {
-      fetchSalesEmails()
-    }
-  }, [])
 
   const isEven = (idx) => idx % 2 === 0
 

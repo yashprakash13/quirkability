@@ -1,7 +1,34 @@
 import { ArrowUpOnSquareIcon } from "@heroicons/react/24/outline"
 import AudienceTable from "./audienceTable"
+import { useAuth } from "../../../context/auth"
+import { useEffect, useMemo, useState } from "react"
+import { getAllSalesEmails } from "../../../services/supabaseHelpers"
+import { CSVDownload, CSVLink } from "react-csv"
 
 const Audience = () => {
+  const { user } = useAuth()
+  const [emails, setEmails] = useState([])
+
+  async function fetchSalesEmails() {
+    const emails = await getAllSalesEmails(user.id)
+    console.log("Emails=> ", emails)
+    setEmails(emails)
+  }
+
+  useEffect(() => {
+    if (emails.length === 0) {
+      fetchSalesEmails()
+    }
+  }, [])
+
+  const emailData = useMemo(() => [...emails], [emails])
+
+  const csvData = [["Email"], ...emailData.map(({ email }) => [email])]
+
+  async function exportEmailsAsCSV() {
+    console.log("Exporting csv...")
+  }
+
   return (
     <div className="container flex flex-col mx-auto p-3">
       <div className="flex flex-col md:flex-row gap-11 justify-start md:justify-between md:items-center my-11 md:my-20 md:mx-32 mx-auto">
@@ -9,13 +36,18 @@ const Audience = () => {
           <div className="text-5xl">142</div>
           <div className="text-2xl">Total Fans</div>
         </div>
-        <div className="font-serif text-xl text-primary-focus bg-secondary-focus py-3 px-6 rounded-br-lg inline-flex justify-center items-start gap-3 border-sm border-secondary-focus hover:text-secondary-focus hover:bg-primary-focus hover:border-sm transition-all duration-300 cursor-pointer group">
+        <CSVLink
+          className="font-serif text-xl text-primary-focus bg-secondary-focus py-3 px-6 rounded-br-lg inline-flex justify-center items-start gap-3 border-sm border-secondary-focus hover:text-secondary-focus hover:bg-primary-focus hover:border-sm transition-all duration-300 cursor-pointer group"
+          filename="audience.csv"
+          data={csvData}
+        >
           <span className="group-hover:text-secondary-focus">Export CSV</span>
           <ArrowUpOnSquareIcon className="w-6 h-6 text-primary-focus group-hover:text-secondary-focus" />
-        </div>
+          <CSVLink className="" filename="audience.csv" data={csvData} />
+        </CSVLink>
       </div>
       <div className="md:my-20 md:mx-32 ">
-        <AudienceTable />
+        <AudienceTable emailData={emailData} />
       </div>
     </div>
   )
