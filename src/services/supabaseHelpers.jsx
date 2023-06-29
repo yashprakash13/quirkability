@@ -279,6 +279,7 @@ async function populatePublicProducts(username, columns = "*") {
       .from("product")
       .select(columns)
       .eq("user_id", userId.id)
+      .eq("is_published", true)
     if (products) {
       // 3. for each product, get image from `product_urls` table and then form the URL to return in order to display from storage
       const product_ids_array = products.map((product) => product.id)
@@ -834,10 +835,11 @@ async function getAllSalesEmails(userid) {
     )
   } else {
     console.log("Products=> ", products)
+    const productIds = products.map((item) => item.id)
     let { data: emails, error: errorSales } = await supabase
       .from("sale")
       .select("email")
-      .in("product_id", products)
+      .in("product_id", productIds)
     if (errorSales) {
       console.log(
         "Error getting list of emails from sales table=> ",

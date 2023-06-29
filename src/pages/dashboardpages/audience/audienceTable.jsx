@@ -7,7 +7,7 @@ const AudienceTable = () => {
 
   async function fetchSalesEmails() {
     const emails = await getAllSalesEmails(user.id)
-    console.log(emails)
+    console.log("Emails=> ", emails)
   }
   useEffect(() => {
     fetchSalesEmails()
