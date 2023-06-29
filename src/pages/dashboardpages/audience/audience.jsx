@@ -14,7 +14,7 @@ const Audience = () => {
           <ArrowUpOnSquareIcon className="w-6 h-6 text-primary-focus group-hover:text-secondary-focus" />
         </div>
       </div>
-      <div className="md:my-20 md:mx-32 mx-auto container">
+      <div className="md:my-20 md:mx-32 ">
         <AudienceTable />
       </div>
     </div>
