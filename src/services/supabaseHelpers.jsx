@@ -814,3 +814,38 @@ async function deleteProduct(productId) {
   }
 }
 export { deleteProduct }
+
+/*
+Build the Audience Table
+*/
+
+async function getAllSalesEmails(userid) {
+  // function to provide a list of emails from sales for the user
+
+  let { data: products, error } = await supabase
+    .from("product")
+    .select("id")
+    .eq("user_id", userid)
+    .eq("is_published", true)
+  if (error) {
+    console.log(
+      "Error getting list of productIDs from products table=> ",
+      error
+    )
+  } else {
+    console.log("Products=> ", products)
+    let { data: emails, error: errorSales } = await supabase
+      .from("sale")
+      .select("email")
+      .in("product_id", products)
+    if (errorSales) {
+      console.log(
+        "Error getting list of emails from sales table=> ",
+        errorSales
+      )
+    } else {
+      return emails
+    }
+  }
+}
+export { getAllSalesEmails }

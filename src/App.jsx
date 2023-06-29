@@ -11,7 +11,7 @@ import Login from "./pages/login"
 import Signup from "./pages/signUp"
 import Dashboard from "./pages/dashboard"
 import Products from "./pages/dashboardpages/products/products"
-import Audience from "./pages/dashboardpages/audience"
+import Audience from "./pages/dashboardpages/audience/audience"
 import Settings from "./pages/dashboardpages/settings"
 import AddProduct from "./pages/dashboardpages/products/addProduct"
 import PublicUser from "./pages/publicpages/publicUser"
@@ -72,7 +72,12 @@ function App() {
         },
         {
           path: "audience",
-          element: <Audience />,
+          children: [
+            {
+              index: true,
+              element: <Audience />,
+            },
+          ],
         },
         {
           path: "settings",
