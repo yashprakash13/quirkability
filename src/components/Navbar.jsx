@@ -1,9 +1,10 @@
 import React from "react"
 import Logo from "./Logo"
 import { Link, useNavigate } from "react-router-dom"
-import { Bars3Icon, UserCircleIcon } from "@heroicons/react/24/outline"
+import { ChevronDownIcon } from "@heroicons/react/24/outline"
 
 import { useAuth } from "../context/auth"
+import DropdownMenu from "./DropdownMenu"
 
 const Navbar = () => {
   const { user, signOut } = useAuth()
@@ -16,10 +17,6 @@ const Navbar = () => {
     } else {
       navigate("/")
     }
-  }
-
-  function redirectToDashboard() {
-    navigate("/")
   }
 
   return (
@@ -74,10 +71,13 @@ const Navbar = () => {
         </div>
       )}
       {user && (
-        <UserCircleIcon
-          className="w-9 h-9 text-secondary-focus cursor-pointer"
-          onClick={redirectToDashboard}
-        />
+        <div className="font-serif text-xl text-secondary-focus cursor-pointer inline-flex items-center gap-2">
+          <DropdownMenu
+            dropdownText={user.user_metadata.username}
+            icon={<ChevronDownIcon className="h-4 w-4 text-secondary-focus" />}
+            options={[{ text: "Sign Out", onClick: signOut }]}
+          />
+        </div>
       )}
     </div>
   )

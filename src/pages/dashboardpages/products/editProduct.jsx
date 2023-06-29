@@ -411,6 +411,8 @@ const EditProduct = () => {
             }
             options={[{ text: "Confirm", onClick: confirmDeleteProduct }]}
             groupHoverStateClass={"group-hover:text-alert-dark"}
+            borderClass={"border-sm border-secondary-focus"}
+            backgroundClass={"bg-primary-default "}
           />
         </div>
       </div>

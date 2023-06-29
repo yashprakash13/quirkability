@@ -21,7 +21,21 @@ const Audience = () => {
     }
   }, [])
 
-  const emailData = useMemo(() => [...emails], [emails])
+  function getUniqueEmailData() {
+    const uniqueEmails = []
+    const seenEmails = new Set()
+
+    emails.forEach((item) => {
+      const email = item.email
+      if (!seenEmails.has(email)) {
+        seenEmails.add(email)
+        uniqueEmails.push(item)
+      }
+    })
+    return uniqueEmails
+  }
+
+  const emailData = useMemo(() => getUniqueEmailData(), [emails])
 
   const csvData = [["Email"], ...emailData.map(({ email }) => [email])]
 
@@ -33,7 +47,7 @@ const Audience = () => {
     <div className="container flex flex-col mx-auto p-3">
       <div className="flex flex-col md:flex-row gap-11 justify-start md:justify-between md:items-center my-11 md:my-20 md:mx-32 mx-auto">
         <div className="flex flex-col gap-5 justify-center font-serif items-center">
-          <div className="text-5xl">142</div>
+          <div className="text-5xl">{emailData.length}</div>
           <div className="text-2xl">Total Fans</div>
         </div>
         <CSVLink

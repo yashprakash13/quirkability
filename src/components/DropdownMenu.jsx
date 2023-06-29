@@ -6,6 +6,8 @@ const DropdownMenu = ({
   icon,
   options,
   groupHoverStateClass,
+  borderClass,
+  backgroundClass,
 }) => {
   // In the props, the dropdown text is a string, icon is a component, options is an array of dicts, each dict containing a 'text' field and a 'func' field.
   // groupHoverStateClass is a string to change hover state of dropdown icon + text together
@@ -15,7 +17,7 @@ const DropdownMenu = ({
   return (
     <div className="group">
       <div
-        className={`relative gap-3 text-lg text-secondary-focus bg-primary-default border-sm border-secondary-focus focus:outline-none rounded-br-lg px-4 py-2.5 text-center inline-flex items-center cursor-pointer ${groupHoverStateClass}`}
+        className={`relative font-serif gap-3 text-lg text-secondary-focus ${borderClass} ${backgroundClass} focus:outline-none rounded-br-lg px-4 py-2.5 text-center inline-flex items-center cursor-pointer ${groupHoverStateClass}`}
         onClick={() => setIsActive(!isActive)}
         ref={wrapperRef}
       >
