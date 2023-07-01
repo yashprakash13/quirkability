@@ -31,15 +31,13 @@ const DropdownMenu = ({
         >
           <ul className="py-2 text-md text-secondary-focus cursor-pointer">
             {options.map((option, index) => (
-              <li>
-                <div
-                  className="block px-4 py-2 hover:bg-primary-focus"
-                  key={index}
-                  onClick={option.onClick}
-                >
-                  {option.text}
-                </div>
-              </li>
+              <div
+                key={index}
+                className="block px-4 py-2 hover:bg-primary-focus"
+                onClick={option.onClick}
+              >
+                {option.text}
+              </div>
             ))}
           </ul>
         </div>
