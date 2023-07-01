@@ -37,10 +37,13 @@ const PublicProduct = () => {
       const product = await getProductDetailsFromId(productId)
       setProductDetails(product)
       console.log("Set product details now => ", product)
+      if (!product.allow_copies) {
+        setQuantity(1)
+      }
       setUserDetails(
         await getUserDetailsFromId(
           product.user_id,
-          "username, bio, stripe_connect_id"
+          "username, bio, stripe_connect_id, profile_pic_url"
         )
       )
     }
@@ -226,7 +229,11 @@ const PublicProduct = () => {
         </div>
         {userDetails && (
           <div className="mt-5 mb-14">
-            <UserHeader name={userDetails.username} bio={userDetails.bio} />
+            <UserHeader
+              name={userDetails.username}
+              bio={userDetails.bio}
+              pic_url={userDetails.profile_pic_url}
+            />
           </div>
         )}
         <MadeByFooter />

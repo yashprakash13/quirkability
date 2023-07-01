@@ -145,18 +145,16 @@ const PaymentAfterProductInfo = () => {
                 <div className="text-2xl md:text-3xl font-medium font-serif text-center">
                   Here is the link to your purchase:
                 </div>
-                <div className="mt-11 w-full flex flex-col md:flex-row gap-5">
-                  <input
-                    className="text-xl font-serif p-4 border-sm border-secondary-focus rounded-br-lg md:basis-3/4"
-                    value={
-                      orderProduct.redirect_url
-                        ? orderProduct.redirect_url
-                        : getDownloadURLForArtifact(
-                            orderProduct.product_artifact_path
-                          )
-                    }
-                    readOnly
-                  />
+                <div className="mt-11 w-full flex flex-col md:flex-row gap-5 md:items-center md:justify-center">
+                  {orderProduct.redirect_url && (
+                    <input
+                      className="text-xl font-serif p-4 border-sm border-secondary-focus rounded-br-lg md:basis-3/4"
+                      value={
+                        orderProduct.redirect_url && orderProduct.redirect_url
+                      }
+                      readOnly
+                    />
+                  )}
                   {orderProduct.redirect_url ? (
                     <Link
                       className="md:basis-1/4 inline-flex items-center gap-2 justify-center text-center text-xl font-serif text-primary-default bg-secondary-focus px-5 py-3 rounded-br-lg cursor-pointer hover:bg-primary-default hover:text-secondary-focus transition-all duration-300 hover:border-sm hover:border-secondary-focus"

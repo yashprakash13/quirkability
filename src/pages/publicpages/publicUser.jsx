@@ -42,7 +42,12 @@ const PublicUser = () => {
         // get user's products + bio
         setProducts(await populatePublicProducts(username, "id, name"))
         const userId = await getUserIdFromUsername(username)
-        setUserDetails(await getUserDetailsFromId(userId.id, "username, bio"))
+        setUserDetails(
+          await getUserDetailsFromId(
+            userId.id,
+            "username, bio, profile_pic_url"
+          )
+        )
       }
     }
     checkUsername()
@@ -55,7 +60,11 @@ const PublicUser = () => {
   return (
     <div className="container flex flex-col mx-auto p-3 gap-14">
       {userDetails && (
-        <UserHeader name={userDetails.username} bio={userDetails.bio} />
+        <UserHeader
+          name={userDetails.username}
+          bio={userDetails.bio}
+          pic_url={userDetails.profile_pic_url}
+        />
       )}
       <div className="flex flex-col md:flex-row  flex-wrap gap-7 items-center justify-center">
         {products &&
