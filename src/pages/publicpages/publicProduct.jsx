@@ -18,6 +18,7 @@ import ImageCarousel from "../../components/ImageCarousel"
 import MadeByFooter from "../../components/MadeByFooter"
 import * as yup from "yup"
 import { makePayment } from "../../services/backendCalls"
+import { toast } from "react-toastify"
 
 const PublicProduct = () => {
   const { productId } = useParams()
@@ -32,21 +33,39 @@ const PublicProduct = () => {
   const [customerEmail, setCustomerEmail] = useState(null)
   const [inputErrors, setInputErrors] = useState(null)
 
-  useEffect(() => {
-    async function getProductDetails(productId) {
-      const product = await getProductDetailsFromId(productId)
+  async function getProductDetails(productId) {
+    const product = await getProductDetailsFromId(productId)
+    if (product) {
       setProductDetails(product)
-      console.log("Set product details now => ", product)
-      if (!product.allow_copies) {
-        setQuantity(1)
-      }
-      setUserDetails(
-        await getUserDetailsFromId(
-          product.user_id,
-          "username, bio, stripe_connect_id, profile_pic_url"
-        )
-      )
+    } else {
+      toast.error("The product doesn't exist!", {
+        toastId: "error2", // this id field is necessary because it helps make the toast show only once.
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      })
+      setTimeout(() => {
+        navigate(-1)
+      }, 2000)
     }
+    console.log("Set product details now => ", product)
+    if (!product.allow_copies) {
+      setQuantity(1)
+    }
+    setUserDetails(
+      await getUserDetailsFromId(
+        product.user_id,
+        "username, bio, stripe_connect_id, profile_pic_url"
+      )
+    )
+  }
+
+  useEffect(() => {
     if (productId) {
       getProductDetails(productId)
     }

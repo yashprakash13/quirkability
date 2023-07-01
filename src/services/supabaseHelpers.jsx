@@ -376,18 +376,19 @@ Get specific product details
 */
 async function getProductDetailsFromId(productId) {
   // function to get product details for productId for public product page
-  let { data: product, error1 } = await supabase
+  let { data: product, error: errorProduct } = await supabase
     .from("product")
     .select("*")
     .eq("id", productId)
     .single()
-  if (error1) {
+  if (errorProduct) {
     console.log(
       "Error getting product details for productId => ",
       productId,
       ", error=> ",
-      error1
+      errorProduct
     )
+    return null
   } else {
     let { data: product_url, error2 } = await supabase
       .from("product_urls")
