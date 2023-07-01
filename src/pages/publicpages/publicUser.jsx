@@ -54,7 +54,7 @@ const PublicUser = () => {
   }, [])
 
   function navigateToPublicProductPage(productId) {
-    navigate(`/${username}/${productId}`)
+    navigate(`/${username}/${productId}`, { state: { userDetails } })
   }
 
   return (

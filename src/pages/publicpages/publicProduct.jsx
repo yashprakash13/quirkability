@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom"
+import { useLocation, useNavigate, useParams } from "react-router-dom"
 import {
   BanknotesIcon,
   CurrencyDollarIcon,
@@ -23,7 +23,7 @@ import { toast } from "react-toastify"
 const PublicProduct = () => {
   const { productId } = useParams()
   console.log("Received product id=> ", productId)
-
+  const userStuff = useLocation()
   const [productDetails, setProductDetails] = useState(null)
   const [userDetails, setUserDetails] = useState(null)
 
@@ -57,12 +57,7 @@ const PublicProduct = () => {
     if (!product.allow_copies) {
       setQuantity(1)
     }
-    setUserDetails(
-      await getUserDetailsFromId(
-        product.user_id,
-        "username, bio, stripe_connect_id, profile_pic_url"
-      )
-    )
+    setUserDetails(userStuff.state.userDetails)
   }
 
   useEffect(() => {
