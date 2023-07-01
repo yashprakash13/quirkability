@@ -1,3 +1,18 @@
+async function perform_server_health_check() {
+  try {
+    const response = await fetch(`http://localhost:8000/health`)
+    const result = await response.json()
+    console.log("Health check=> ", result)
+    if (result.status) {
+      console.log("Health check success.")
+      return true
+    }
+  } catch (error) {
+    return false
+  }
+}
+export { perform_server_health_check }
+
 async function createStripeConnectAccount(id, email) {
   // function to ask backend to start stripe's connect account creation process
   const response = await fetch("http://localhost:8000/create-account", {

@@ -19,11 +19,17 @@ import PublicProduct from "./pages/publicpages/publicProduct"
 import EditProduct from "./pages/dashboardpages/products/editProduct"
 import PaymentAfter from "./pages/publicpages/paymentAfter"
 import PaymentAfterProductInfo from "./pages/publicpages/paymentAfterProductInfo"
+import Maintenance from "./pages/maintenance"
 
 //services
 import { AuthProvider } from "./context/auth"
+import { useEffect, useRef, useState } from "react"
+import { perform_server_health_check } from "./services/backendCalls"
 
 function App() {
+  const [serverHealthOK, setServerHealthOK] = useState(true)
+  const ref = useRef(null)
+
   const router = createBrowserRouter([
     {
       path: "/",
@@ -113,11 +119,30 @@ function App() {
       ],
     },
   ])
+
+  async function performHealthCheck() {
+    const maintenanceOrNot = await perform_server_health_check()
+    setServerHealthOK(true ? maintenanceOrNot : false)
+  }
+
+  useEffect(() => {
+    ref.current = setInterval(performHealthCheck, 60 * 1000)
+    return () => {
+      if (ref.current) {
+        clearInterval(ref.current)
+      }
+    }
+  }, [])
+
   return (
     <div className="container lg:max-w-screenwidth-lg md:max-w-screenwidth-md mx-auto py-4 h-screen">
-      <AuthProvider>
-        <RouterProvider router={router} />
-      </AuthProvider>
+      {serverHealthOK ? (
+        <AuthProvider>
+          <RouterProvider router={router} />
+        </AuthProvider>
+      ) : (
+        <Maintenance />
+      )}
     </div>
   )
 }
