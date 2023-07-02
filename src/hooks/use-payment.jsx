@@ -8,14 +8,25 @@ const usePayment = (user) => {
   useEffect(() => {
     async function fetchData() {
       if (user) {
-        if (readFromCache("sub_account_id")) {
+        if (
+          readFromCache(
+            import.meta.env.VITE_STRIPE_USER_ACCOUNT_KEY_FOR_STORAGE
+          )
+        ) {
           console.log("Read stripe id from cache.")
-          setStripeId(readFromCache("sub_account_id"))
+          setStripeId(
+            readFromCache(
+              import.meta.env.VITE_STRIPE_USER_ACCOUNT_KEY_FOR_STORAGE
+            )
+          )
         } else {
           console.log("Fetching stripe id from db.")
           const stripe_connect_id = await getStripeId(user.id)
           setStripeId(stripe_connect_id)
-          writeToCache("sub_account_id", stripe_connect_id)
+          writeToCache(
+            import.meta.env.VITE_STRIPE_USER_ACCOUNT_KEY_FOR_STORAGE,
+            stripe_connect_id
+          )
         }
       }
     }

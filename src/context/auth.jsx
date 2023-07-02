@@ -14,7 +14,9 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    let gotSession = readFromCache("authSession")
+    let gotSession = readFromCache(
+      import.meta.env.VITE_STRIPE_USER_SESSION_KEY_FOR_STORAGE
+    )
     if (gotSession) {
       console.log("Retrieved: ", gotSession)
       setSession(gotSession)
@@ -26,10 +28,18 @@ export function AuthProvider({ children }) {
           if (session) {
             console.log("New session: ", session)
             setUser(session.user)
-            writeToCache("authSession", session)
+            writeToCache(
+              import.meta.env.VITE_STRIPE_USER_SESSION_KEY_FOR_STORAGE,
+              session
+            )
             setSession(session)
           } else {
-            deleteFromCache("authSession")
+            deleteFromCache(
+              import.meta.env.VITE_STRIPE_USER_SESSION_KEY_FOR_STORAGE
+            )
+            deleteFromCache(
+              import.meta.env.VITE_STRIPE_USER_ACCOUNT_KEY_FOR_STORAGE
+            )
             setSession(null)
             setUser(null)
             setLoading(false)
