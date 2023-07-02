@@ -6,7 +6,7 @@ import { ChevronDownIcon } from "@heroicons/react/24/outline"
 import { useAuth } from "../context/auth"
 import DropdownMenu from "./DropdownMenu"
 
-const Navbar = () => {
+const Navbar = ({ onScrollToFeatures, onScrollToPricing }) => {
   const { user, signOut } = useAuth()
   const navigate = useNavigate()
 
@@ -26,10 +26,16 @@ const Navbar = () => {
       ) : (
         <div className="flex flex-col md:w-fit w-full ">
           <div className="flex space-x-5 justify-between items-center md:hidden">
-            <div className="text-sm font-bold text-secondary-default font-sans cursor-pointer hover:underline transition-all duration-300">
+            <div
+              className="text-sm font-bold text-secondary-default font-sans cursor-pointer hover:underline transition-all duration-300"
+              onClick={onScrollToFeatures && onScrollToFeatures}
+            >
               FEATURES
             </div>
-            <div className="text-sm font-bold text-secondary-default font-sans cursor-pointer hover:underline transition-all duration-300">
+            <div
+              className="text-sm font-bold text-secondary-default font-sans cursor-pointer hover:underline transition-all duration-300"
+              onClick={onScrollToPricing && onScrollToPricing}
+            >
               PRICING
             </div>
             <Link
@@ -39,7 +45,7 @@ const Navbar = () => {
               Login
             </Link>
           </div>
-          <hr class="h-px mt-2 mb-4 w-full bg-slate-bars opacity-25 border-0 dark:bg-secondary-focus md:hidden"></hr>
+          <hr className="h-px mt-2 mb-4 w-full bg-slate-bars opacity-25 border-0 dark:bg-secondary-focus md:hidden"></hr>
           <Logo />
         </div>
       )}

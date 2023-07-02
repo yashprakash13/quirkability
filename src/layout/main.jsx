@@ -13,9 +13,22 @@ const Main = () => {
     }
   }, [])
 
+  const handleScrollToFeatures = () => {
+    const featuresSection = document.getElementById("features")
+    featuresSection.scrollIntoView({ behavior: "smooth" })
+  }
+
+  const handleScrollToPricing = () => {
+    const pricingSection = document.getElementById("pricing")
+    pricingSection.scrollIntoView({ behavior: "smooth" })
+  }
+
   return (
     <div>
-      <Navbar />
+      <Navbar
+        onScrollToFeatures={handleScrollToFeatures}
+        onScrollToPricing={handleScrollToPricing}
+      />
       <div>{!user && <Outlet />}</div>
     </div>
   )
