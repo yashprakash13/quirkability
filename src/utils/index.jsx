@@ -1,4 +1,5 @@
 import imageCompression from "browser-image-compression"
+import secureLocalStorage from "react-secure-storage"
 
 function isValidHttpsUrl(string) {
   // check if a given url is valid
@@ -83,11 +84,12 @@ export { getCurrencyAsStripeExpects }
  */
 
 const writeToCache = (key, data) =>
-  localStorage.setItem(key, JSON.stringify(data))
+  secureLocalStorage.setItem(key, JSON.stringify(data))
 
-const readFromCache = (key) => JSON.parse(localStorage.getItem(key)) || null
+const readFromCache = (key) =>
+  JSON.parse(secureLocalStorage.getItem(key)) || null
 
-const deleteFromCache = (key) => localStorage.removeItem(key)
+const deleteFromCache = (key) => secureLocalStorage.removeItem(key)
 
 export { readFromCache, writeToCache, deleteFromCache }
 

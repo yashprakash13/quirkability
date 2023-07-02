@@ -19,6 +19,7 @@
     "react-dom": "^18.2.0",
     "react-quill": "^2.0.0",
     "react-router-dom": "^6.10.0",
+    "react-secure-storage": "^1.2.2",
     "react-spinners": "^0.13.8",
     "react-table": "^7.8.0",
     "react-toastify": "^9.1.2",
