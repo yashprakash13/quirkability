@@ -28,5 +28,5 @@ jobs:
         uses: borales/actions-yarn@v4
         with:
           cmd: build
-      - name: Copy folder to where nginx expects it to be
-        run: cp -r ${{secrets.COPY_FROM_FOLDER}} ${{secrets.COPY_TO_FOLDER}}
+      # - name: Copy folder to where nginx expects it to be
+      #   run: cp -r ${{secrets.COPY_FROM_FOLDER}} ${{secrets.COPY_TO_FOLDER}}
