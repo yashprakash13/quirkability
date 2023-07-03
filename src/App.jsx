@@ -28,6 +28,7 @@ import { perform_server_health_check } from "./services/backendCalls"
 
 function App() {
   const [serverHealthOK, setServerHealthOK] = useState(true)
+
   const ref = useRef(null)
 
   if (import.meta.env.VITE_APP_MODE === "prod") {
