@@ -840,7 +840,9 @@ async function getAllSalesEmails(userid) {
     let { data: emails, error: errorSales } = await supabase
       .from("sale")
       .select("email")
+      .neq("payment_intent_id", null)
       .in("product_id", productIds)
+
     if (errorSales) {
       console.log(
         "Error getting list of emails from sales table=> ",
