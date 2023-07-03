@@ -41,7 +41,6 @@ const Dashboard = () => {
             <ClockIcon className="w-7 h-7 text-secondary-focus" /> Your last
             sign in was on:{" "}
           </div>
-
           <span className="font-thin">{lastSignInTime}</span>
         </div>
       </div>
