@@ -30,6 +30,11 @@ function App() {
   const [serverHealthOK, setServerHealthOK] = useState(true)
   const ref = useRef(null)
 
+  if (import.meta.env.VITE_APP_MODE === "prod") {
+    const NO_OP = function () {}
+    console.log = NO_OP
+  }
+
   const router = createBrowserRouter([
     {
       path: "/",
