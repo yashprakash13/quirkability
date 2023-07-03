@@ -34,6 +34,10 @@ function App() {
   if (import.meta.env.VITE_APP_MODE === "prod") {
     const NO_OP = function () {}
     console.log = NO_OP
+    console.warn = NO_OP
+    console.error = NO_OP
+    console.info = NO_OP
+    console.debug = NO_OP
   }
 
   const router = createBrowserRouter([
