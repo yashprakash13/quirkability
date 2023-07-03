@@ -28,5 +28,9 @@ jobs:
         uses: borales/actions-yarn@v4
         with:
           cmd: build
+        env:
+          VITE_APP_MODE: ${{ secrets.VITE_APP_MODE }}
+          VITE_PROJECT_URL_SUPABASE: ${{ secrets.VITE_PROJECT_URL_SUPABASE }}
+          VITE_PROJECT_ANON_KEY_SUPABASE: ${{ secrets.VITE_PROJECT_ANON_KEY_SUPABASE }}
       - name: Copy folder to where nginx expects it to be
         run: cp -r ${{secrets.COPY_FROM_FOLDER}} ${{secrets.COPY_TO_FOLDER}}
