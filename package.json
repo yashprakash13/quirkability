@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@heroicons/react": "^2.0.17",
+    "@sentry/react": "^7.57.0",
     "@supabase/supabase-js": "^2.13.0",
     "browser-image-compression": "^2.0.2",
     "html-react-parser": "^3.0.16",
