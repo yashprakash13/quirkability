@@ -1,6 +1,13 @@
+let BASE_BACKEND_URL = ""
+if (import.meta.env.VITE_APP_MODE === "prod") {
+  BASE_BACKEND_URL = import.meta.env.VITE_BASE_BACKEND_URL_PROD
+} else {
+  BASE_BACKEND_URL = import.meta.env.VITE_BASE_BACKEND_URL
+}
+
 async function perform_server_health_check() {
   try {
-    const response = await fetch(`http://localhost:8000/health`)
+    const response = await fetch(`${BASE_BACKEND_URL}/health`)
     const result = await response.json()
     console.log("Health check=> ", result)
     if (result.status) {
@@ -15,7 +22,7 @@ export { perform_server_health_check }
 
 async function createStripeConnectAccount(id, email) {
   // function to ask backend to start stripe's connect account creation process
-  const response = await fetch("http://localhost:8000/create-account", {
+  const response = await fetch(`${BASE_BACKEND_URL}/create-account`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -36,7 +43,7 @@ async function createStripeProduct(id, name, price, price_currency, account) {
   // function to ask backend to create stripe product for connected account
   console.log("createStripeProduct func: --")
 
-  const response = await fetch("http://localhost:8000/create-product", {
+  const response = await fetch(`${BASE_BACKEND_URL}/create-product`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -63,7 +70,7 @@ async function editStripePrice(
   product_id,
   price_id
 ) {
-  const response = await fetch("http://localhost:8000/update-price", {
+  const response = await fetch(`${BASE_BACKEND_URL}/update-price`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -94,7 +101,7 @@ async function makePayment(
   price,
   quantity
 ) {
-  const response = await fetch("http://localhost:8000/make-payment", {
+  const response = await fetch(`${BASE_BACKEND_URL}/make-payment`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -120,9 +127,7 @@ async function makePayment(
 export { makePayment }
 
 async function getSession(session_id) {
-  const response = await fetch(
-    `http://localhost:8000/get-session/${session_id}`
-  )
+  const response = await fetch(`${BASE_BACKEND_URL}/get-session/${session_id}`)
   const result = await response.json()
   console.log(result)
   if (result.success) {
@@ -137,7 +142,7 @@ export { getSession }
 
 async function archiveStripeProduct(stripe_product_id, account_id) {
   // function to call backend's archive endpoint
-  const response = await fetch("http://localhost:8000/archive-stripeproduct", {
+  const response = await fetch(`${BASE_BACKEND_URL}/archive-stripeproduct`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
