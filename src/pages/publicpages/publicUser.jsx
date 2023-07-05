@@ -45,7 +45,7 @@ const PublicUser = () => {
         setUserDetails(
           await getUserDetailsFromId(
             userId.id,
-            "username, bio, profile_pic_url"
+            "username, bio, profile_pic_url, stripe_connect_id"
           )
         )
       }

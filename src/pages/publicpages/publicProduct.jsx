@@ -10,6 +10,7 @@ import { useEffect, useState } from "react"
 import {
   getProductDetailsFromId,
   getUserDetailsFromId,
+  getUserIdFromUsername,
 } from "../../services/supabaseHelpers"
 
 import parse from "html-react-parser"
@@ -28,6 +29,7 @@ const PublicProduct = () => {
   const [userDetails, setUserDetails] = useState(null)
 
   const navigate = useNavigate()
+  const location = useLocation()
 
   const [quantity, setQuantity] = useState(0)
   const [customerEmail, setCustomerEmail] = useState(null)
@@ -57,7 +59,19 @@ const PublicProduct = () => {
     if (!product.allow_copies) {
       setQuantity(1)
     }
-    setUserDetails(userStuff.state.userDetails)
+    try {
+      setUserDetails(userStuff.state.userDetails)
+    } catch {
+      const currentURL = location.pathname
+      const [_, username, __] = currentURL.split("/")
+      const userId = await getUserIdFromUsername(username)
+      setUserDetails(
+        await getUserDetailsFromId(
+          userId.id,
+          "username, bio, profile_pic_url, stripe_connect_id"
+        )
+      )
+    }
   }
 
   useEffect(() => {
