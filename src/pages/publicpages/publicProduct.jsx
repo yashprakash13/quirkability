@@ -18,7 +18,10 @@ import { getCurrency } from "../../utils"
 import ImageCarousel from "../../components/ImageCarousel"
 import MadeByFooter from "../../components/MadeByFooter"
 import * as yup from "yup"
-import { makePayment } from "../../services/backendCalls"
+import {
+  makePayment,
+  makePaymentFreeProduct,
+} from "../../services/backendCalls"
 import { toast } from "react-toastify"
 
 const PublicProduct = () => {
@@ -104,17 +107,28 @@ const PublicProduct = () => {
       setInputErrors(null)
       // check if all validation is successful
       console.log("No errors yet.")
-      // call the backend payment function
-      let redirectUrl = await makePayment(
-        productDetails.id,
-        productDetails.stripe_price_id,
-        userDetails.stripe_connect_id,
-        customerEmail.trim(),
-        productDetails.price,
-        quantity
-      )
-      if (redirectUrl) {
-        window.open(redirectUrl)
+      if (productDetails.price !== 0) {
+        // call the backend payment function
+        let redirectUrl = await makePayment(
+          productDetails.id,
+          productDetails.stripe_price_id,
+          userDetails.stripe_connect_id,
+          customerEmail.trim(),
+          productDetails.price,
+          quantity
+        )
+        if (redirectUrl) {
+          window.open(redirectUrl)
+        }
+      } else {
+        // it's a free product
+        // so automatically update database with a new sale
+        await makePaymentFreeProduct(
+          productDetails.id,
+          customerEmail.trim(),
+          quantity
+        )
+        navigate(`/order/success`, { state: { userDetails, productDetails } })
       }
     } catch (err) {
       let errors = {}

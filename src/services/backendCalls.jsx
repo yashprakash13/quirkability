@@ -126,6 +126,22 @@ async function makePayment(
 }
 export { makePayment }
 
+async function makePaymentFreeProduct(product_id, customer_email, quantity) {
+  await fetch(`${BASE_BACKEND_URL}/make-payment-free`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      product_id: product_id,
+      stripe_price_id: "",
+      customer_email: customer_email,
+      account_id: "",
+      price: 0.0,
+      quantity: quantity,
+    }),
+  })
+}
+export { makePaymentFreeProduct }
+
 async function getSession(session_id) {
   const response = await fetch(`${BASE_BACKEND_URL}/get-session/${session_id}`)
   const result = await response.json()

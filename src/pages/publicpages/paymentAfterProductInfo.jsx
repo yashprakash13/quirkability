@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import MadeByFooter from "../../components/MadeByFooter"
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/solid"
-import { Link, useSearchParams } from "react-router-dom"
+import { Link, useLocation, useSearchParams } from "react-router-dom"
 import { getSession } from "../../services/backendCalls"
 import { ClockLoader } from "react-spinners"
 import {
@@ -17,6 +17,7 @@ const PaymentAfterProductInfo = () => {
   const [loading, setLoading] = useState(true)
   const [sessionId, setSessionID] = useState(null)
   const [orderProduct, setOrderProduct] = useState(null)
+  const location = useLocation()
 
   console.log(
     "Received param in payment after=> ",
@@ -24,10 +25,16 @@ const PaymentAfterProductInfo = () => {
   )
   useEffect(() => {
     async function getAndSetPaymentResult() {
-      const resultOfPayment = await getSession(searchParams.get("session_id"))
-      if (resultOfPayment) {
+      if (searchParams.get("session_id")) {
+        const resultOfPayment = await getSession(searchParams.get("session_id"))
+        if (resultOfPayment) {
+          setSessionID(searchParams.get("session_id"))
+          setLoading(false)
+        }
+      } else {
+        // free product success page
+        setSessionID("free_product")
         setLoading(false)
-        setSessionID(searchParams.get("session_id"))
       }
     }
     if (loading) {
@@ -37,55 +44,63 @@ const PaymentAfterProductInfo = () => {
 
   useEffect(() => {
     async function getDetailsFromSale() {
-      const productIdOfSale = await getProductIdFromSale(sessionId)
-      if (!productIdOfSale) {
-        console.log("Couldn't get sale details.")
-      }
-      // productId sold gotten, now get product details
-      const productDetails = await getSpecificProductDetailsFromId(
-        productIdOfSale,
-        "name, user_id"
-      )
-      const userDetails = await getUserDetailsFromId(
-        productDetails.user_id,
-        "username"
-      )
-      const productUrlsDetails =
-        await getSpecificProductURLOrArtifactDetailsFromId(
+      if (sessionId !== "free_product") {
+        const productIdOfSale = await getProductIdFromSale(sessionId)
+        if (!productIdOfSale) {
+          console.log("Couldn't get sale details.")
+        }
+        // productId sold gotten, now get product details
+        const productDetails = await getSpecificProductDetailsFromId(
           productIdOfSale,
-          "redirect_url, product_artifact_path"
+          "name, user_id"
         )
-      if (!productDetails || !userDetails || !productUrlsDetails) {
-        console.log(
-          "Error in getting productDetails and urls and user details."
+        const userDetails = await getUserDetailsFromId(
+          productDetails.user_id,
+          "username"
         )
+        const productUrlsDetails =
+          await getSpecificProductURLOrArtifactDetailsFromId(
+            productIdOfSale,
+            "redirect_url, product_artifact_path"
+          )
+        if (!productDetails || !userDetails || !productUrlsDetails) {
+          console.log(
+            "Error in getting productDetails and urls and user details."
+          )
+        }
+        const orderProductDetails = {
+          ...productDetails,
+          ...userDetails,
+          ...productUrlsDetails,
+        }
+        setOrderProduct(orderProductDetails)
+      } else {
+        //if it's a free product
+        const productDetails = location.state.productDetails
+        const userDetails = location.state.userDetails
+        const productUrlsDetails =
+          await getSpecificProductURLOrArtifactDetailsFromId(
+            productDetails.id,
+            "redirect_url, product_artifact_path"
+          )
+        if (!productDetails || !userDetails || !productUrlsDetails) {
+          console.log(
+            "Error in getting productDetails and urls and user details."
+          )
+        }
+        const orderProductDetails = {
+          ...productDetails,
+          ...userDetails,
+          ...productUrlsDetails,
+        }
+        setOrderProduct(orderProductDetails)
       }
-      const orderProductDetails = {
-        ...productDetails,
-        ...userDetails,
-        ...productUrlsDetails,
-      }
-      setOrderProduct(orderProductDetails)
       console.log("Fetched and set everything.")
     }
     if (sessionId) {
       getDetailsFromSale()
     }
   }, [sessionId])
-
-  function downloadFileAtURL(url) {
-    // Download artifact upon click of "Go to link" button
-    const lastDot = orderProduct.product_artifact_path.lastIndexOf(".")
-    const fileExtention = orderProduct.product_artifact_path.substring(
-      lastDot + 1
-    )
-    const aTag = document.createElement("a")
-    aTag.href = url
-    aTag.setAttribute("download", orderProduct.name + fileExtention)
-    document.body.appendChild(aTag)
-    aTag.click()
-    aTag.remove()
-  }
 
   return (
     <div className="relative h-screen mb-2">
