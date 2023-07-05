@@ -12,7 +12,6 @@ function isValidHttpsUrl(string) {
   }
   return url.protocol === "https:"
 }
-
 export { isValidHttpsUrl }
 
 function checkFileSize(file, size) {
