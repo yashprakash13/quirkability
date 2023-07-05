@@ -31,7 +31,7 @@ function App() {
 
   const ref = useRef(null)
 
-  if (import.meta.env.VITE_APP_MODE === "prod") {
+  if (import.meta.env.VITE_APP_MODE === import.meta.env.VITE_ENV_PROD_KEYWORD) {
     const NO_OP = function () {}
     console.log = NO_OP
     console.warn = NO_OP

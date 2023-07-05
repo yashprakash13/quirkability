@@ -38,5 +38,6 @@ jobs:
           VITE_STRIPE_USER_SESSION_KEY_FOR_STORAGE: ${{ secrets.VITE_STRIPE_USER_SESSION_KEY_FOR_STORAGE }}
           VITE_BASE_BACKEND_URL_PROD: ${{ secrets.VITE_BASE_BACKEND_URL_PROD }}
           VITE_BASE_BACKEND_URL: ${{ secrets.VITE_BASE_BACKEND_URL }}
+          VITE_ENV_PROD_KEYWORD: ${{ secrets.VITE_ENV_PROD_KEYWORD }}
       - name: Copy folder to where nginx expects it to be
         run: cp -r ${{secrets.COPY_FROM_FOLDER}} ${{secrets.COPY_TO_FOLDER}}

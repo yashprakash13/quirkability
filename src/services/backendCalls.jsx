@@ -1,5 +1,5 @@
 let BASE_BACKEND_URL = ""
-if (import.meta.env.VITE_APP_MODE === "prod") {
+if (import.meta.env.VITE_APP_MODE === import.meta.env.VITE_ENV_PROD_KEYWORD) {
   BASE_BACKEND_URL = import.meta.env.VITE_BASE_BACKEND_URL_PROD
 } else {
   BASE_BACKEND_URL = import.meta.env.VITE_BASE_BACKEND_URL
