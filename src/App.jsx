@@ -102,7 +102,7 @@ function App() {
       ],
     },
     {
-      path: ":username",
+      path: "/:username",
       children: [
         {
           index: true,
@@ -115,7 +115,7 @@ function App() {
       ],
     },
     {
-      path: "order",
+      path: "/order",
       element: <PaymentAfter />,
       children: [
         {
