@@ -488,7 +488,7 @@ async function getSaleDetailsFromProducts(products) {
   for (let i = 0; i < products.length; i++) {
     let { data: sales, error } = await supabase
       .from("sale")
-      .select("id, rating")
+      .select("id, rating, total_paid")
       .eq("product_id", products[i].id)
       .not("payment_intent_id", "is", null)
     if (error) {
@@ -513,6 +513,10 @@ async function getSaleDetailsFromProducts(products) {
           sale_info["avg_rating"] = "-"
         }
         // sale_info["num_ratings"] = filteredList.length // don't need this currently me thinks
+        const total_paid_on_sales = parseFloat(
+          sales.reduce((total, item) => total + item.total_paid, 0)
+        )
+        sale_info["revenue"] = total_paid_on_sales
         console.log("Sale info=> ", sale_info)
       } else {
         sale_info["num_sales"] = 0

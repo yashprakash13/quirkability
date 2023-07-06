@@ -25,9 +25,6 @@ const ProductsTable = () => {
       const all_product_details = allProducts.map((item, i) =>
         Object.assign({}, item, allsales[i])
       )
-      all_product_details.forEach((item) => {
-        item.revenue = item.num_sales * item.price
-      })
       console.log("All product details=> ", all_product_details)
       setProducts(all_product_details)
     } else {
