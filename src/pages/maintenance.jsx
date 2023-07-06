@@ -7,7 +7,15 @@ const Maintenance = () => {
         quirkability
       </div>
       <div className="text-2xl font-serif text-secondary-focus mt-12">
-        We're currently under maintenance. Get more information on Twitter.
+        We're currently under maintenance. Get more information and support on{" "}
+        <a
+          href="https://twitter.com/csandyash"
+          target="_blank"
+          className="text-light-highlight underline"
+        >
+          Twitter
+        </a>
+        .
       </div>
     </div>
   )
