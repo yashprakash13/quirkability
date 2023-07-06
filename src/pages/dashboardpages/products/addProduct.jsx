@@ -19,6 +19,7 @@ import {
 import { useAuth } from "../../../context/auth"
 import { createStripeProduct } from "../../../services/backendCalls"
 import usePayment from "../../../hooks/use-payment"
+import { toast } from "react-toastify"
 
 const AddProduct = () => {
   const [name, setName] = useState("")
@@ -274,6 +275,23 @@ const AddProduct = () => {
       setLoading([false, "Just a moment..."])
     } else {
       setLoading([true, "Loading..."])
+      toast.warning(
+        "Please connect your Stripe account before making a product.",
+        {
+          toastId: "alert1", // this id field is necessary because it helps make the toast show only once.
+          position: "top-right",
+          autoClose: 7000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        }
+      )
+      setTimeout(() => {
+        navigate("/dashboard/settings")
+      }, 2000)
     }
   }, [stripeId])
 
