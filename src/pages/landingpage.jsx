@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react"
+import React, { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { ArrowRightIcon } from "@heroicons/react/24/outline"
 import { useAuth } from "../context/auth"
@@ -11,8 +11,7 @@ const LandingPage = () => {
   const { user } = useAuth()
   const navigate = useNavigate()
 
-  const usernameRef = useRef()
-
+  const [username, setUsername] = useState(null)
   const [error, setError] = useState(null)
 
   useEffect(() => {
@@ -22,17 +21,24 @@ const LandingPage = () => {
   }, [user])
 
   useEffect(() => {
-    document.title = "Quirkability"
+    document.title =
+      "Quirkability | Sell digital products and services at low fees"
   }, [])
 
+  function handleInputChange(e) {
+    setUsername(e.target.value)
+  }
+
   async function handleUsername() {
-    let username = usernameRef.current.value
+    console.log("Got username=> ", username)
     if (username === "") {
-      setError("Please select a username of 3 letters or more for yourself.")
+      setError("Please select a username of 3 letters or more.")
       return
-    } else if (username.length <= 3) {
-      setError("Your username needs to be 3 letters or more.")
+    } else if (username.length < 3) {
+      setError("Your username needs to be at least 3 letters or more.")
       return
+    } else if (!/^[a-zA-Z0-9_]+$/.test(username)) {
+      setError("Username can only contain alphabets, numbers, or underscores")
     }
     let result = await checkUsernameAvailability(username)
     if (result) {
@@ -68,9 +74,9 @@ const LandingPage = () => {
             className="flex-auto text-md md:text-lg px-2 py-2 basis-3/4 border-md border-secondary-focus focus:outline-warning-dark focus:rounded-none"
             placeholder="BruceWayne"
             name="username"
-            ref={usernameRef}
-            onChange={() => {
+            onChange={(e) => {
               setError(null)
+              handleInputChange(e)
             }}
           />
         </div>
@@ -125,9 +131,9 @@ const LandingPage = () => {
               className="flex-auto text-md md:text-lg px-2 py-2 basis-3/4 border-md border-secondary-focus focus:outline-warning-dark focus:rounded-none"
               placeholder="BruceWayne"
               name="username"
-              ref={usernameRef}
-              onChange={() => {
+              onChange={(e) => {
                 setError(null)
+                handleInputChange(e)
               }}
             />
           </div>
