@@ -30,13 +30,13 @@ const Navbar = ({ onScrollToFeatures, onScrollToPricing }) => {
               className="text-sm font-bold text-secondary-default font-sans cursor-pointer hover:underline transition-all duration-300"
               onClick={onScrollToFeatures && onScrollToFeatures}
             >
-              FEATURES
+              What can I sell?
             </div>
             <div
               className="text-sm font-bold text-secondary-default font-sans cursor-pointer hover:underline transition-all duration-300"
               onClick={onScrollToPricing && onScrollToPricing}
             >
-              PRICING
+              Pricing
             </div>
             <Link
               className="text-lg font-bold text-secondary-default font-sans cursor-pointer hover:underline transition-all duration-300"
@@ -56,13 +56,13 @@ const Navbar = ({ onScrollToFeatures, onScrollToPricing }) => {
               className="text-lg font-bold text-secondary-default font-sans cursor-pointer hover:underline transition-all duration-300"
               onClick={onScrollToFeatures && onScrollToFeatures}
             >
-              FEATURES
+              What can I sell?
             </div>
             <div
               className="text-lg font-bold text-secondary-default font-sans cursor-pointer hover:underline transition-all duration-300"
               onClick={onScrollToPricing && onScrollToPricing}
             >
-              PRICING
+              Pricing
             </div>
           </div>
           <Link
