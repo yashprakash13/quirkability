@@ -99,8 +99,8 @@ const LandingPage = () => {
         <Accordian
           data={[
             {
-              heading: "We'll only take 2.9% fees.",
-              body: "Total fees you'll pay on every sale is 2.9% to us + Stripe fees.",
+              heading: "We'll only take 3% fees.",
+              body: "Total fees you'll pay on every sale is 3% to us + Stripe fees.",
             },
             {
               heading: "How do I get paid?",
