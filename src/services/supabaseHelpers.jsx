@@ -150,20 +150,20 @@ async function insertIntoProductTable(
 export { insertIntoProductTable }
 
 async function insertIntoProductImagesStorage(id, images, product_id) {
-  // insert new product's images into the the user's folder inside the `product-images` storage bucket,
+  // insert new product's images into the the user's folder inside the images storage bucket,
   // create the folder if there isn't one
   let image_paths = []
   for (let i = 0; i < images.length; i++) {
     const image = await compressImage(images[i])
     const newFilename = getTimestampedName(image.name)
     const { data, error } = await supabase.storage
-      .from("product-images")
+      .from(import.meta.env.VITE_SUPABASE_PRODUCT_IMAGES_STORAGE_BUCKET_NAME)
       .upload(`${id}/${newFilename}`, image)
     if (error) {
       console.log(
         "Error in inserting product image: ",
         image.name,
-        " into the product-images storage bucket: ",
+        " into the images storage bucket: ",
         error
       )
     } else {
@@ -185,17 +185,17 @@ async function insertIntoProductImagesStorage(id, images, product_id) {
 export { insertIntoProductImagesStorage }
 
 async function insertIntoProductArtifactStorage(id, product, product_id) {
-  // insert new product's artifact into the user's folder inside the `product-artifact` storage bucket
+  // insert new product's artifact into the user's folder inside the artifact storage bucket
   // create the folder if there isn't one
   const newFilename = getTimestampedName(product[0].name)
   const { data, error } = await supabase.storage
-    .from("product-artifact")
+    .from(import.meta.env.VITE_SUPABASE_ARTIFACT_BUCKET_NAME)
     .upload(`${id}/${newFilename}`, product[0])
   if (error) {
     console.log(
       "Error in inserting product artifact: ",
       product[0].name,
-      " into the product-artifact storage bucket: ",
+      " into the artifact storage bucket: ",
       error
     )
   } else {
@@ -576,13 +576,12 @@ Downloading Files
 
 */
 
-function getDownloadURLForArtifact(artifact_path) {
-  // return full downloadable url to artifact
-  const URL =
-    import.meta.env.VITE_PROJECT_URL_SUPABASE +
-    "/storage/v1/object/public/product-artifact/" +
-    artifact_path
-  return URL
+async function getDownloadURLForArtifact(artifact_path) {
+  const { data, error } = await supabase.storage
+    .from(import.meta.env.VITE_SUPABASE_ARTIFACT_BUCKET_NAME)
+    .download(artifact_path)
+  console.log("download=> ", data)
+  return data
 }
 export { getDownloadURLForArtifact }
 
@@ -590,7 +589,9 @@ function getDownloadURLForImages(image_path) {
   // return full downloadable url to image
   const URL =
     import.meta.env.VITE_PROJECT_URL_SUPABASE +
-    "/storage/v1/object/public/product-images/" +
+    `/storage/v1/object/public/${
+      import.meta.env.VITE_SUPABASE_PRODUCT_IMAGES_STORAGE_BUCKET_NAME
+    }/` +
     image_path
   return URL
 }
@@ -651,7 +652,7 @@ async function updateIntoProductTable(
     // finally, also delete an existing product artifact if one was there in the older version of the product
     if (old_product) {
       const { data: oldProduct, error3 } = await supabase.storage
-        .from("product-artifact")
+        .from(import.meta.env.VITE_SUPABASE_ARTIFACT_BUCKET_NAME)
         .remove(old_product)
       if (error3) {
         console.log("Error in deleting old product artifact => ", error3)
@@ -673,12 +674,12 @@ async function updateIntoProductImagesStorage(
   new_images,
   product_id
 ) {
-  // insert new product's new images into the the user's folder inside the `product-images` storage bucket,
+  // insert new product's new images into the the user's folder inside the images storage bucket,
   // and delete the old images as well
 
   if (old_images_to_delete.length !== 0) {
     const { data2, error1 } = await supabase.storage
-      .from("product-images")
+      .from(import.meta.env.VITE_SUPABASE_PRODUCT_IMAGES_STORAGE_BUCKET_NAME)
       .remove(old_images_to_delete)
     if (error1) {
       console.log("Error in deleting old product images => ", error1)
@@ -691,13 +692,13 @@ async function updateIntoProductImagesStorage(
     const image = await compressImage(new_images[i])
     const newFilename = getTimestampedName(image.name)
     const { data, error } = await supabase.storage
-      .from("product-images")
+      .from(import.meta.env.VITE_SUPABASE_PRODUCT_IMAGES_STORAGE_BUCKET_NAME)
       .upload(`${userid}/${newFilename}`, image)
     if (error) {
       console.log(
         "Error in inserting product image: ",
         image.name,
-        " into the product-images storage bucket: ",
+        " into the images storage bucket: ",
         error
       )
     } else {
@@ -726,10 +727,10 @@ async function updateIntoProductArtifactStorage(
   new_product,
   product_id
 ) {
-  // insert new product's artifact into the user's folder inside the `product-artifact` storage bucket
+  // insert new product's artifact into the user's folder inside the artifact storage bucket
   // and delete the old one as well
   const { data: oldProduct, error1 } = await supabase.storage
-    .from("product-artifact")
+    .from(import.meta.env.VITE_SUPABASE_ARTIFACT_BUCKET_NAME)
     .remove(old_product)
   if (error1) {
     console.log("Error in deleting old product artifact => ", error1)
@@ -739,13 +740,13 @@ async function updateIntoProductArtifactStorage(
 
   const newFilename = getTimestampedName(new_product[0].name)
   const { data, error } = await supabase.storage
-    .from("product-artifact")
+    .from(import.meta.env.VITE_SUPABASE_ARTIFACT_BUCKET_NAME)
     .upload(`${userid}/${newFilename}`, new_product[0])
   if (error) {
     console.log(
       "Error in inserting product artifact: ",
       new_product[0].name,
-      " into the product-artifact storage bucket: ",
+      " into the artifact storage bucket: ",
       error
     )
   } else {
@@ -786,7 +787,7 @@ async function deleteProduct(productId) {
   // 2. Delete them from storage
   if (product_urls) {
     const { data1, error1 } = await supabase.storage
-      .from("product-images")
+      .from(import.meta.env.VITE_SUPABASE_PRODUCT_IMAGES_STORAGE_BUCKET_NAME)
       .remove(product_urls.images)
     if (error1) {
       console.log("Error in deleting product images => ", error1)
@@ -794,7 +795,7 @@ async function deleteProduct(productId) {
       console.log("Product images deleted successfully.")
     }
     const { data2, error2 } = await supabase.storage
-      .from("product-artifact")
+      .from(import.meta.env.VITE_SUPABASE_ARTIFACT_BUCKET_NAME)
       .remove(product_urls.product_artifact_path)
     if (error2) {
       console.log("Error in deleting product artifact => ", error1)

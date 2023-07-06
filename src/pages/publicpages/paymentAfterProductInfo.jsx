@@ -102,6 +102,20 @@ const PaymentAfterProductInfo = () => {
     }
   }, [sessionId])
 
+  async function startDownload() {
+    // to download artifact
+    const blob = await getDownloadURLForArtifact(
+      orderProduct.product_artifact_path
+    )
+    const url = window.URL.createObjectURL(blob)
+    const link = document.createElement("a")
+    link.href = url
+    link.setAttribute("download", orderProduct.name)
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }
+
   return (
     <div className="relative h-screen mb-2">
       {loading
@@ -182,18 +196,16 @@ const PaymentAfterProductInfo = () => {
                   ) : (
                     <a
                       className="md:basis-1/4 inline-flex items-center gap-2 justify-center text-center text-xl font-serif text-primary-default bg-secondary-focus px-5 py-3 rounded-br-lg cursor-pointer hover:bg-primary-default hover:text-secondary-focus transition-all duration-300 hover:border-sm hover:border-secondary-focus"
-                      href={getDownloadURLForArtifact(
-                        orderProduct.product_artifact_path
-                      )}
+                      onClick={startDownload}
                       target="_blank"
                     >
                       Download <ArrowTopRightOnSquareIcon className="h-5 w-5" />
                     </a>
                   )}
                 </div>
-                <div className="gap-2 text-lg text-center mt-7 font-serif text-secondary-focus">
+                {/* <div className="gap-2 text-lg text-center mt-7 font-serif text-secondary-focus">
                   A confirmation email is also on its way to you.
-                </div>
+                </div> */}
               </div>
             </div>
           )}
