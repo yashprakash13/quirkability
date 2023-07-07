@@ -135,12 +135,21 @@ function App() {
     setServerHealthOK(true ? maintenanceOrNot : false)
   }
 
+  const handleWindowError = (message, source, line, column, error) => {
+    // Handle the error here, e.g., send an error report to a server
+    // TODO
+    // Prevent the error from being logged to the console
+    return true
+  }
+
   useEffect(() => {
     ref.current = setInterval(performHealthCheck, 60 * 1000)
+    window.onerror = handleWindowError
     return () => {
       if (ref.current) {
         clearInterval(ref.current)
       }
+      window.onerror = null
     }
   }, [])
 
