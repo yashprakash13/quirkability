@@ -642,12 +642,12 @@ const EditProduct = () => {
         <div className="flex flex-col gap-6 w-full md:w-[636px]">
           <div className="text-2xl">Extra Information</div>
           <div className="flex flex-col gap-10 md:gap-3">
-            <div className="flex flex-col md:flex-row justify-start md:justify-between items-start md:items-center gap-3">
+            {/* <div className="flex flex-col md:flex-row justify-start md:justify-between items-start md:items-center gap-3">
               <div className="text-lg">
                 Allow customers to choose number of copies to purchase
               </div>
               <Toggle enabled={allowCopies} setEnabled={setAllowCopies} />
-            </div>
+            </div> */}
             <div className="flex flex-col md:flex-row justify-start md:justify-between items-start md:items-center gap-3 w-full">
               <div className="text-lg">
                 Display number of sales of this product publicly
