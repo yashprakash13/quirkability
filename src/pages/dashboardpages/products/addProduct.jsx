@@ -104,7 +104,10 @@ const AddProduct = () => {
         .required("Description of the product is required."),
       price: yup
         .number()
-        .min(0, "Price of the product must be greater than or equal to 0.")
+        .min(
+          0,
+          "Price of the product must be exactly 0 or greater than or equal to 1."
+        )
         .required("Price of the product is required."),
       shortDesc: yup
         .string()
@@ -203,6 +206,10 @@ const AddProduct = () => {
       err.inner.forEach((e) => {
         errors[e.path] = e.message
       })
+      if (price > 0 && price < 1)
+        // special check for price because stripe needs it
+        errors["price"] =
+          "Price of the product must be exactly 0 or greater than or equal to 1."
       console.log("Errors in form=>", errors)
       setInputErrors(errors)
     }
