@@ -3,6 +3,7 @@ import { useAuth } from "../../context/auth"
 import { createStripeConnectAccount } from "../../services/backendCalls"
 import { useEffect, useRef, useState } from "react"
 import {
+  deleteStripeIdFromProfile,
   deleteUserAccount,
   getUserDetailsFromId,
   updateUserprofileTable,
@@ -226,6 +227,15 @@ const Settings = () => {
     }
   }
 
+  async function disconnectStripe() {
+    const response = await deleteStripeIdFromProfile(user.id)
+    if (response) {
+      setStripeId(null)
+    } else {
+      window.alert("Something went wrong.")
+    }
+  }
+
   return (
     <div className="container mx-auto flex flex-col p-3 gap-11 mt-11">
       <div className="flex flex-col justify-start gap-7 md:gap-11">
@@ -342,11 +352,22 @@ const Settings = () => {
         <div className="text-2xl font-medium">Payment Methods</div>
         <div className="flex flex-col md:flex-row md:justify-between md:items-center justify-start gap-5">
           <div className="text-xl">Connect your Stripe Account</div>
-          <div
-            className="w-2/3 md:w-1/3 lg:w-1/6 text-lg md:text-xl font-bold flex justify-center items-center border-sm rounded-br-2xl px-7 py-2 text-primary-default bg-secondary-focus cursor-pointer hover:bg-primary-default hover:text-secondary-focus  transition-all duration-300"
-            onClick={handleStripeConnect}
-          >
-            {!stripeId ? "Connect" : "Connected"}
+          <div className="flex gap-3 w-full md:w-1/3 justify-start md:justify-end">
+            <button
+              className=" text-lg md:text-xl font-bold flex justify-center items-center border-sm rounded-br-2xl px-7 py-2 text-primary-default bg-secondary-focus cursor-pointer hover:bg-primary-default hover:text-secondary-focus  transition-all duration-300 disabled:opacity-75 disabled:hover:bg-secondary-focus disabled:hover:text-primary-default disabled:transition-none disabled:pointer-events-none"
+              onClick={handleStripeConnect}
+              disabled={stripeId}
+            >
+              {!stripeId ? "Connect" : "Connected"}
+            </button>
+            {stripeId && (
+              <button
+                className="text-secondary-focus text-lg font-serif bg-none hover:text-alert-dark"
+                onClick={disconnectStripe}
+              >
+                Disconnect
+              </button>
+            )}
           </div>
         </div>
       </div>

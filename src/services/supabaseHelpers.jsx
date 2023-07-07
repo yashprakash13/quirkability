@@ -376,6 +376,23 @@ async function getStripeId(id) {
 }
 export { getStripeId }
 
+async function deleteStripeIdFromProfile(userid) {
+  // do exactly as it says on the tin
+  const { data, error } = await supabase
+    .from("userprofile")
+    .update({ stripe_connect_id: null })
+    .eq("id", userid)
+  if (error) {
+    console.log("Error deleting stripe id in profile for => ", error)
+    return false
+  } else {
+    // delete from local sto as well
+    deleteFromCache(import.meta.env.VITE_STRIPE_USER_ACCOUNT_KEY_FOR_STORAGE)
+    return true
+  }
+}
+export { deleteStripeIdFromProfile }
+
 async function getProductIdFromSale(session_id) {
   // function to return product id of the sale made
   let { data, error } = await supabase
