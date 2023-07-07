@@ -364,13 +364,14 @@ async function getStripeId(id) {
     .from("userprofile")
     .select("stripe_connect_id")
     .eq("id", id)
+    .single()
 
   if (error) {
     console.log("Error fetching stripe id.")
     return null
   } else {
     console.log("Fetched the stripe connect id again.")
-    const stripe_connect_id = stripe_id[0].stripe_connect_id
+    const stripe_connect_id = stripe_id.stripe_connect_id
     return stripe_connect_id
   }
 }
