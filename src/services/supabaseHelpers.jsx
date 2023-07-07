@@ -679,33 +679,35 @@ async function updateIntoProductTable(
   } else {
     console.log("Awesome, the product was updated! => ", data)
     // Insert the product into the `product_url` table for future image + artifact uploads
-    const { error2 } = await supabase
-      .from("product_urls")
-      .update({
-        redirect_url: productArtifactURL,
-        product_artifact_path: null,
-        orig_artifact_name: null,
-      })
-      .eq("product_id", productId)
-    if (error2) {
-      console.log(
-        "Error in updating row into the product_url table: => ",
-        error
-      )
-    } else {
-      console.log("Awesome, the product url row was updated!")
-    }
-    // finally, also delete an existing product artifact if one was there in the older version of the product
-    if (old_product) {
-      const { data: oldProduct, error3 } = await supabase.storage
-        .from(import.meta.env.VITE_SUPABASE_ARTIFACT_BUCKET_NAME)
-        .remove(old_product)
-      if (error3) {
-        console.log("Error in deleting old product artifact => ", error3)
-      } else {
+    if (productArtifactURL) {
+      const { error2 } = await supabase
+        .from("product_urls")
+        .update({
+          redirect_url: productArtifactURL,
+          product_artifact_path: null,
+          orig_artifact_name: null,
+        })
+        .eq("product_id", productId)
+      if (error2) {
         console.log(
-          "Old Product artifact deleted successfully after inserting redirect url."
+          "Error in updating row into the product_url table: => ",
+          error
         )
+      } else {
+        console.log("Awesome, the product url row was updated!")
+      }
+      // finally, also delete an existing product artifact if one was there in the older version of the product
+      if (old_product) {
+        const { data: oldProduct, error3 } = await supabase.storage
+          .from(import.meta.env.VITE_SUPABASE_ARTIFACT_BUCKET_NAME)
+          .remove(old_product)
+        if (error3) {
+          console.log("Error in deleting old product artifact => ", error3)
+        } else {
+          console.log(
+            "Old Product artifact deleted successfully after inserting redirect url."
+          )
+        }
       }
     }
     return true
@@ -809,6 +811,7 @@ async function updateIntoProductArtifactStorage(
       .update({
         product_artifact_path: data.path,
         orig_artifact_name: new_product[0].name,
+        redirect_url: null,
       })
       .eq("product_id", product_id)
     if (error2) {
