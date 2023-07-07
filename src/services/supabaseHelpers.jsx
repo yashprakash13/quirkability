@@ -1,5 +1,5 @@
-import { compressImage, getTimestampedName } from "../utils"
-import { supabase } from "./supabase"
+import { compressImage, deleteFromCache, getTimestampedName } from "../utils"
+import { supabase, supabase_pro } from "./supabase"
 
 async function checkUsernameAvailability(username) {
   // check if `username` is present in the `userprofile` table.
@@ -18,6 +18,30 @@ async function checkUsernameAvailability(username) {
   }
 }
 export { checkUsernameAvailability }
+
+async function deleteUserAccount(userId) {
+  // to delete user's account permanently
+  const { error: errorProfileDelete } = await supabase
+    .from("userprofile")
+    .delete()
+    .eq("id", userId)
+  if (errorProfileDelete) {
+    console.log("Can't delete user account in db.")
+  } else {
+    const { data, error } = await supabase_pro.auth.admin.deleteUser(userId)
+    if (error) {
+      console.log("Can't delete user account.")
+      return false
+    } else {
+      // delete from local storage
+      deleteFromCache(import.meta.env.VITE_STRIPE_USER_SESSION_KEY_FOR_STORAGE)
+      deleteFromCache(import.meta.env.VITE_STRIPE_USER_ACCOUNT_KEY_FOR_STORAGE)
+      console.log("User account nuked.")
+      return true
+    }
+  }
+}
+export { deleteUserAccount }
 
 async function insertIntoUserprofileTable(id, email, username) {
   // insert new row into the `userprofile` table and update user with the `username` attribute

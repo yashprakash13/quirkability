@@ -3,6 +3,7 @@ import { useAuth } from "../../context/auth"
 import { createStripeConnectAccount } from "../../services/backendCalls"
 import { useEffect, useRef, useState } from "react"
 import {
+  deleteUserAccount,
   getUserDetailsFromId,
   updateUserprofileTable,
   uploadUserProfilePicToStorage,
@@ -12,9 +13,10 @@ import { toast } from "react-toastify"
 import { ClipLoader } from "react-spinners"
 import DefaultProfilePic from "../../assets/defaultProfilePic"
 import { compressImage, getSupabaseProfilePicURL } from "../../utils"
+import { useNavigate } from "react-router-dom"
 
 const Settings = () => {
-  const { user } = useAuth()
+  const { user, signOut } = useAuth()
   const { stripeId, setStripeId } = usePayment(user)
   console.log("StripeId = ", stripeId)
 
@@ -32,6 +34,8 @@ const Settings = () => {
   const [loadingProfilePic, setLoadingProfilePic] = useState(false)
 
   const allowedInputRegex = /^[a-zA-Z0-9!,.';\s]+$/
+
+  const navigate = useNavigate()
 
   async function handleStripeConnect() {
     if (!stripeId) {
@@ -203,6 +207,25 @@ const Settings = () => {
     console.log(isImageSelected)
   }, [isImageSelected])
 
+  async function deleteAccount() {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete your account?"
+    )
+    if (confirmed) {
+      const response = await deleteUserAccount(user.id)
+      if (response) {
+        navigate("/")
+        try {
+          signOut()
+        } catch {
+          // do nothing.
+        }
+      } else {
+        console.log("Something went wrong.")
+      }
+    }
+  }
+
   return (
     <div className="container mx-auto flex flex-col p-3 gap-11 mt-11">
       <div className="flex flex-col justify-start gap-7 md:gap-11">
@@ -324,6 +347,21 @@ const Settings = () => {
             onClick={handleStripeConnect}
           >
             {!stripeId ? "Connect" : "Connected"}
+          </div>
+        </div>
+      </div>
+      <div className="w-full border-t-sm border-light-highlight opacity-25"></div>
+      <div className="flex flex-col gap-3">
+        <div className="text-2xl font-medium text-alert-dark">Danger Zone</div>
+        <div className="flex flex-col md:flex-row md:justify-between md:items-center justify-start gap-5">
+          <div className="text-xl">
+            Permanently delete your Quirkability account
+          </div>
+          <div
+            className="w-2/3 md:w-1/3 lg:w-1/6 text-lg md:text-xl font-bold flex justify-center items-center border-sm rounded-br-2xl px-7 py-2 text-primary-default bg-secondary-focus cursor-pointer hover:bg-primary-default hover:text-secondary-focus  transition-all duration-300"
+            onClick={deleteAccount}
+          >
+            Yes, do it now.
           </div>
         </div>
       </div>
