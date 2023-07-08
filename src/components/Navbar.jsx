@@ -8,16 +8,6 @@ import DropdownMenu from "./DropdownMenu"
 
 const Navbar = ({ onScrollToFeatures, onScrollToPricing }) => {
   const { user, signOut } = useAuth()
-  const navigate = useNavigate()
-
-  async function handleSignOut() {
-    let data = signOut()
-    if (data.error) {
-      console.log("Error signing out user.", error)
-    } else {
-      navigate("/")
-    }
-  }
 
   return (
     <div className="container mx-auto flex justify-between items-center space-x-3 mb-6 p-3">

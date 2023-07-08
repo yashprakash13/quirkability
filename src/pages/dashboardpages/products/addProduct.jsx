@@ -48,7 +48,7 @@ const AddProduct = () => {
 
   const { user } = useAuth()
 
-  const [stripeId, setStripeId] = useState(usePayment(user))
+  const [stripeId, setStripeId] = useState(usePayment(user).stripeId)
 
   const fileTypesProductImages = ["image/png", "image/jpeg"]
   const fileTypesProductArtifact = [

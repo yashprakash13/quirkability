@@ -7,7 +7,7 @@ const Signup = () => {
   const emailRef = useRef()
   const passwordRef = useRef()
 
-  const { user } = useAuth()
+  useAuth()
 
   const { signUp } = useAuth()
   const navigate = useNavigate()
@@ -30,20 +30,18 @@ const Signup = () => {
     } else {
       seterrorSignup("")
       console.log("Inserting username...")
-      insertIntoUserprofileTable(
+      const response = await insertIntoUserprofileTable(
         data.user.id,
         data.user.email,
         location.state.username
       )
-      console.log("Done.")
-      navigate("/dashboard")
+      if (response) {
+        console.log("Done.")
+        window.location.reload(false)
+      }
     }
   }
-  useEffect(() => {
-    if (user) {
-      navigate("/dashboard")
-    }
-  }, [user])
+
   useEffect(() => {
     if (!location.state) {
       navigate("/")

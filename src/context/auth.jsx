@@ -14,15 +14,29 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    let gotSession = readFromCache(
-      import.meta.env.VITE_STRIPE_USER_SESSION_KEY_FOR_STORAGE
-    )
-    if (gotSession) {
-      console.log("Retrieved: ", gotSession)
-      setSession(gotSession)
-      setUser(gotSession.user)
-    }
-    async function getSession() {
+    async function newSession() {
+      let gotSession = readFromCache(
+        import.meta.env.VITE_STRIPE_USER_SESSION_KEY_FOR_STORAGE
+      )
+      if (gotSession) {
+        console.log("Retrieved: ", gotSession)
+        console.log("Trying to refresh session...")
+        const access_token = gotSession.access_token
+        const refresh_token = gotSession.refresh_token
+        console.log("Tokens are=> ", access_token, refresh_token)
+        const { data, error } = await supabase.auth.setSession({
+          access_token,
+          refresh_token,
+        })
+        console.log(data, error)
+        if (error) {
+          setSession(null)
+          setUser(null)
+        } else {
+          setSession(data)
+          setUser(data.user)
+        }
+      }
       const { subscription } = supabase.auth.onAuthStateChange(
         async (event, session) => {
           if (session) {
@@ -50,7 +64,7 @@ export function AuthProvider({ children }) {
         subscription?.unsubscribe()
       }
     }
-    getSession()
+    newSession()
   }, [])
   useEffect(() => {
     if (user) {
@@ -61,8 +75,12 @@ export function AuthProvider({ children }) {
   const value = {
     signUp: (data) => supabase.auth.signUp(data),
     logIn: (data) => supabase.auth.signInWithPassword(data),
-    signOut: () => supabase.auth.signOut(),
+    signOut: () => {
+      supabase.auth.signOut()
+    },
     user,
+    setSession,
+    setUser,
   }
 
   return (

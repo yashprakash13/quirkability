@@ -9,8 +9,13 @@ const Main = () => {
 
   useEffect(() => {
     if (user) {
+      console.log("Called 9")
       navigate("/dashboard")
     }
+    // else { // this isn't needed as when signout is clicked, we're not on the main layout, but on the protect layout.
+    //   console.log("Called 10")
+    //   navigate("/")
+    // }
   }, [])
 
   const handleScrollToFeatures = () => {

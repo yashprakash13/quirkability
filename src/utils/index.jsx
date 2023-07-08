@@ -90,7 +90,14 @@ const readFromCache = (key) =>
 
 const deleteFromCache = (key) => secureLocalStorage.removeItem(key)
 
-export { readFromCache, writeToCache, deleteFromCache }
+const deleteEverythingFromCache = () => secureLocalStorage.clear()
+
+export {
+  readFromCache,
+  writeToCache,
+  deleteFromCache,
+  deleteEverythingFromCache,
+}
 
 function getSupabaseImageStorageURL(image) {
   // function to get a stored product image's complete URL from supabase storage

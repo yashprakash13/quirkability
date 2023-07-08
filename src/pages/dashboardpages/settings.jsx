@@ -1,10 +1,12 @@
 import usePayment from "../../hooks/use-payment"
 import { useAuth } from "../../context/auth"
-import { createStripeConnectAccount } from "../../services/backendCalls"
+import {
+  createStripeConnectAccount,
+  deleteUser,
+} from "../../services/backendCalls"
 import { useEffect, useRef, useState } from "react"
 import {
   deleteStripeIdFromProfile,
-  deleteUserAccount,
   getUserDetailsFromId,
   updateUserprofileTable,
   uploadUserProfilePicToStorage,
@@ -213,17 +215,10 @@ const Settings = () => {
       "Are you sure you want to delete your account?"
     )
     if (confirmed) {
-      const response = await deleteUserAccount(user.id)
-      if (response) {
-        navigate("/")
-        try {
-          signOut()
-        } catch {
-          // do nothing.
-        }
-      } else {
-        console.log("Something went wrong.")
-      }
+      await deleteUser(user.id)
+      window.location.reload(false)
+    } else {
+      console.log("Something went wrong.")
     }
   }
 

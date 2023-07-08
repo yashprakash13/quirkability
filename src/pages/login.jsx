@@ -9,7 +9,6 @@ const Login = () => {
   const { user } = useAuth()
 
   const { logIn } = useAuth()
-  const navigate = useNavigate()
 
   let [errorLogin, seterrorLogin] = useState("")
 
@@ -26,20 +25,10 @@ const Login = () => {
       seterrorLogin(error)
     } else {
       seterrorLogin("")
-      navigate("/dashboard")
+      console.log("Called 3")
+      window.location.reload(false)
     }
   }
-
-  useEffect(() => {
-    if (user) {
-      navigate("/dashboard")
-    }
-  }, [user])
-  useEffect(() => {
-    if (user) {
-      navigate("/dashboard")
-    }
-  }, [])
 
   return (
     <form
@@ -51,7 +40,9 @@ const Login = () => {
       </h2>
       <div className="flex flex-col gap-4">
         <div>
-          <div className="text-md text-red-600">{errorLogin.message}</div>
+          <div className="mt-5 text-md text-alert-dark">
+            {errorLogin.message}
+          </div>
         </div>
         <div className="flex flex-col">
           <label

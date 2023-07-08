@@ -19,30 +19,6 @@ async function checkUsernameAvailability(username) {
 }
 export { checkUsernameAvailability }
 
-async function deleteUserAccount(userId) {
-  // to delete user's account permanently
-  const { error: errorProfileDelete } = await supabase
-    .from("userprofile")
-    .delete()
-    .eq("id", userId)
-  if (errorProfileDelete) {
-    console.log("Can't delete user account in db.")
-  } else {
-    const { data, error } = await supabase_pro.auth.admin.deleteUser(userId)
-    if (error) {
-      console.log("Can't delete user account.")
-      return false
-    } else {
-      // delete from local storage
-      deleteFromCache(import.meta.env.VITE_STRIPE_USER_SESSION_KEY_FOR_STORAGE)
-      deleteFromCache(import.meta.env.VITE_STRIPE_USER_ACCOUNT_KEY_FOR_STORAGE)
-      console.log("User account nuked.")
-      return true
-    }
-  }
-}
-export { deleteUserAccount }
-
 async function insertIntoUserprofileTable(id, email, username) {
   // insert new row into the `userprofile` table and update user with the `username` attribute
   const { error } = await supabase
@@ -50,6 +26,7 @@ async function insertIntoUserprofileTable(id, email, username) {
     .insert({ id: id, email: email, username: username })
   if (error) {
     console.log("Error in inserting row into userprofile table: => ", error)
+    return false
   } else {
     console.log("Inserted user row into userprofile table.")
     // inserted user into userprofile table
@@ -59,8 +36,10 @@ async function insertIntoUserprofileTable(id, email, username) {
     })
     if (error) {
       console.log("Couldn't update user with username.")
+      return false
     } else {
       console.log("The user now looks like =>", data)
+      return true
     }
   }
 }
@@ -370,9 +349,10 @@ async function getStripeId(id) {
     console.log("Error fetching stripe id.")
     return null
   } else {
-    console.log("Fetched the stripe connect id again.")
+    console.log("Fetched the stripe connect id again=> ", stripe_id)
     const stripe_connect_id = stripe_id.stripe_connect_id
-    return stripe_connect_id
+    if (stripe_connect_id) return stripe_connect_id
+    else return null
   }
 }
 export { getStripeId }

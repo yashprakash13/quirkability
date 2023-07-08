@@ -1,3 +1,5 @@
+import { deleteEverythingFromCache } from "../utils"
+
 let BASE_BACKEND_URL = ""
 if (import.meta.env.VITE_APP_MODE === import.meta.env.VITE_ENV_PROD_KEYWORD) {
   BASE_BACKEND_URL = import.meta.env.VITE_BASE_BACKEND_URL_PROD
@@ -175,3 +177,12 @@ async function archiveStripeProduct(stripe_product_id, account_id) {
   }
 }
 export { archiveStripeProduct }
+
+async function deleteUser(userId) {
+  // as it says on the tin
+  await fetch(`${BASE_BACKEND_URL}/nuke-user/${userId}`)
+  // delete all user stuff from local storage
+  deleteEverythingFromCache()
+  console.log("User account nuked.")
+}
+export { deleteUser }
