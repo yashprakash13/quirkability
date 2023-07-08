@@ -300,7 +300,7 @@ const AddProduct = () => {
         navigate("/dashboard/settings")
       }, 2000)
     }
-  }, [stripeId])
+  }, [])
 
   async function saveProductToDrafts() {
     setLoading([true, "Saving..."])
