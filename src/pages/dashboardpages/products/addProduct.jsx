@@ -278,28 +278,30 @@ const AddProduct = () => {
   }, [mounted, inputErrors, errorProductImages, errorProductArtifact])
 
   useEffect(() => {
-    if (stripeId) {
-      setLoading([false, "Just a moment..."])
-    } else {
-      setLoading([true, "Loading..."])
-      toast.warning(
-        "Please connect your Stripe account before making a product.",
-        {
-          toastId: "alert1", // this id field is necessary because it helps make the toast show only once.
-          position: "top-right",
-          autoClose: 7000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: false,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        }
-      )
-      setTimeout(() => {
-        navigate("/dashboard/settings")
-      }, 2000)
-    }
+    setTimeout(() => {
+      if (stripeId) {
+        setLoading([false, "Just a moment..."])
+      } else {
+        setLoading([true, "Loading..."])
+        toast.warning(
+          "Please connect your Stripe account before making a product.",
+          {
+            toastId: "alert1", // this id field is necessary because it helps make the toast show only once.
+            position: "top-right",
+            autoClose: 7000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          }
+        )
+        setTimeout(() => {
+          navigate("/dashboard/settings")
+        }, 2000)
+      }
+    }, 5000)
   }, [])
 
   async function saveProductToDrafts() {
