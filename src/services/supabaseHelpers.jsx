@@ -536,7 +536,7 @@ async function getSaleDetailsFromProducts(products) {
         const total_paid_on_sales = parseFloat(
           sales.reduce((total, item) => total + item.total_paid, 0)
         )
-        sale_info["revenue"] = total_paid_on_sales
+        sale_info["revenue"] = total_paid_on_sales ? total_paid_on_sales : 0
         console.log("Sale info=> ", sale_info)
       } else {
         sale_info["num_sales"] = 0
