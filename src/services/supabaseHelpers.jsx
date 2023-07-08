@@ -350,8 +350,7 @@ async function getStripeId(id) {
     return null
   } else {
     console.log("Fetched the stripe connect id again=> ", stripe_id)
-    const stripe_connect_id = stripe_id.stripe_connect_id
-    return stripe_connect_id
+    return stripe_id.stripe_connect_id
   }
 }
 export { getStripeId }
