@@ -11,10 +11,6 @@ const usePayment = (user) => {
         console.log("Fetching stripe id from db.")
         const stripe_connect_id = await getStripeId(user.id)
         setStripeId(stripe_connect_id)
-        writeToCache(
-          import.meta.env.VITE_STRIPE_USER_ACCOUNT_KEY_FOR_STORAGE,
-          stripe_connect_id
-        )
       }
     }
     fetchData()
