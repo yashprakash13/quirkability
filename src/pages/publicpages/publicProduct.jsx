@@ -144,7 +144,7 @@ const PublicProduct = () => {
     productDetails && (
       <div className="container mx-auto p-3">
         <div className="flex flex-col border-sm border-secondary-focus">
-          <div className="text-2xl lg:text-5xl font-bold p-2 lg:px-7 lg:py-7">
+          <div className="text-2xl lg:text-5xl font-bold p-2 lg:px-7 lg:py-7 font-serif">
             {productDetails.name}
           </div>
           <div className="flex flex-col justify-center items-center border-b-sm border-t-sm border-secondary-focus">
@@ -155,7 +155,9 @@ const PublicProduct = () => {
           </div>
           <div className="flex flex-col lg:flex-row">
             <div className="basis-2/3 text-lg text-secondary-focus p-2 lg:border-secondary-focus lg:border-r-sm lg:px-7 lg:pt-7">
-              {parse(productDetails.description)}
+              <span className="prose prose-headings:font-serif prose-headings:text-secondary-focus prose-p:text-secondary-focus prose-p:font-serif prose-blockquote:font-serif prose-ol:font-serif prose-ul:font-serif prose-li:marker:text-secondary-focus prose-blockquote:text-secondary-focus prose-ul:text-secondary-focus prose-ol:text-secondary-focus">
+                {parse(productDetails.description)}
+              </span>
             </div>
             <div className="basis-1/3 flex flex-col lg:px-7 lg:pt-7">
               <div className="flex flex-col gap-2 p-2 lg:py-0 lg:px-2">
