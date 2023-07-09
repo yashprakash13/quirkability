@@ -130,6 +130,7 @@ const AddProduct = () => {
       price: yup
         .number()
         .test({
+          name: "price_test_add_product",
           exclusive: true,
           message:
             "Price of the product must be exactly 0 or greater than or equal to 1.",
