@@ -95,7 +95,7 @@ const LandingPage = () => {
       >
         Sell your{" "}
         <span className="font-serif font-thin text-warning-dark">
-          courses, eBooks, audiobooks, links, templates, art, courses and more!
+          eBooks, audiobooks, links, templates, files, art, courses and more!
         </span>
       </div>
       <div className="">
