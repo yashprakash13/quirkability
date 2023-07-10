@@ -14,7 +14,6 @@ import {
   getSupabaseProfilePicURL,
 } from "../../utils"
 import MadeByFooter from "../../components/MadeByFooter"
-import SEO from "../../components/SEO"
 
 const PublicUser = () => {
   const { username } = useParams()
@@ -63,14 +62,6 @@ const PublicUser = () => {
 
   return (
     <div className="container flex flex-col mx-auto p-3 gap-14">
-      {userDetails && (
-        <SEO
-          title={`${userDetails.username} - Quirkability | Sell digital products and services at low fees`}
-          description={`${userDetails.username} is selling digital products on Quirkability`}
-          image_url={getSupabaseProfilePicURL(userDetails.profile_pic_url)}
-          twitter_card_type={"summary"}
-        />
-      )}
       {userDetails && (
         <UserHeader
           name={userDetails.username}

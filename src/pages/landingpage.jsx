@@ -6,7 +6,6 @@ import { checkUsernameAvailability } from "../services/supabaseHelpers"
 import LandingPageScreenshot from "../assets/landingPageScreenshot"
 import Accordian from "../components/Accordian"
 import MadeByFooter from "../components/MadeByFooter"
-import SEO from "../components/SEO"
 
 const LandingPage = () => {
   const { user } = useAuth()
@@ -56,15 +55,6 @@ const LandingPage = () => {
 
   return (
     <div className="container mx-auto flex flex-col gap-4 mt-5 md:mt-20 p-3">
-      <SEO
-        title={"Quirkability | Sell digital products and services at low fees"}
-        description={
-          "Quirkability is a user-friendly e-commerce platform that enables you to sell your digital products and make money on the internet."
-        }
-        image_url={
-          "https://kwpnxwxqvtpmajmpaxvc.supabase.co/storage/v1/object/public/public-images/meta%20tag%20image.png"
-        }
-      />
       <div className="font-serif text-4xl md:text-5xl lg:text-7xl py-4 leading-normal w-full">
         Sell your digital products at <br />
         <span className="font-serif italic text-warning-dark"> very</span> low
