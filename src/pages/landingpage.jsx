@@ -21,8 +21,7 @@ const LandingPage = () => {
   }, [user])
 
   useEffect(() => {
-    document.title =
-      "Quirkability | Sell digital products and services at low fees"
+    document.title = "Quirkability | Sell digital products and services"
   }, [])
 
   function handleInputChange(e) {
@@ -58,7 +57,7 @@ const LandingPage = () => {
       <div className="font-serif text-4xl md:text-5xl lg:text-7xl py-4 leading-normal w-full">
         Sell your digital products at <br />
         <span className="font-serif italic text-warning-dark"> very</span> low
-        fees
+        platform fees
       </div>
       <div className="text-2xl font-sans lg:w-4/5">
         Use <span className="font-bold">quirkability</span> to quickly spin up a
