@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /signup/
+Disallow: /dashboard/
+
+Sitemap: https://quirkability.xyz/sitemap.xml
