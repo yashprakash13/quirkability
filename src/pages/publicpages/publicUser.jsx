@@ -11,6 +11,7 @@ import {
 import { toast } from "react-toastify"
 import { getSupabaseImageStorageURL } from "../../utils"
 import MadeByFooter from "../../components/MadeByFooter"
+import SEO from "../../components/SEO"
 
 const PublicUser = () => {
   const { username } = useParams()
@@ -59,6 +60,15 @@ const PublicUser = () => {
 
   return (
     <div className="container flex flex-col mx-auto p-3 gap-14">
+      {userDetails && (
+        <SEO
+          title={`${userDetails.username} - Quirkability | Sell digital products and services at low fees`}
+          og_type={"website"}
+          card_type={"app"}
+          description={`${userDetails.username} is selling digital products on Quirkability`}
+          name={`${userDetails.username}`}
+        />
+      )}
       {userDetails && (
         <UserHeader
           name={userDetails.username}
