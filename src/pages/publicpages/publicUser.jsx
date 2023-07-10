@@ -9,7 +9,10 @@ import {
   populatePublicProducts,
 } from "../../services/supabaseHelpers"
 import { toast } from "react-toastify"
-import { getSupabaseImageStorageURL } from "../../utils"
+import {
+  getSupabaseImageStorageURL,
+  getSupabaseProfilePicURL,
+} from "../../utils"
 import MadeByFooter from "../../components/MadeByFooter"
 import SEO from "../../components/SEO"
 
@@ -63,10 +66,9 @@ const PublicUser = () => {
       {userDetails && (
         <SEO
           title={`${userDetails.username} - Quirkability | Sell digital products and services at low fees`}
-          og_type={"website"}
-          card_type={"app"}
           description={`${userDetails.username} is selling digital products on Quirkability`}
-          name={`${userDetails.username}`}
+          image_url={getSupabaseProfilePicURL(userDetails.profile_pic_url)}
+          twitter_card_type={"summary"}
         />
       )}
       {userDetails && (
