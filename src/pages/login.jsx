@@ -35,9 +35,9 @@ const Login = () => {
       className="flex flex-col mx-auto mt-5 md:mt-28 p-4 pb-7 md:px-8 bg-primary-default w-11/12 md:w-2/3 lg:w-1/2 rounded-br-3xl "
       onSubmit={handleLogIn}
     >
-      <h2 className="font-serif mb-0 text-center text-2xl font-bold text-secondary-focus md:mb-4 lg:text-3xl">
+      <h1 className="font-serif mb-0 text-center text-2xl font-bold text-secondary-focus md:mb-4 lg:text-3xl">
         Login
-      </h2>
+      </h1>
       <div className="flex flex-col gap-4">
         <div>
           <div className="mt-5 text-md text-alert-dark">

@@ -141,10 +141,10 @@ const LandingPage = () => {
       </div>
 
       <div className="flex flex-col gap-11 w-full mb-36">
-        <div className="text-2xl font-serif md:text-3xl lg:text-5xl font-medium">
+        <h4 className="text-2xl font-serif md:text-3xl lg:text-5xl font-medium">
           Start selling{" "}
           <span className="font-serif text-warning-dark"> today</span>
-        </div>
+        </h4>
         <div className="flex flex-col lg:flex-row items-start lg:items-center gap-4 ">
           <div className="flex flex-col md:flex-row gap-4 md:items-center w-full basis-4/5">
             <div className="flex-auto text-lg md:text-2xl font-serif">
