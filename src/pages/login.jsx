@@ -83,15 +83,18 @@ const Login = () => {
           Log in
         </button>
       </div>
-
-      {/* <div className="flex items-center justify-center bg-gray-100 mt-7">
-        <p className="text-center text-lg text-secondary-focus">
-          Don't have an account?{" "}
-          <Link to="/signup" className="underline">
-            Register
-          </Link>
-        </p>
-      </div> */}
+      <div className="mt-11 border-xs text-light-highlight opacity-25"></div>
+      <div className="mt-11 text-center text-xl text-secondary-focus">
+        Don't have an account?
+      </div>
+      <div className="mt-7 text-center text-secondary-focus font-serif text-xl">
+        <Link
+          className="text-lg cursor-pointer bg-primary-default px-11 py-3 border-sm border-secondary-focus rounded-br-lg hover:underline hover:bg-secondary-focus hover:text-primary-focus transition-all duration-300"
+          to="/"
+        >
+          Sign up
+        </Link>
+      </div>
     </form>
   )
 }

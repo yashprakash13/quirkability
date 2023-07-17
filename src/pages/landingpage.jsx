@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { ArrowRightIcon } from "@heroicons/react/24/outline"
 import { useAuth } from "../context/auth"
 import { checkUsernameAvailability } from "../services/supabaseHelpers"
@@ -54,15 +54,15 @@ const LandingPage = () => {
 
   return (
     <div className="container mx-auto flex flex-col gap-4 mt-5 md:mt-20 p-3">
-      <div className="font-serif text-4xl md:text-5xl lg:text-7xl py-4 leading-normal w-full">
+      <h1 className="font-serif text-4xl md:text-5xl lg:text-7xl py-4 leading-normal w-full">
         Sell your digital products at <br />
         <span className="font-serif italic text-warning-dark"> very</span> low
         platform fees
-      </div>
-      <div className="text-2xl font-sans lg:w-4/5">
+      </h1>
+      <h2 className="text-2xl font-sans lg:w-4/5">
         Use <span className="font-bold">quirkability</span> to quickly spin up a
         store and sell digital downloads and courses to your audience.{" "}
-      </div>
+      </h2>
       <div className="flex flex-col lg:flex-row items-start lg:items-center gap-5 mt-7">
         <div className="flex flex-col md:flex-row gap-5 md:items-center w-full basis-4/5">
           <div className="flex-auto text-lg md:text-2xl font-serif">
@@ -88,7 +88,7 @@ const LandingPage = () => {
         </div>
       </div>
       {error && <div className="text-lg text-alert-dark">{error}</div>}
-      <div
+      <h3
         className="mt-16 text-2xl font-serif md:text-3xl lg:text-5xl py-4 leading-normal w-full"
         id="features"
       >
@@ -96,10 +96,35 @@ const LandingPage = () => {
         <span className="font-serif font-thin text-warning-dark">
           eBooks, audiobooks, links, templates, files, art, courses and more!
         </span>
-      </div>
+      </h3>
       <div className="">
         <LandingPageScreenshot />
       </div>
+
+      <div className="mt-16 flex flex-col md:flex-row gap-5 w-full">
+        <div class="block p-6 bg-primary-default border-xs border-secondary-focus rounded-lg md:basis-1/2">
+          <h5 class="mb-2 text-2xl font-bold tracking-tight text-secondary-focus font-serif">
+            Get your first $ online
+          </h5>
+          <p class="text-secondary-focus text-lg">
+            We make it easy to generate your first dollar online. Create
+            products with your areas of expertise, list them in your store, and
+            receive payment from your audience- it's as simple as that!
+          </p>
+        </div>
+        <div class="block p-6 bg-primary-default border-xs border-secondary-focus rounded-lg md:basis-1/2">
+          <h5 class="mb-2 text-2xl font-bold tracking-tight text-secondary-focus font-serif">
+            Support independent creators
+          </h5>
+          <p class="text-secondary-focus text-lg">
+            This is the place where people can sell what they love. Our platform
+            simplifies the process by enabling direct connections between buyers
+            and creators, allowing you to both create and discover unique and
+            exceptional products with ease.
+          </p>
+        </div>
+      </div>
+
       <div className="mt-16" id="pricing">
         <Accordian
           data={[
@@ -143,6 +168,15 @@ const LandingPage = () => {
             Get started
             <ArrowRightIcon className="h-5 w-5 font-bold" />
           </div>
+        </div>
+        <div className="mt-7 text-center text-xl text-secondary-focus">OR</div>
+        <div className="mt-7 text-center text-secondary-focus font-serif text-xl">
+          <Link
+            className="text-lg cursor-pointer bg-primary-default px-11 py-3 border-sm border-secondary-focus rounded-br-lg hover:underline hover:bg-secondary-focus hover:text-primary-focus transition-all duration-300"
+            to="/login"
+          >
+            Login
+          </Link>
         </div>
         {error && <div className="text-lg text-alert-dark">{error}</div>}
       </div>
