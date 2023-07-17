@@ -250,7 +250,7 @@ const Settings = () => {
             ) : (
               <DefaultProfilePic
                 classStyles={
-                  "w-28 h-28 rounded-full border-sm border-secondary-focus"
+                  "w-24 h-24 rounded-full border-sm border-secondary-focus"
                 }
               />
             )}

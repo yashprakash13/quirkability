@@ -155,7 +155,7 @@ const PublicProduct = () => {
           </div>
           <div className="flex flex-col lg:flex-row">
             <div className="basis-2/3 text-lg text-secondary-focus p-2 lg:border-secondary-focus lg:border-r-sm lg:px-7 lg:pt-7">
-              <span className="prose prose-headings:font-serif prose-headings:text-secondary-focus prose-p:text-secondary-focus prose-p:font-serif prose-blockquote:font-serif prose-ol:font-serif prose-ul:font-serif prose-li:marker:text-secondary-focus prose-blockquote:text-secondary-focus prose-ul:text-secondary-focus prose-ol:text-secondary-focus">
+              <span className="prose prose-p:break-all prose-headings:font-serif prose-headings:text-secondary-focus prose-p:text-secondary-focus prose-p:font-serif prose-blockquote:font-serif prose-ol:font-serif prose-ul:font-serif prose-li:marker:text-secondary-focus prose-blockquote:text-secondary-focus prose-ul:text-secondary-focus prose-ol:text-secondary-focus">
                 {parse(productDetails.description)}
               </span>
             </div>

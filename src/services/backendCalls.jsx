@@ -144,6 +144,11 @@ async function makePaymentFreeProduct(product_id, customer_email, quantity) {
 }
 export { makePaymentFreeProduct }
 
+async function sendEmailOnPurchase() {
+  await fetch(`${BASE_BACKEND_URL}/send-email`)
+}
+export { sendEmailOnPurchase }
+
 async function getSession(session_id) {
   const response = await fetch(`${BASE_BACKEND_URL}/get-session/${session_id}`)
   const result = await response.json()
