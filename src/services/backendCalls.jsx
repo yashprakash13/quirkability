@@ -51,7 +51,7 @@ async function createStripeProduct(id, name, price, price_currency, account) {
     body: JSON.stringify({
       id: id,
       name: name,
-      price: parseFloat(price),
+      price: parseFloat(price).toFixed(2),
       price_currency: price_currency,
       account: account,
     }),
@@ -77,7 +77,7 @@ async function editStripePrice(
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       id: id,
-      price: parseFloat(price),
+      price: parseFloat(price).toFixed(2),
       price_currency: price_currency,
       account: connected_account_id,
       stripe_price_id: price_id,
