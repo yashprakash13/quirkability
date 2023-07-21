@@ -16,13 +16,13 @@ import {
 import parse from "html-react-parser"
 import { getCurrency } from "../../utils"
 import ImageCarousel from "../../components/ImageCarousel"
-import MadeByFooter from "../../components/MadeByFooter"
 import * as yup from "yup"
 import {
   makePayment,
   makePaymentFreeProduct,
 } from "../../services/backendCalls"
 import { toast } from "react-toastify"
+import MadeByFooterPublic from "../../components/MadeByFooterPublic"
 
 const PublicProduct = () => {
   const { productId } = useParams()
@@ -280,7 +280,7 @@ const PublicProduct = () => {
             />
           </div>
         )}
-        <MadeByFooter />
+        <MadeByFooterPublic />
       </div>
     )
   )

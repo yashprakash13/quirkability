@@ -9,11 +9,8 @@ import {
   populatePublicProducts,
 } from "../../services/supabaseHelpers"
 import { toast } from "react-toastify"
-import {
-  getSupabaseImageStorageURL,
-  getSupabaseProfilePicURL,
-} from "../../utils"
-import MadeByFooter from "../../components/MadeByFooter"
+import { getSupabaseImageStorageURL } from "../../utils"
+import MadeByFooterPublic from "../../components/MadeByFooterPublic"
 
 const PublicUser = () => {
   const { username } = useParams()
@@ -82,7 +79,7 @@ const PublicUser = () => {
             />
           ))}
       </div>
-      <MadeByFooter />
+      <MadeByFooterPublic />
     </div>
   )
 }
