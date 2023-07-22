@@ -6,6 +6,7 @@ import { checkUsernameAvailability } from "../services/supabaseHelpers"
 import LandingPageScreenshot from "../assets/landingPageScreenshot"
 import Accordian from "../components/Accordian"
 import MadeByFooter from "../components/MadeByFooter"
+import Stepper from "../components/Stepper"
 
 const LandingPage = () => {
   const { user } = useAuth()
@@ -101,8 +102,18 @@ const LandingPage = () => {
         <LandingPageScreenshot />
       </div>
 
+      <div className="mt-16 flex flex-col gap-5 w-full">
+        <div className="text-4xl lg:text-5xl font-serif mb-5">
+          Start earning your online <span className="text-warning-dark">$</span>{" "}
+          in 3 easy steps
+        </div>
+        <div className="flex justify-start px-3 py-1">
+          <Stepper />
+        </div>
+      </div>
+
       <div className="mt-16 flex flex-col md:flex-row gap-5 w-full">
-        <div class="block p-6 bg-primary-default border-xs border-secondary-focus rounded-lg md:basis-1/2">
+        <div class="block p-6 bg-primary-default border-xs border-secondary-focus rounded-br-lg md:basis-1/2">
           <h5 class="mb-2 text-2xl font-bold tracking-tight text-secondary-focus font-serif">
             Get your first $ online
           </h5>
@@ -112,7 +123,7 @@ const LandingPage = () => {
             receive payment from your audience- it's as simple as that!
           </p>
         </div>
-        <div class="block p-6 bg-primary-default border-xs border-secondary-focus rounded-lg md:basis-1/2">
+        <div class="block p-6 bg-primary-default border-xs border-secondary-focus rounded-br-lg md:basis-1/2">
           <h5 class="mb-2 text-2xl font-bold tracking-tight text-secondary-focus font-serif">
             Support independent creators
           </h5>
@@ -124,8 +135,10 @@ const LandingPage = () => {
           </p>
         </div>
       </div>
-
-      <div className="mt-16" id="pricing">
+      <div className="mt-16 text-4xl lg:text-5xl font-serif">
+        Your questions answered
+      </div>
+      <div className="mt-7" id="pricing">
         <Accordian
           data={[
             {
@@ -135,6 +148,11 @@ const LandingPage = () => {
             {
               heading: "How do I get paid?",
               body: "You'll be able to connect your Stripe account to get payments directly into your Stripe account.",
+            },
+            {
+              heading:
+                "What's the difference between Quirkability and Gumroad?",
+              body: "Gumroad charges you 10% fees on each sale you make whereas we only charge you 3%.",
             },
           ]}
         />

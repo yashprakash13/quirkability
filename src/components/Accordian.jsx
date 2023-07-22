@@ -14,7 +14,7 @@ const Accordian = ({ data }) => {
             >
               <button
                 type="button"
-                className=" text-2xl md:text-3xl lg:text-4xl flex items-center justify-between w-full font-medium text-left text-secondary-focus border border-b-0 border-gray-200 rounded-t-xl"
+                className=" text-2xl md:text-3xl flex items-center justify-between w-full font-medium text-left text-secondary-focus border border-b-0 border-gray-200 rounded-t-xl"
               >
                 <span>{item.heading}</span>
                 <svg
