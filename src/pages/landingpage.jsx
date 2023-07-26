@@ -89,10 +89,7 @@ const LandingPage = () => {
         </div>
       </div>
       {error && <div className="text-lg text-alert-dark">{error}</div>}
-      <h3
-        className="mt-16 text-2xl font-serif md:text-3xl lg:text-5xl py-4 leading-normal w-full"
-        id="features"
-      >
+      <h3 className="mt-16 text-2xl font-serif md:text-3xl lg:text-5xl py-4 leading-normal w-full">
         Sell your{" "}
         <span className="font-serif font-thin text-warning-dark">
           eBooks, audiobooks, links, templates, files, art, courses and more!
@@ -102,7 +99,7 @@ const LandingPage = () => {
         <LandingPageScreenshot />
       </div>
 
-      <div className="mt-16 flex flex-col gap-5 w-full">
+      <div className="mt-16 flex flex-col gap-5 w-full" id="how-it-works">
         <div className="text-4xl lg:text-5xl font-serif mb-5">
           Start earning your online <span className="text-warning-dark">$</span>{" "}
           in 3 easy steps

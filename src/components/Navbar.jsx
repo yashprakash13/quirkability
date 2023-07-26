@@ -20,7 +20,7 @@ const Navbar = ({ onScrollToFeatures, onScrollToPricing }) => {
               className="text-sm font-bold text-secondary-default font-sans cursor-pointer hover:underline transition-all duration-300"
               onClick={onScrollToFeatures && onScrollToFeatures}
             >
-              What can I sell?
+              How it works
             </div>
             <div
               className="text-sm font-bold text-secondary-default font-sans cursor-pointer hover:underline transition-all duration-300"

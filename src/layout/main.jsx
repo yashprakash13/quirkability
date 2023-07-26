@@ -19,7 +19,7 @@ const Main = () => {
   }, [])
 
   const handleScrollToFeatures = () => {
-    const featuresSection = document.getElementById("features")
+    const featuresSection = document.getElementById("how-it-works")
     featuresSection.scrollIntoView({ behavior: "smooth" })
   }
 
