@@ -180,7 +180,7 @@ const LandingPage = () => {
             className="inline-flex basis-1/6 gap-2 items-center text-lg font-bold px-6 py-2 cursor-pointer bg-secondary-default text-white  border-secondary-focus rounded-br-2xl hover:text-secondary-default hover:bg-primary-default hover:border-md hover:border-secondary-focus transition-all duration-300 sm:mt-4 lg:mt-0"
             onClick={handleUsername}
           >
-            Get started
+            Make a store
             <ArrowRightIcon className="h-5 w-5 font-bold" />
           </div>
         </div>

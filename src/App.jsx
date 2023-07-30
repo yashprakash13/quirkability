@@ -25,6 +25,8 @@ import Maintenance from "./pages/maintenance"
 import { AuthProvider } from "./context/auth"
 import { useEffect, useRef, useState } from "react"
 import { perform_server_health_check } from "./services/backendCalls"
+import WhyShouldYouCreateOnline from "./pages/blog/WhyShouldYouCreateOnline"
+import Blog from "./pages/blog"
 
 function App() {
   const [serverHealthOK, setServerHealthOK] = useState(true)
@@ -57,6 +59,19 @@ function App() {
         {
           path: "signup",
           element: <Signup />,
+        },
+        {
+          path: "blog",
+          children: [
+            {
+              index: true,
+              element: <Blog />,
+            },
+            {
+              path: "why-should-you-create-online",
+              element: <WhyShouldYouCreateOnline />,
+            },
+          ],
         },
       ],
     },
